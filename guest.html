@@ -141,11 +141,22 @@
       border: 1px solid #eee;
       border-radius: 16px;
       padding: 18px;
-      max-width: 320px;
+      width: 280px;
+      height: 280px; /* ✅ force carré */
       margin: 0 auto;
       box-shadow: 0 8px 20px rgba(0,0,0,.15);
     }
-    canvas { max-width: 100%; height: auto; }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+    }
+    .hint-scan {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      text-align: center;
+    }
     .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
     .btn {
       cursor: pointer;
@@ -201,6 +212,7 @@
 
       <div class="qrWrap" id="qrWrap">
         <div class="qrBox" id="qrBox"><canvas id="qrCanvas"></canvas></div>
+        <div class="hint-scan">After scanning, your wallet may take a few seconds to show the payment — please wait 🕒</div>
         <div class="actions">
           <a class="btn" id="openWallet" target="_blank">Open Wallet</a>
           <button class="btn ghost" id="copyLink">Copy Link</button>
@@ -261,7 +273,7 @@
           uri = `ethereum:${addr}?value=${wei}`
         }
 
-        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, margin: 1 })
+        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 260, margin: 1 })
         $('#uriPreview').textContent = uri
         $('#openWallet').href = uri
         $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
