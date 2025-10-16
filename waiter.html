@@ -3,192 +3,191 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>TipFi — For Waiter</title>
-  <meta name="description" content="Enter your address and the bill amount, then hand the phone to the guest.">
+  <title>🦄 TipFi — Waiter Portal</title>
+  <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto.">
   <style>
     :root{
-      --bg:#0b0f19; --card:#121728; --line:rgba(255,255,255,.10);
-      --text:#e8eeff; --muted:#9fb0c9; --chip:#0e1324;
-      --accent1:#ffc000; --accent2:#ff7a00;
+      --bg:#f8f9ff;
+      --card:#ffffffcc;
+      --line:rgba(0,0,0,.08);
+      --text:#2b2b3a;
+      --muted:#6b6b80;
+      --accent1:#c8b6ff;
+      --accent2:#b8e1ff;
+      --accent3:#ffd6e0;
+      --shadow:rgba(180,180,200,.25);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        radial-gradient(1000px 600px at 10% -10%, #1c2549 0%, transparent 60%),
-        radial-gradient(800px 600px at 120% 10%, #1a2a5a 0%, transparent 55%),
-        var(--bg);
+      margin:0;
+      font-family:"Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
+      background:linear-gradient(160deg, var(--accent2), var(--accent3) 50%, var(--accent1) 100%);
       color:var(--text);
+      line-height:1.5;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 16px;
     }
-    .wrap{max-width:820px; margin:28px auto; padding:0 16px}
-    header{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
-    .title{font-weight:800; letter-spacing:.2px; font-size:18px}
-    .tags{display:flex; gap:8px; flex-wrap:wrap}
+    .wrap{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 10px 40px var(--shadow);
+      padding:28px;
+      max-width:780px;
+      width:100%;
+      backdrop-filter:blur(8px);
+    }
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .title{font-weight:800;font-size:22px;display:flex;align-items:center;gap:6px}
+    .title span{font-size:26px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
     .tag{
-      background:var(--chip);
+      background:#fff;
       border:1px solid var(--line);
       color:var(--muted);
-      font-size:12px; padding:6px 10px; border-radius:999px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
     }
-
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    .card{padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,0.6);}
+    .hint{color:var(--muted);font-size:14px;margin-bottom:8px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:240px}
+    label{font-size:13px;color:var(--muted);font-weight:500}
+    select,input{
+      width:100%;
+      background:white;
+      color:var(--text);
       border:1px solid var(--line);
-      border-radius:16px; padding:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
     }
-    .hint{color:var(--muted); font-size:12px}
-
-    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px}
-    .field{display:flex; flex-direction:column; gap:6px; flex:1; min-width:240px}
-    label{font-size:12px; color:var(--muted)}
-
-    select, input{
-      width:100%; background:#0e1428; color:var(--text);
-      border:1px solid var(--line); border-radius:12px;
-      padding:12px 14px; font-size:16px; outline:none;
-    }
-    select:focus, input:focus{ border-color:var(--accent1); box-shadow:0 0 0 3px rgba(255,192,0,.18) }
-
-    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px}
+    select:focus,input:focus{border-color:var(--accent1);box-shadow:0 0 6px var(--accent1);}
+    input::placeholder{color:#aaa}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
     .btn{
-      cursor:pointer; background:linear-gradient(135deg, var(--accent1), var(--accent2));
-      color:#1a1200; border:none; padding:12px 14px; border-radius:12px; font-weight:800;
-      letter-spacing:.2px; box-shadow:0 6px 20px rgba(255,122,0,.35);
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      color:#1a1a1a;
+      border:none;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:700;
+      letter-spacing:.3px;
+      box-shadow:0 6px 15px rgba(0,0,0,.1);
+      transition:transform .1s;
     }
+    .btn:hover{transform:translateY(-2px)}
     .btn.ghost{
-      background:transparent; color:var(--text); border:1px solid var(--line);
-      box-shadow:none;
+      background:transparent;
+      color:var(--text);
+      border:1px solid var(--line);
     }
-    .btn.small{ padding:10px 12px; font-size:14px }
-
-    .divider{height:1px; background:var(--line); margin:12px 0}
-    .note{color:var(--muted); font-size:12px; margin-top:6px}
+    .divider{height:1px;background:var(--line);margin:16px 0}
+    .note{text-align:center;color:var(--muted);font-size:14px;margin-top:8px}
+    footer{text-align:center;font-size:12px;color:#888;margin-top:18px}
+    footer a{color:#888;text-decoration:none}
+    footer a:hover{text-decoration:underline}
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
-      <div class="title">For Waiter</div>
+      <div class="title"><span>🦄</span> TipFi Waiter</div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
-        <span class="tag" id="tagFiat">—</span>
         <span class="tag" id="tagAddr">—</span>
       </div>
     </header>
 
-    <section class="card" aria-labelledby="setupTitle">
-      <div class="hint" id="setupTitle">Fill in details, then open the Guest page.</div>
+    <section class="card">
+      <div class="hint">✨ Quick setup — fill in your info and let your guest scan & tip in crypto.</div>
 
       <div class="row">
         <div class="field">
-          <label for="crypto">Crypto</label>
+          <label for="crypto">💎 Choose crypto network</label>
           <select id="crypto">
-            <option value="ETH">ETH (Ethereum)</option>
-            <option value="BTC">BTC (Bitcoin)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
           </select>
         </div>
         <div class="field">
-          <label for="fiat">Bill currency</label>
-          <select id="fiat">
-            <option value="EUR">EUR (€)</option>
-            <option value="USD">USD ($)</option>
-          </select>
+          <label for="bill">💰 Bill amount (USD)</label>
+          <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" inputmode="decimal">
         </div>
       </div>
 
-      <div class="row">
-        <div class="field">
-          <label for="address">Your receiving address</label>
-          <input id="address" placeholder="0x… (ETH) or bc1… (BTC)" autocomplete="off" inputmode="text">
-        </div>
-        <div class="field">
-          <label for="bill">Bill amount</label>
-          <input id="bill" type="number" step="0.01" min="0" placeholder="e.g. 84.50" inputmode="decimal">
-        </div>
+      <div class="field" style="margin-top:12px;">
+        <label for="address">🏦 Your wallet address</label>
+        <input id="address" placeholder="Enter wallet address" autocomplete="off" inputmode="text">
       </div>
 
       <div class="actions">
-        <button class="btn" id="toGuest">Open Guest Page</button>
-        <button class="btn ghost" id="saveDefaults">Save defaults</button>
-        <button class="btn ghost" id="clearDefaults">Clear</button>
+        <button class="btn" id="toGuest">🚀 Open Guest Page</button>
+        <button class="btn ghost" id="saveDefaults">💾 Save defaults</button>
+        <button class="btn ghost" id="clearDefaults">🧹 Clear</button>
       </div>
 
       <div class="divider"></div>
-      <p class="note">We’ll pass these to the next screen. The guest picks a % and scans the big QR.</p>
+      <p class="note">“Cash is cringe. This tip is a 2x waiting to happen.” 🧠</p>
     </section>
+
+    <footer>yo ;) <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@pranklord666</a></footer>
   </div>
 
   <script>
     const $ = s => document.querySelector(s)
-    const LS = { crypto:'TIPFI_CRYPTO', fiat:'TIPFI_FIAT', addr:'TIPFI_ADDR' }
+    const LS = { crypto:'TIPFI_CRYPTO', addr:'TIPFI_ADDR' }
 
-    // Prefill from localStorage
     window.addEventListener('DOMContentLoaded', () => {
       $('#crypto').value = localStorage.getItem(LS.crypto) || 'ETH'
-      $('#fiat').value   = localStorage.getItem(LS.fiat)   || 'EUR'
       $('#address').value = localStorage.getItem(LS.addr)  || ''
       refreshTags()
     })
 
-    // Live tag updates
-    ;['crypto','fiat','address'].forEach(id => {
+    ;['crypto','address'].forEach(id => {
       $(`#${id}`).addEventListener('input', refreshTags)
       $(`#${id}`).addEventListener('change', refreshTags)
     })
 
     function refreshTags(){
       const c = $('#crypto').value
-      const f = $('#fiat').value
       const a = ($('#address').value || '').trim()
       $('#tagCrypto').textContent = c
-      $('#tagFiat').textContent   = f
       $('#tagAddr').textContent   = a ? `…${a.slice(-6)}` : '—'
     }
 
-    // Save / Clear defaults
     $('#saveDefaults').addEventListener('click', () => {
       localStorage.setItem(LS.crypto, $('#crypto').value)
-      localStorage.setItem(LS.fiat,   $('#fiat').value)
       localStorage.setItem(LS.addr,   ($('#address').value || '').trim())
-      alert('Defaults saved on this device.')
+      alert('✨ Defaults saved on this device.')
     })
     $('#clearDefaults').addEventListener('click', () => {
       Object.values(LS).forEach(k => localStorage.removeItem(k))
-      alert('Cleared.')
+      alert('🧹 Cleared.')
     })
 
-    // Basic validators
     function isLikelyEth(addr){ return /^0x[a-fA-F0-9]{40}$/.test(addr) }
     function isLikelyBtc(addr){ return /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{20,}$/i.test(addr) }
 
-    // Proceed to guest
     $('#toGuest').addEventListener('click', () => {
       const crypto = $('#crypto').value
-      const fiat   = $('#fiat').value
       const addr   = ($('#address').value || '').trim()
       const bill   = parseFloat($('#bill').value)
+      const fiat = "USD"
 
-      if(!addr){
-        alert('Please enter your receiving address.')
-        return
-      }
-      if(crypto === 'ETH' && !isLikelyEth(addr)){
-        if(!confirm('Address doesn’t look like an ETH address. Continue anyway?')) return
-      }
-      if(crypto === 'BTC' && !isLikelyBtc(addr)){
-        if(!confirm('Address doesn’t look like a BTC address. Continue anyway?')) return
-      }
-      if(!(bill > 0)){
-        alert('Please enter a bill amount greater than 0.')
-        return
-      }
+      if(!addr){ alert('⚠️ Please enter your wallet address.'); return }
+      if(!(bill > 0)){ alert('💸 Enter a bill amount greater than 0.'); return }
 
-      // Persist convenience defaults
       localStorage.setItem(LS.crypto, crypto)
-      localStorage.setItem(LS.fiat,   fiat)
-      localStorage.setItem(LS.addr,   addr)
+      localStorage.setItem(LS.addr, addr)
 
       const params = new URLSearchParams({ crypto, fiat, addr, bill: bill.toString() })
       location.href = `guest.html?${params.toString()}`
