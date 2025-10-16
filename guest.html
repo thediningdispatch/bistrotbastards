@@ -270,11 +270,11 @@
         if (crypto === 'BTC') {
           uri = `bitcoin:${addr}?amount=${tipCrypto.toFixed(8)}`
         } else {
-          const wei = (tipCrypto * 1e18).toFixed(0)
+          const wei = BigInt(Math.floor(tipCrypto * 1e18)).toString()
           uri = `ethereum:${addr}?value=${wei}`
         }
 
-        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 260, margin: 1 })
+        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, height: 280, margin: 1 })
         $('#uriPreview').textContent = uri
         $('#openWallet').href = uri
         $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
