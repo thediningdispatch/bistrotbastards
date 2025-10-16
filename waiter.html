@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>🦄 TipFi — Waiter Portal</title>
-  <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto.">
+  <title>🦄 TipFi — Guest Portal</title>
+  <meta name="description" content="Pick your tip — we generate a crypto payment QR for your wallet.">
   <style>
-    :root{
+    :root {
       --bg:#f8f9ff;
       --card:#ffffffcc;
       --line:rgba(0,0,0,.08);
@@ -17,90 +17,173 @@
       --accent3:#ffd6e0;
       --shadow:rgba(180,180,200,.25);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
-      background:linear-gradient(160deg, var(--accent2), var(--accent3) 50%, var(--accent1) 100%);
-      color:var(--text);
-      line-height:1.5;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:40px 16px;
+    * { box-sizing: border-box; }
+    html,body { height: 100%; margin: 0; }
+    body {
+      font-family: "Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, var(--accent2), var(--accent3) 50%, var(--accent1) 100%);
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      line-height: 1.5;
     }
-    .wrap{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:0 10px 40px var(--shadow);
-      padding:28px;
-      max-width:780px;
-      width:100%;
-      backdrop-filter:blur(8px);
+    .wrap {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow);
+      padding: 28px;
+      max-width: 780px;
+      width: 100%;
+      backdrop-filter: blur(8px);
     }
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-    .title{font-weight:800;font-size:22px;display:flex;align-items:center;gap:6px}
-    .title span{font-size:26px}
-    .tags{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{
-      background:#fff;
-      border:1px solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
-    .card{padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,0.6);}
-    .hint{color:var(--muted);font-size:14px;margin-bottom:8px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-    .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:240px}
-    label{font-size:13px;color:var(--muted);font-weight:500}
-    select,input{
-      width:100%;
-      background:white;
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px 14px;
-      font-size:16px;
-      outline:none;
-      transition:border-color .2s, box-shadow .2s;
+    .title {
+      font-weight: 800;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    select:focus,input:focus{border-color:var(--accent1);box-shadow:0 0 6px var(--accent1);}
-    input::placeholder{color:#aaa}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-    .btn{
-      cursor:pointer;
-      background:linear-gradient(135deg,var(--accent1),var(--accent2));
-      color:#1a1a1a;
-      border:none;
-      padding:12px 16px;
-      border-radius:12px;
-      font-weight:700;
-      letter-spacing:.3px;
-      box-shadow:0 6px 15px rgba(0,0,0,.1);
-      transition:transform .1s;
+    .title span { font-size: 26px; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
     }
-    .btn:hover{transform:translateY(-2px)}
-    .btn.ghost{
-      background:transparent;
-      color:var(--text);
-      border:1px solid var(--line);
+
+    .card {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.6);
     }
-    .divider{height:1px;background:var(--line);margin:16px 0}
-    .note{text-align:center;color:var(--muted);font-size:14px;margin-top:8px}
-    footer{text-align:center;font-size:12px;color:#888;margin-top:18px}
-    footer a{color:#888;text-decoration:none}
-    footer a:hover{text-decoration:underline}
+    .hint { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+
+    .percent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    @media (min-width: 760px) {
+      .percent-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .pill {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      text-align: center;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 6px 15px rgba(0,0,0,.08);
+    }
+    .pill:hover { transform: translateY(-1px); }
+    .pill.active {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: #1a1a1a;
+      box-shadow: 0 6px 15px rgba(0,0,0,.1);
+    }
+    .pill .pct { font-size: 22px; font-weight: 900; }
+    .pill .approx { font-size: 12px; color: var(--muted); }
+
+    .custom {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    input[type="number"] {
+      width: 140px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 16px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .kpi {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .kpi b { display: block; font-size: 12px; color: var(--muted); }
+    .kpi span { font-size: 20px; font-weight: 900; }
+
+    .qrWrap { margin-top: 16px; display: none; text-align: center; }
+    .qrBox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 16px;
+      padding: 18px;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+    }
+    .hint-scan {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+      text-align: center;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+    .btn {
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #1a1a1a;
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    }
+    .btn.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .uri { color: var(--muted); font-size: 12px; word-break: break-all; margin-top: 6px; }
+    footer { text-align:center; font-size:12px; color:#888; margin-top:18px; }
+    footer a{color:#888;text-decoration:none;}
+    footer a:hover{text-decoration:underline;}
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <header>
-      <div class="title"><span>🦄</span> TipFi Waiter</div>
+      <div class="title"><span>💸</span> TipFi Guest</div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
         <span class="tag" id="tagAddr">—</span>
@@ -108,89 +191,113 @@
     </header>
 
     <section class="card">
-      <div class="hint">✨ Quick setup — fill in your info and let your guest scan & tip in crypto.</div>
+      <div class="hint">Select your tip percentage 💖</div>
+      <div class="percent-grid" id="percentGroup">
+        <button class="pill" data-p="5"><div class="pct">5%</div><div class="approx">≈ —</div></button>
+        <button class="pill" data-p="10"><div class="pct">10%</div><div class="approx">≈ —</div></button>
+        <button class="pill" data-p="15"><div class="pct">15%</div><div class="approx">≈ —</div></button>
+        <button class="pill" data-p="20"><div class="pct">20%</div><div class="approx">≈ —</div></button>
+      </div>
 
-      <div class="row">
-        <div class="field">
-          <label for="crypto">💎 Choose crypto network</label>
-          <select id="crypto">
-            <option value="ETH">Ethereum (ETH)</option>
-            <option value="BTC">Bitcoin (BTC)</option>
-          </select>
+      <div class="custom">
+        <span class="hint">or enter a custom %</span>
+        <input id="customP" type="number" step="0.5" min="0" placeholder="Custom %" inputmode="decimal">
+        <button class="btn small" id="applyCustom">Apply</button>
+      </div>
+
+      <div class="summary">
+        <div class="kpi"><b>Bill</b><span id="billFiat">—</span></div>
+        <div class="kpi"><b>Tip</b><span id="tipFiat">—</span></div>
+      </div>
+
+      <div class="qrWrap" id="qrWrap">
+        <div class="qrBox" id="qrBox"><canvas id="qrCanvas"></canvas></div>
+        <div class="hint-scan">After scanning, your wallet may take a few seconds to show the payment — please wait 🕒</div>
+        <div class="actions">
+          <a class="btn" id="openWallet" target="_blank">Open Wallet</a>
+          <button class="btn ghost" id="copyLink">Copy Link</button>
+          <button class="btn ghost" id="copyAmount">Copy Amount</button>
         </div>
-        <div class="field">
-          <label for="bill">💰 Bill amount (USD)</label>
-          <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" inputmode="decimal">
-        </div>
+        <div class="uri" id="uriPreview">—</div>
       </div>
-
-      <div class="field" style="margin-top:12px;">
-        <label for="address">🏦 Your wallet address</label>
-        <input id="address" placeholder="Enter wallet address" autocomplete="off" inputmode="text">
-      </div>
-
-      <div class="actions">
-        <button class="btn" id="toGuest">🚀 Open Guest Page</button>
-        <button class="btn ghost" id="saveDefaults">💾 Save defaults</button>
-        <button class="btn ghost" id="clearDefaults">🧹 Clear</button>
-      </div>
-
-      <div class="divider"></div>
-      <p class="note">“Cash is cringe. This tip is a 2x waiting to happen.” 🧠</p>
     </section>
 
-    <footer>yo ;) <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@pranklord666</a></footer>
+    <footer><a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@pranklord666</a></footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/decimal.js@latest/decimal.min.js"></script>
   <script>
     const $ = s => document.querySelector(s)
-    const LS = { crypto:'TIPFI_CRYPTO', addr:'TIPFI_ADDR' }
+    const qs = new URLSearchParams(location.search)
+    const crypto = (qs.get('crypto') || 'ETH').toUpperCase()
+    const fiat   = (qs.get('fiat') || 'USD').toUpperCase()
+    const addr   = (qs.get('addr') || '').trim()
+    const bill   = parseFloat(qs.get('bill') || '0')
 
-    window.addEventListener('DOMContentLoaded', () => {
-      $('#crypto').value = localStorage.getItem(LS.crypto) || 'ETH'
-      $('#address').value = localStorage.getItem(LS.addr)  || ''
-      refreshTags()
-    })
+    $('#tagCrypto').textContent = crypto
+    $('#tagAddr').textContent   = addr ? `…${addr.slice(-6)}` : '—'
+    $('#billFiat').textContent  = bill > 0 ? `${bill.toFixed(2)} ${fiat}` : '—'
 
-    ;['crypto','address'].forEach(id => {
-      $(`#${id}`).addEventListener('input', refreshTags)
-      $(`#${id}`).addEventListener('change', refreshTags)
-    })
+    function refreshApprox() {
+      document.querySelectorAll('.pill').forEach(btn => {
+        const p = parseFloat(btn.dataset.p)
+        const approx = bill > 0 ? (bill * p / 100).toFixed(2) : '—'
+        btn.querySelector('.approx').textContent = `≈ ${approx} ${fiat}`
+      })
+    }
+    refreshApprox()
 
-    function refreshTags(){
-      const c = $('#crypto').value
-      const a = ($('#address').value || '').trim()
-      $('#tagCrypto').textContent = c
-      $('#tagAddr').textContent   = a ? `…${a.slice(-6)}` : '—'
+    async function getRate(crypto, fiat) {
+      const res = await fetch(`https://api.coinbase.com/v2/exchange-rates?currency=${crypto}`)
+      const json = await res.json()
+      const rate = parseFloat(json.data.rates[fiat])
+      if (!(rate > 0)) throw new Error('Invalid rate')
+      return rate
     }
 
-    $('#saveDefaults').addEventListener('click', () => {
-      localStorage.setItem(LS.crypto, $('#crypto').value)
-      localStorage.setItem(LS.addr,   ($('#address').value || '').trim())
-      alert('✨ Defaults saved on this device.')
+    async function renderForPercent(pct) {
+      if(!(bill > 0) || !addr) { alert('Missing bill or address.'); return }
+      const tipFiat = bill * pct / 100
+      $('#tipFiat').textContent = `${tipFiat.toFixed(2)} ${fiat}`
+
+      try {
+        const rate = await getRate(crypto, fiat)
+        const tipCrypto = tipFiat / rate
+
+        let uri
+        if (crypto === 'BTC') {
+          uri = `bitcoin:${addr}?amount=${tipCrypto.toFixed(8)}`
+        } else {
+          const wei = (tipCrypto * 1e18).toFixed(0)
+          uri = `ethereum:${addr}?value=${wei}`
+        }
+
+        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, margin: 1 })
+        $('#uriPreview').textContent = uri
+        $('#openWallet').href = uri
+        $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
+        $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} ${fiat}`)
+        $('#qrWrap').style.display = 'block'
+      } catch (e) {
+        console.error(e)
+        alert('Could not fetch live rate — please retry.')
+      }
+    }
+
+    document.querySelectorAll('.pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+        renderForPercent(parseFloat(btn.dataset.p))
+      })
     })
-    $('#clearDefaults').addEventListener('click', () => {
-      Object.values(LS).forEach(k => localStorage.removeItem(k))
-      alert('🧹 Cleared.')
-    })
 
-    function isLikelyEth(addr){ return /^0x[a-fA-F0-9]{40}$/.test(addr) }
-    function isLikelyBtc(addr){ return /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{20,}$/i.test(addr) }
-
-    $('#toGuest').addEventListener('click', () => {
-      const crypto = $('#crypto').value
-      const addr   = ($('#address').value || '').trim()
-      const bill   = parseFloat($('#bill').value)
-      const fiat = "USD"
-
-      if(!addr){ alert('⚠️ Please enter your wallet address.'); return }
-      if(!(bill > 0)){ alert('💸 Enter a bill amount greater than 0.'); return }
-
-      localStorage.setItem(LS.crypto, crypto)
-      localStorage.setItem(LS.addr, addr)
-
-      const params = new URLSearchParams({ crypto, fiat, addr, bill: bill.toString() })
-      location.href = `guest.html?${params.toString()}`
+    $('#applyCustom').addEventListener('click', () => {
+      const pct = parseFloat($('#customP').value)
+      if(!(pct >= 0)) { alert('Enter a valid percentage.'); return }
+      document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
+      renderForPercent(pct)
     })
   </script>
 </body>
