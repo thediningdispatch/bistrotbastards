@@ -140,9 +140,8 @@
       background: white;
       border: 1px solid #eee;
       border-radius: 16px;
-      padding: 18px;
       width: 280px;
-      height: 280px; /* ✅ force carré */
+      height: 280px;
       margin: 0 auto;
       box-shadow: 0 8px 20px rgba(0,0,0,.15);
     }
@@ -186,6 +185,7 @@
       <div class="title"><span>💸</span> TipFi Guest</div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
+        <span class="tag" id="tagFiat">—</span>
         <span class="tag" id="tagAddr">—</span>
       </div>
     </header>
@@ -231,27 +231,28 @@
     const $ = s => document.querySelector(s)
     const qs = new URLSearchParams(location.search)
     const crypto = (qs.get('crypto') || 'ETH').toUpperCase()
-    const fiat   = "USD"
+    const fiat   = (qs.get('fiat') || 'USD').toUpperCase()
     const addr   = (qs.get('addr') || '').trim()
     const bill   = parseFloat(qs.get('bill') || '0')
 
     $('#tagCrypto').textContent = crypto
+    $('#tagFiat').textContent   = fiat
     $('#tagAddr').textContent   = addr ? `…${addr.slice(-6)}` : '—'
-    $('#billFiat').textContent = bill > 0 ? `${bill.toFixed(2)} USD` : '—'
+    $('#billFiat').textContent  = bill > 0 ? `${bill.toFixed(2)} ${fiat}` : '—'
 
     function refreshApprox() {
       document.querySelectorAll('.pill').forEach(btn => {
         const p = parseFloat(btn.dataset.p)
         const approx = bill > 0 ? (bill * p / 100).toFixed(2) : '—'
-        btn.querySelector('.approx').textContent = `≈ ${approx} USD`
+        btn.querySelector('.approx').textContent = `≈ ${approx} ${fiat}`
       })
     }
     refreshApprox()
 
-    async function getRate(crypto) {
+    async function getRate(crypto, fiat) {
       const res = await fetch(`https://api.coinbase.com/v2/exchange-rates?currency=${crypto}`)
       const json = await res.json()
-      const rate = parseFloat(json.data.rates.USD)
+      const rate = parseFloat(json.data.rates[fiat])
       if (!(rate > 0)) throw new Error('Invalid rate')
       return rate
     }
@@ -259,10 +260,10 @@
     async function renderForPercent(pct) {
       if(!(bill > 0) || !addr) { alert('Missing bill or address.'); return }
       const tipFiat = bill * pct / 100
-      $('#tipFiat').textContent = `${tipFiat.toFixed(2)} USD`
+      $('#tipFiat').textContent = `${tipFiat.toFixed(2)} ${fiat}`
 
       try {
-        const rate = await getRate(crypto)
+        const rate = await getRate(crypto, fiat)
         const tipCrypto = tipFiat / rate
 
         let uri
@@ -277,7 +278,7 @@
         $('#uriPreview').textContent = uri
         $('#openWallet').href = uri
         $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
-        $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} USD`)
+        $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} ${fiat}`)
         $('#qrWrap').style.display = 'block'
       } catch (e) {
         console.error(e)
