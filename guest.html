@@ -236,21 +236,41 @@
     }
     refreshApprox()
 
+    async function getRate(crypto) {
+      const res = await fetch(`https://api.coinbase.com/v2/exchange-rates?currency=${crypto}`)
+      const json = await res.json()
+      const rate = parseFloat(json.data.rates.USD)
+      if (!(rate > 0)) throw new Error('Invalid rate')
+      return rate
+    }
+
     async function renderForPercent(pct) {
       if(!(bill > 0) || !addr) { alert('Missing bill or address.'); return }
       const tipFiat = bill * pct / 100
       $('#tipFiat').textContent = `${tipFiat.toFixed(2)} USD`
 
-      const uri = crypto === 'BTC'
-        ? `bitcoin:${addr}?amount=${(tipFiat / 65000).toFixed(8)}`
-        : `ethereum:${addr}?value=${(tipFiat / 3000 * 1e18).toFixed(0)}`
+      try {
+        const rate = await getRate(crypto)
+        const tipCrypto = tipFiat / rate
 
-      await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, margin: 1 })
-      $('#uriPreview').textContent = uri
-      $('#openWallet').href = uri
-      $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
-      $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} USD`)
-      $('#qrWrap').style.display = 'block'
+        let uri
+        if (crypto === 'BTC') {
+          uri = `bitcoin:${addr}?amount=${tipCrypto.toFixed(8)}`
+        } else {
+          const wei = (tipCrypto * 1e18).toFixed(0)
+          uri = `ethereum:${addr}?value=${wei}`
+        }
+
+        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, margin: 1 })
+        $('#uriPreview').textContent = uri
+        $('#openWallet').href = uri
+        $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
+        $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} USD`)
+        $('#qrWrap').style.display = 'block'
+      } catch (e) {
+        console.error(e)
+        alert('Could not fetch live rate — please retry.')
+      }
     }
 
     document.querySelectorAll('.pill').forEach(btn => {
