@@ -95,9 +95,7 @@
       background: #fff;
     }
 
-    textarea {
-      resize: none;
-    }
+    textarea { resize: none; }
 
     .emoji-row {
       display: flex;
@@ -114,9 +112,7 @@
       text-align: center;
     }
 
-    .emoji:active {
-      transform: scale(1.15);
-    }
+    .emoji:active { transform: scale(1.15); }
 
     .emoji.active {
       transform: scale(1.25);
@@ -205,7 +201,7 @@
   </div>
 
   <script>
-    // sélection d’émoji
+    // Sélection d’émoji
     document.querySelectorAll('.emoji').forEach(e=>{
       e.addEventListener('click',()=>{
         document.querySelectorAll('.emoji').forEach(el=>el.classList.remove('active'))
@@ -222,20 +218,34 @@
         return;
       }
 
-      try {
-        await navigator.clipboard.writeText(data.comment)
-      } catch(err) {
-        console.warn("Clipboard error:", err)
-      }
+      try { await navigator.clipboard.writeText(data.comment) } 
+      catch(err) { console.warn("Clipboard error:", err) }
+
+      // 🔗 Airtable integration
+      const airtableProxy = "https://hook.eu1.make.com/xxxxxxxxxxxxx"; // à remplacer ensuite
+      const baseId = "app0fNEVk0x3OZ1XB";
+      const tableName = "Podium_Feedbacks";
 
       try {
-        await fetch("https://script.google.com/macros/s/AKfycbxiNfEvjNf-9vdTTAo7AM8X1CfcwsiCWaCpZNFh5zO1Fw5gSXlYEc_mqC0lfKaBvSA3Iw/exec", {
+        const res = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
           method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
-        })
+          headers: {
+            "Authorization": `Bearer ${airtableToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            fields: {
+              Server: data.server,
+              Mood: data.mood,
+              Comments: data.comment,
+              Timestamp: new Date().toISOString()
+            }
+          })
+        });
+        const result = await res.json();
+        console.log("✅ Airtable response:", result);
       } catch(err) {
-        console.error(err)
+        console.error("❌ Airtable error:", err);
       }
 
       alert(`🔥 Votre avis est copié !\n\nAidez ${data.server} à remporter la bouteille 🍾\n👉 Collez votre message sur la page Google du Podium et cliquez sur “Publier” ⭐`)
