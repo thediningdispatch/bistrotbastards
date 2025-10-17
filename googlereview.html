@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>🍾 Podium Challenge</title>
   <style>
     :root {
@@ -11,79 +11,170 @@
       --text: #1a1a1a;
       --muted: #555;
       --accent: #ff70a6;
-      --card: rgba(255,255,255,0.85);
+      --card: rgba(255,255,255,0.9);
     }
-    *{box-sizing:border-box;}
-    html,body{margin:0;height:100%;}
-    body{
-      font-family:"Space Grotesk",Inter,system-ui,sans-serif;
-      background:linear-gradient(135deg,var(--bg1),var(--bg2));
-      display:flex;align-items:center;justify-content:center;
-      padding:30px;color:var(--text);
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
-    .wrap{
-      background:var(--card);
-      backdrop-filter:blur(10px);
-      border-radius:22px;
-      box-shadow:0 10px 40px rgba(0,0,0,.2);
-      padding:30px 24px;
-      max-width:420px;
-      width:100%;
-      text-align:center;
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: max(20px, env(safe-area-inset-top)) 16px 40px;
+      overflow-x: hidden;
     }
-    h1{font-size:26px;margin-bottom:8px;font-weight:800;}
-    .subtitle{color:var(--muted);font-size:15px;margin-bottom:18px;}
-    .steps{
-      background:rgba(255,255,255,.5);
-      border:1px dashed rgba(0,0,0,.1);
-      border-radius:16px;
-      padding:10px 12px;
-      font-size:15px;
-      text-align:left;
-      margin-bottom:20px;
+
+    .wrap {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.2);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      margin-top: 16px;
     }
-    .steps b{display:block;font-weight:700;margin-bottom:4px;}
-    .steps span{display:block;margin-left:6px;}
-    select,textarea{
-      width:100%;
-      border:none;
-      border-radius:14px;
-      padding:14px;
-      font-size:16px;
-      box-shadow:0 4px 10px rgba(0,0,0,.08);
-      margin-bottom:18px;
-      font-family:inherit;
+
+    h1 {
+      font-size: clamp(22px, 6vw, 26px);
+      margin: 0 0 8px;
+      font-weight: 800;
+      line-height: 1.2;
     }
-    textarea{resize:none;}
-    .emoji-row{display:flex;justify-content:space-between;margin:10px 0 20px;}
-    .emoji{font-size:40px;cursor:pointer;transition:transform .15s;flex:1;}
-    .emoji:hover{transform:scale(1.2);}
-    .emoji.active{transform:scale(1.3);}
-    button{
-      background:linear-gradient(135deg,#ffd6e0,#b8e1ff);
-      border:none;border-radius:14px;
-      padding:14px 18px;font-weight:700;font-size:17px;
-      cursor:pointer;width:100%;animation:pulse 1.6s infinite;
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 18px;
+      line-height: 1.4;
     }
+
+    .steps {
+      background: rgba(255,255,255,.6);
+      border: 1px dashed rgba(0,0,0,.1);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 15px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .steps b {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .steps span {
+      display: block;
+      margin-left: 6px;
+      margin-bottom: 3px;
+    }
+
+    select, textarea {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
+      margin-bottom: 18px;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .emoji-row {
+      display: flex;
+      justify-content: space-evenly;
+      margin: 10px 0 20px;
+      gap: 12px;
+    }
+
+    .emoji {
+      font-size: 40px;
+      cursor: pointer;
+      transition: transform .15s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .emoji:active {
+      transform: scale(1.15);
+    }
+
+    .emoji.active {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 5px gold);
+    }
+
+    button {
+      background: linear-gradient(135deg, #ffd6e0, #b8e1ff);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 17px;
+      cursor: pointer;
+      width: 100%;
+      animation: pulse 1.6s infinite;
+      margin-top: 8px;
+    }
+
     @keyframes pulse {
-      0%{box-shadow:0 0 0 0 rgba(255,112,166,.5);}
-      70%{box-shadow:0 0 0 12px rgba(255,112,166,0);}
-      100%{box-shadow:0 0 0 0 rgba(255,112,166,0);}
+      0% { box-shadow: 0 0 0 0 rgba(255,112,166,.5); }
+      70% { box-shadow: 0 0 0 10px rgba(255,112,166,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,112,166,0); }
     }
-    footer{margin-top:18px;font-size:13px;color:#666;}
+
+    footer {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    /* 🌙 Responsive iPhone tweaks */
+    @media (max-height: 700px) {
+      body { padding-top: 10px; }
+      .wrap { padding: 20px; }
+      h1 { font-size: 22px; }
+      .emoji { font-size: 32px; }
+    }
+
+    @media (max-width: 380px) {
+      .wrap { border-radius: 16px; }
+      textarea, select { font-size: 15px; }
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <h1>🍸 PODIUM CHALLENGE</h1>
-    <p class="subtitle">Aidez votre serveur à remporter la bouteille 🍾<br><small>(chaque avis compte 👀)</small></p>
+    <p class="subtitle">
+      Aidez votre serveur à remporter la bouteille 🍾<br>
+      <small>(chaque avis compte 👀)</small>
+    </p>
 
     <div class="steps">
       <b>Comment ça marche ?</b>
-      <span>1️⃣ Sélectionnez votre serveur préféré 🕺💃</span>
-      <span>2️⃣ Donnez une note et écrivez un petit mot ✍️</span>
-      <span>3️⃣ Votre message sera copié — vous n’aurez plus qu’à le coller sur Google ⭐</span>
+      <span>1️⃣ Choisissez votre serveur 🕺💃</span>
+      <span>2️⃣ Donnez une note et laissez un mot ✍️</span>
+      <span>3️⃣ Votre message est copié — vous n’aurez plus qu’à le coller sur Google ⭐</span>
       <p style="margin-top:8px;font-weight:600;color:var(--accent);text-align:center;">Rien à réécrire, tout est prêt 👇</p>
     </div>
 
@@ -107,11 +198,13 @@
       <button type="submit">Envoyer & soutenir 🏆</button>
     </form>
 
-    <footer>Merci pour votre avis — il aide notre équipe à briller 🫶</footer>
+    <footer>
+      Merci pour votre avis —<br>il aide notre équipe à briller 🫶
+    </footer>
   </div>
 
   <script>
-    // sélection de l’émoji
+    // sélection d’émoji
     document.querySelectorAll('.emoji').forEach(e=>{
       e.addEventListener('click',()=>{
         document.querySelectorAll('.emoji').forEach(el=>el.classList.remove('active'))
