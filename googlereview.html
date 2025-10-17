@@ -221,31 +221,17 @@
       try { await navigator.clipboard.writeText(data.comment) } 
       catch(err) { console.warn("Clipboard error:", err) }
 
-      // 🔗 Airtable integration
-      const airtableProxy = "https://hook.eu1.make.com/xxxxxxxxxxxxx"; // à remplacer ensuite
-      const baseId = "app0fNEVk0x3OZ1XB";
-      const tableName = "Podium_Feedbacks";
+      // 🔗 Envoi vers ton webhook Make
+      const webhookURL = "https://hook.eu2.make.com/nhx6dn3egqsqx4sg8knx2ycrbhpv7nof";
 
       try {
-        const res = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+        await fetch(webhookURL, {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${airtableToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            fields: {
-              Server: data.server,
-              Mood: data.mood,
-              Comments: data.comment,
-              Timestamp: new Date().toISOString()
-            }
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
         });
-        const result = await res.json();
-        console.log("✅ Airtable response:", result);
       } catch(err) {
-        console.error("❌ Airtable error:", err);
+        console.error("❌ Webhook error:", err);
       }
 
       alert(`🔥 Votre avis est copié !\n\nAidez ${data.server} à remporter la bouteille 🍾\n👉 Collez votre message sur la page Google du Podium et cliquez sur “Publier” ⭐`)
