@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>🦄 TipFi — Guest Portal</title>
-  <meta name="description" content="Pick your tip — we generate a crypto payment QR for your wallet.">
+  <title>🦄 TipFi — Guest Portal (Alpha Preview)</title>
+  <meta name="description" content="Alpha preview — shared on Reddit and X. Not audited; scanning wallet deeplinks/QRs from the web can be risky.">
   <style>
     :root {
       --bg:#f8f9ff;
@@ -16,6 +16,8 @@
       --accent2:#b8e1ff;
       --accent3:#ffd6e0;
       --shadow:rgba(180,180,200,.25);
+      --warn:#ffe8a3;
+      --warnBorder:#f5c65a;
     }
     * { box-sizing: border-box; }
     html,body { height: 100%; margin: 0; }
@@ -43,7 +45,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .title {
       font-weight: 800;
@@ -62,6 +64,20 @@
       padding: 6px 10px;
       border-radius: 999px;
     }
+
+    /* Alpha notice */
+    .notice {
+      border: 1px dashed var(--warnBorder);
+      background: linear-gradient(0deg, rgba(255,255,255,.9), rgba(255,255,255,.9)), var(--warn);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #3a3626;
+      margin-bottom: 18px;
+    }
+    .notice b { font-weight: 900; }
+    .notice a { color: #2b2b3a; text-decoration: underline; }
+    .notice .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
     .card {
       padding: 20px;
@@ -182,13 +198,24 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="title"><span>💸</span> TipFi Guest</div>
+      <div class="title"><span>💸</span> TipFi Guest <span style="font-size:12px;font-weight:700;opacity:.7;">ALPHA</span></div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
         <span class="tag" id="tagFiat">—</span>
         <span class="tag" id="tagAddr">—</span>
       </div>
     </header>
+
+    <!-- Short, techy alpha preview banner -->
+    <div class="notice" role="note" aria-label="alpha preview">
+      <b>Alpha Preview.</b> This prototype was shared on
+      <a href="https://www.reddit.com/user/Square_Ad_7551/" target="_blank" rel="noopener noreferrer">Reddit</a>
+      and
+      <a href="https://x.com/pranklord666" target="_blank" rel="noopener noreferrer">X</a>.
+      It’s <b>not audited</b> or production-ready. Scanning wallet deeplinks/QRs from the web can be risky —
+      use a burner wallet or very small amounts only. We’ll harden it soon
+      (<span class="mono">domain-bound URIs</span>, <span class="mono">checksum</span>, <span class="mono">allowlists</span>, testnet-first).
+    </div>
 
     <section class="card">
       <div class="hint">Select your tip percentage 💖</div>
@@ -212,9 +239,11 @@
 
       <div class="qrWrap" id="qrWrap">
         <div class="qrBox" id="qrBox"><canvas id="qrCanvas"></canvas></div>
-        <div class="hint-scan">After scanning, your wallet may take a few seconds to show the payment — please wait 🕒</div>
+        <div class="hint-scan">
+          Using live rates (Coinbase API). Amounts are best-effort — always verify in your wallet before sending.
+        </div>
         <div class="actions">
-          <a class="btn" id="openWallet" target="_blank">Open Wallet</a>
+          <a class="btn" id="openWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
           <button class="btn ghost" id="copyLink">Copy Link</button>
           <button class="btn ghost" id="copyAmount">Copy Amount</button>
         </div>
@@ -222,7 +251,11 @@
       </div>
     </section>
 
-    <footer><a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@pranklord666</a></footer>
+    <footer>
+      <a href="https://www.reddit.com/user/Square_Ad_7551/" target="_blank" rel="noopener noreferrer">Reddit: u/Square_Ad_7551</a>
+      &nbsp;•&nbsp;
+      <a href="https://x.com/pranklord666" target="_blank" rel="noopener noreferrer">X: @pranklord666</a>
+    </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
