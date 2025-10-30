@@ -4,101 +4,166 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bistrot Bastards — Open Hospitality Tools</title>
-  <meta name="description" content="Bistrot Bastards — open-source tools rethinking tipping and team motivation in hospitality.">
+  <meta name="description" content="Bistrot Bastards — outils open source pour l'hospitalité en développement." />
   <style>
     :root {
-      --bg: #e3e3e3;
-      --panel: rgba(255,255,255,0.85);
-      --text: #1a1a1a;
-      --muted: #555;
-      --accent: #ffc000;
-      --border: #bdbdbd;
+      --bg-light: #d9d9d9;
+      --bg-dark: #c3c3c3;
+      --panel-light: #f5f5f5;
+      --panel-dark: #6f6f6f;
+      --text: #000;
+      --muted: #333;
+      --highlight: #ffffff;
+      --shadow: #7d7d7d;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     html, body {
       height: 100%;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
+      font-family: "Chicago", "Charcoal", "Geneva", "Segoe UI", sans-serif;
+      background:
+        linear-gradient(90deg, var(--bg-light) 0, var(--bg-light) 50%, var(--bg-dark) 50%, var(--bg-dark) 100%);
+      background-size: 8px 8px;
       color: var(--text);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px;
+      gap: 16px;
+    }
+
+    .desktop {
+      width: min(960px, 100%);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .menu-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 20px;
+      padding: 6px 12px;
+      background: linear-gradient(#6d6d6d, #4c4c4c);
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+    }
+
+    .menu-item {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .menu-apple {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
+    .window {
+      margin: 24px auto 0;
+      width: min(520px, 95%);
+      background: var(--panel-light);
+      border: 1px solid #000;
+      box-shadow:
+        inset 1px 1px var(--highlight),
+        inset -1px -1px var(--shadow);
+    }
+
+    .title-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: linear-gradient(#898989, #5c5c5c);
+      color: #fff;
+      border-bottom: 1px solid #000;
+      box-shadow: inset 1px 1px #bbb, inset -1px -1px #333;
+    }
+
+    .window-controls {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .window-controls span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+    }
+
+    .title-text {
+      flex: 1;
+      font-weight: bold;
+      letter-spacing: 0.4px;
       text-align: center;
-      flex-direction: column;
-      gap: 28px;
-      padding: 32px 0;
     }
 
-    .wrap {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      max-width: 480px;
-      width: 90%;
-      padding: 24px;
-      box-shadow: inset 1px 1px #fff, inset -1px -1px #aaa;
-      backdrop-filter: blur(4px);
-      animation: fadein 0.5s ease;
-    }
-
-    @keyframes fadein {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
+    .window-body {
+      padding: 22px 26px 28px;
+      text-align: center;
     }
 
     .hero-logo {
-      width: min(60vw, 360px);
+      width: min(220px, 60vw);
       height: auto;
       display: block;
-      margin: 0 auto;
-      opacity: 0.95;
-    }
-
-    @media (max-width: 480px) {
-      .hero-logo {
-        width: min(80vw, 260px);
-      }
+      margin: 0 auto 18px;
+      image-rendering: pixelated;
     }
 
     p {
       font-size: 14px;
       color: var(--muted);
       line-height: 1.5;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .btns {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin: 20px 0;
+      gap: 12px;
+      margin: 22px 0;
     }
 
     a.btn {
       display: block;
       padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
+      border: 2px solid #000;
+      background: var(--panel-light);
       color: #000;
-      background: #fff;
       font-size: 14px;
       text-decoration: none;
-      transition: all .2s ease;
-      box-shadow: 0 2px 3px rgba(0,0,0,0.06);
+      box-shadow:
+        inset 1px 1px var(--highlight),
+        inset -1px -1px var(--shadow),
+        2px 2px 0 #000;
+      transition: none;
     }
 
     a.btn:hover {
-      background: var(--accent);
-      border-color: #000;
-      transform: translateY(-1px);
-      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+      box-shadow:
+        inset -1px -1px var(--highlight),
+        inset 1px 1px var(--shadow),
+        2px 2px 0 #000;
     }
 
     footer {
       font-size: 12px;
       color: var(--muted);
-      border-top: 1px solid var(--border);
+      border-top: 1px solid #000;
       margin-top: 18px;
       padding-top: 10px;
       line-height: 1.4;
@@ -107,37 +172,68 @@
     footer a {
       color: #000;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     footer a:hover {
-      color: var(--accent);
       text-decoration: underline;
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 16px;
+      }
+
+      .menu-bar {
+        font-size: 12px;
+        gap: 12px;
+      }
+
+      .window {
+        width: 100%;
+      }
+
+      .window-body {
+        padding: 18px;
+      }
     }
   </style>
 </head>
-
 <body>
-  <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
-  <div class="wrap">
-    <p>
-      Open-source tools to make hospitality more transparent, fun, and fair.<br>
-      From crypto tipping to friendly service challenges.
-    </p>
-
-    <div class="btns">
-      <a class="btn" href="waiter.html">Crypto Tipping</a>
-      <a class="btn" href="googlereview.html">Podium Challenge</a>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">open source tools for hospitality workers</span>
     </div>
 
-    <p style="font-size:13px;">
-      Licensed under AGPL-3.0 — reuse allowed if your version stays open.<br>
-      Community feedback and UX ideas are shared on Reddit.
-    </p>
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="title-text" aria-hidden="true">&nbsp;</span>
+      </div>
+      <div class="window-body">
+        <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
+        <p>Tout ce que tu vois ici est une version test encore en développement.</p>
 
-    <footer>
-      <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a>
-    </footer>
+        <div class="btns">
+          <a class="btn" href="waiter.html">Crypto Tipping</a>
+          <a class="btn" href="googlereview.html">Podium Challenge</a>
+        </div>
+
+        <p style="font-size:13px;">
+          Licensed under AGPL-3.0 — reuse allowed if your version stays open.<br>
+          Community feedback and UX ideas are shared on Reddit.
+        </p>
+
+        <footer>
+          <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a>
+        </footer>
+      </div>
+    </div>
   </div>
 </body>
 </html>
