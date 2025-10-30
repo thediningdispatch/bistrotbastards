@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Blockchain Payments — Guest</title>
-  <meta name="description" content="Select your tip, scan the QR, and send your crypto payment securely.">
+  <meta name="description" content="Select your tip, scan the QR, and send your crypto payment securely." />
   <style>
     :root {
       --bg-light: #d9d9d9;
@@ -125,6 +126,16 @@
       font-size: 13px;
     }
 
+    .beta-note {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      text-align: center;
+    }
+
     .hint {
       font-size: 13px;
       color: var(--muted);
@@ -141,9 +152,7 @@
       .percent-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
-    button, input, select {
-      font-family: inherit;
-    }
+    button, input, select { font-family: inherit; }
 
     .pill {
       display: flex;
@@ -217,10 +226,7 @@
         2px 2px 0 #000;
     }
 
-    .btn.primary {
-      background: var(--panel-mid);
-      font-weight: bold;
-    }
+    .btn.primary { background: var(--panel-mid); font-weight: bold; }
 
     .summary {
       display: grid;
@@ -279,11 +285,7 @@
       margin-top: 6px;
     }
 
-    .divider {
-      height: 1px;
-      background: #000;
-      margin: 24px 0;
-    }
+    .divider { height: 1px; background: #000; margin: 24px 0; }
 
     footer {
       font-size: 12px;
@@ -315,16 +317,13 @@
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item"><strong>Finder</strong></span>
-      <span class="menu-item">File Edit View Special</span>
+      <span class="menu-item">open source tools for hospitality workers</span>
     </div>
 
     <div class="window">
       <div class="title-bar">
         <div class="window-controls">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </div>
         <span class="title-text">Guest Tipping Console</span>
       </div>
@@ -337,6 +336,8 @@
             <span class="tag" id="tagAddr">—</span>
           </div>
         </header>
+
+        <p class="beta-note">This console is a beta build that is still being polished.</p>
 
         <section>
           <div class="hint">Select your tip percentage</div>
@@ -408,33 +409,20 @@
     }
     refreshApprox()
 
-    async function getRate(crypto, fiat) {
-      const res = await fetch(`https://api.coinbase.com/v2/exchange-rates?currency=${crypto}`)
-      const json = await res.json()
-      const rate = parseFloat(json.data.rates[fiat])
-      if (!(rate > 0)) throw new Error('Invalid rate')
-      return rate
-    }
-
-    async function renderForPercent(pct) {
-      if(!(bill > 0) || !addr) { alert('Missing bill or address.'); return }
-      const tipFiat = bill * pct / 100
+    async function renderForPercent(p) {
+      const tipFiat = bill * p / 100
       $('#tipFiat').textContent = `${tipFiat.toFixed(2)} ${fiat}`
 
       try {
-        const rate = await getRate(crypto, fiat)
+        const rateRes = await fetch(`https://api.coinbase.com/v2/exchange-rates?currency=${crypto}`)
+        const rateJson = await rateRes.json()
+        const rate = parseFloat(rateJson.data.rates[fiat])
         const tipCrypto = tipFiat / rate
+        const uri = `${crypto.toLowerCase()}:${addr}?amount=${tipCrypto}`
 
-        let uri
-        if (crypto === 'BTC') {
-          uri = `bitcoin:${addr}?amount=${tipCrypto.toFixed(8)}`
-        } else {
-          const wei = BigInt(Math.floor(tipCrypto * 1e18)).toString()
-          uri = `ethereum:${addr}?value=${wei}`
-        }
-
-        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 260, height: 260, margin: 1 })
         $('#uriPreview').textContent = uri
+        QRCode.toCanvas($('#qrCanvas'), uri, { width: 256 })
+
         $('#openWallet').href = uri
         $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)
         $('#copyAmount').onclick = () => navigator.clipboard.writeText(`${tipFiat.toFixed(2)} ${fiat}`)
@@ -455,7 +443,7 @@
 
     $('#applyCustom').addEventListener('click', () => {
       const pct = parseFloat($('#customP').value)
-      if(!(pct >= 0)) { alert('Enter a valid percentage.'); return }
+      if (!(pct >= 0)) { alert('Enter a valid percentage.'); return }
       document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
       renderForPercent(pct)
     })

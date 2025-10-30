@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Blockchain Payments</title>
-  <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto.">
+  <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto." />
   <style>
     :root {
       --bg-light: #d9d9d9;
@@ -94,9 +95,7 @@
 
     .title-text { flex: 1; font-weight: bold; letter-spacing: 0.4px; text-align: center; }
 
-    .window-body {
-      padding: 22px 26px 28px;
-    }
+    .window-body { padding: 22px 26px 28px; }
 
     header.window-header {
       display: flex;
@@ -105,17 +104,9 @@
       margin-bottom: 24px;
     }
 
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
+    .title { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
     .tag {
       padding: 3px 10px;
@@ -125,11 +116,17 @@
       font-size: 13px;
     }
 
-    .card {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+    .beta-note {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      text-align: center;
     }
+
+    .card { display: flex; flex-direction: column; gap: 18px; }
 
     label {
       font-size: 12px;
@@ -149,11 +146,7 @@
       font-size: 14px;
     }
 
-    .row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
 
     .field {
       flex: 1;
@@ -195,16 +188,9 @@
         2px 2px 0 #000;
     }
 
-    .btn.primary {
-      background: var(--panel-mid);
-      font-weight: bold;
-    }
+    .btn.primary { background: var(--panel-mid); font-weight: bold; }
 
-    .divider {
-      height: 1px;
-      background: #000;
-      margin: 24px 0;
-    }
+    .divider { height: 1px; background: #000; margin: 24px 0; }
 
     footer {
       font-size: 12px;
@@ -213,12 +199,7 @@
       text-align: center;
     }
 
-    footer a {
-      color: inherit;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
+    footer a { color: inherit; text-decoration: none; font-weight: bold; }
     footer a:hover { text-decoration: underline; }
 
     @media (max-width: 540px) {
@@ -242,13 +223,10 @@
 
     <div class="window">
       <div class="title-bar">
-        <div class="window-controls">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        <div class="window-controls"><span></span><span></span><span></span></div>
         <span class="title-text">Waiter Setup Console</span>
       </div>
+
       <div class="window-body">
         <header class="window-header">
           <div class="title">BLOCKCHAIN PAYMENTS</div>
@@ -258,6 +236,8 @@
             <span class="tag" id="tagAddr">—</span>
           </div>
         </header>
+
+        <p class="beta-note">This setup console is a beta build that is still being polished.</p>
 
         <section class="card">
           <div class="row">
@@ -280,11 +260,11 @@
           <div class="row">
             <div class="field">
               <label for="bill">Bill amount</label>
-              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount">
+              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
             </div>
             <div class="field">
               <label for="address">Wallet address</label>
-              <input id="address" placeholder="Enter your wallet address">
+              <input id="address" placeholder="Enter your wallet address" />
             </div>
           </div>
 
@@ -300,7 +280,7 @@
           <p>
             <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a> —
             Open-source under the
-            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPL-3.0 License</a>.<br>
+            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPL-3.0 License</a>.<br />
             Feel free to reuse or remix this code as long as your project stays open-source too 💛
           </p>
         </footer>
@@ -310,27 +290,27 @@
 
   <script>
     const $ = s => document.querySelector(s)
-    const LS = { crypto:'TIPFI_CRYPTO', addr:'TIPFI_ADDR', fiat:'TIPFI_FIAT' }
+    const LS = { crypto: 'TIPFI_CRYPTO', addr: 'TIPFI_ADDR', fiat: 'TIPFI_FIAT' }
 
     window.addEventListener('DOMContentLoaded', () => {
       $('#crypto').value = localStorage.getItem(LS.crypto) || 'ETH'
-      $('#address').value = localStorage.getItem(LS.addr)  || ''
+      $('#address').value = localStorage.getItem(LS.addr) || ''
       $('#fiat').value = localStorage.getItem(LS.fiat) || 'USD'
       refreshTags()
     })
 
-    ;['crypto','address','fiat'].forEach(id => {
+    ;['crypto', 'address', 'fiat'].forEach(id => {
       $(`#${id}`).addEventListener('input', refreshTags)
       $(`#${id}`).addEventListener('change', refreshTags)
     })
 
-    function refreshTags(){
+    function refreshTags() {
       const c = $('#crypto').value
       const f = $('#fiat').value
       const a = ($('#address').value || '').trim()
       $('#tagCrypto').textContent = c
-      $('#tagFiat').textContent   = f
-      $('#tagAddr').textContent   = a ? `…${a.slice(-6)}` : '—'
+      $('#tagFiat').textContent = f
+      $('#tagAddr').textContent = a ? `…${a.slice(-6)}` : '—'
     }
 
     $('#saveDefaults').addEventListener('click', () => {
@@ -347,12 +327,18 @@
 
     $('#toGuest').addEventListener('click', () => {
       const crypto = $('#crypto').value
-      const addr   = ($('#address').value || '').trim()
-      const bill   = parseFloat($('#bill').value)
-      const fiat   = $('#fiat').value
+      const addr = ($('#address').value || '').trim()
+      const bill = parseFloat($('#bill').value)
+      const fiat = $('#fiat').value
 
-      if(!addr){ alert('Please enter your wallet address.'); return }
-      if(!(bill > 0)){ alert('Enter a bill amount greater than 0.'); return }
+      if (!addr) {
+        alert('Please enter your wallet address.')
+        return
+      }
+      if (!(bill > 0)) {
+        alert('Enter a bill amount greater than 0.')
+        return
+      }
 
       localStorage.setItem(LS.crypto, crypto)
       localStorage.setItem(LS.fiat, fiat)

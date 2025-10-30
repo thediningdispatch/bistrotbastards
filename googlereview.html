@@ -1,243 +1,322 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>🍾 Podium Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>🍾 Podium Challenge — Google Reviews</title>
+  <meta name="description" content="Draft your Google review with this Podium Challenge beta build." />
   <style>
     :root {
-      --bg1:#f8f8f8;
-      --bg2:#f0f0f0;
-      --text:#222;
-      --muted:#666;
-      --accent:#FFC000;
-      --accentSoft:linear-gradient(135deg,#fff5bf,#ffe680);
-      --card:rgba(255,255,255,0.9);
-      --shadow:rgba(0,0,0,0.05);
+      --bg-light: #d9d9d9;
+      --bg-dark: #c3c3c3;
+      --panel-light: #f5f5f5;
+      --panel-dark: #6f6f6f;
+      --panel-mid: #e0e0e0;
+      --text: #000;
+      --muted: #303030;
+      --highlight: #ffffff;
+      --shadow: #7d7d7d;
     }
 
-    *{box-sizing:border-box;}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html,body{
-      margin:0;padding:0;
-      font-family:"Space Grotesk",Inter,system-ui,-apple-system,sans-serif;
-      background:linear-gradient(180deg,var(--bg1),var(--bg2));
-      color:var(--text);
-      min-height:100vh;
-      -webkit-font-smoothing:antialiased;
-    }
-
-    body{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      padding:max(24px,env(safe-area-inset-top)) 16px 40px;
+    html, body {
+      height: 100%;
+      font-family: "Chicago", "Charcoal", "Geneva", "Segoe UI", sans-serif;
+      background: linear-gradient(90deg, var(--bg-light) 0, var(--bg-light) 50%, var(--bg-dark) 50%, var(--bg-dark) 100%);
+      background-size: 8px 8px;
+      color: var(--text);
     }
 
-    .wrap{
-      background:var(--card);
-      border:1px solid rgba(0,0,0,0.08);
-      border-radius:22px;
-      box-shadow:0 12px 40px var(--shadow);
-      backdrop-filter:blur(12px);
-      padding:28px 26px;
-      width:100%;
-      max-width:420px;
-      text-align:center;
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px;
+      gap: 16px;
     }
 
-    h1{
-      font-size:clamp(22px,6vw,26px);
-      margin:0 0 8px;
-      font-weight:800;
-      background:var(--accentSoft);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .desktop {
+      width: min(960px, 100%);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .subtitle{
-      color:var(--muted);
-      font-size:15px;
-      margin-bottom:18px;
-      line-height:1.4;
+    .menu-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 6px 12px;
+      background: linear-gradient(#6d6d6d, #4c4c4c);
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
     }
 
-    .steps{
-      background:rgba(255,255,255,0.6);
-      border:1px dashed rgba(0,0,0,0.1);
-      border-radius:16px;
-      padding:14px 16px;
-      font-size:15px;
-      text-align:left;
-      margin-bottom:20px;
-    }
-    .steps b{
-      display:block;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-    .steps span{
-      display:block;
-      margin-left:6px;
-      margin-bottom:3px;
-    }
-    .steps p{
-      margin-top:8px;
-      font-weight:600;
-      color:var(--accent);
-      text-align:center;
+    .menu-item { display: inline-flex; gap: 6px; align-items: center; }
+    .menu-apple { font-size: 18px; margin-right: 8px; }
+
+    .window {
+      margin: 24px auto 0;
+      width: min(520px, 95%);
+      background: var(--panel-light);
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
     }
 
-    select,textarea{
-      width:100%;
-      border:none;
-      border-radius:14px;
-      padding:14px;
-      font-size:16px;
-      box-shadow:0 4px 10px rgba(0,0,0,.05);
-      margin-bottom:18px;
-      font-family:inherit;
-      background:rgba(255,255,255,0.85);
-      border:1px solid rgba(0,0,0,0.05);
-      transition:box-shadow .2s,border-color .2s;
-    }
-    select:focus,textarea:focus{
-      outline:none;
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(255,192,0,.2);
+    .title-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: linear-gradient(#898989, #5c5c5c);
+      color: #fff;
+      border-bottom: 1px solid #000;
+      box-shadow: inset 1px 1px #bbb, inset -1px -1px #333;
     }
 
-    textarea{resize:none;}
-
-    .emoji-row{
-      display:flex;
-      justify-content:space-evenly;
-      margin:10px 0 20px;
-      gap:12px;
+    .window-controls { display: inline-flex; gap: 4px; }
+    .window-controls span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
     }
 
-    .emoji{
-      font-size:38px;
-      cursor:pointer;
-      transition:transform .15s,filter .15s;
-      flex:1;
-      text-align:center;
-    }
-    .emoji:hover{transform:scale(1.1);}
-    .emoji.active{
-      transform:scale(1.25);
-      filter:drop-shadow(0 0 6px rgba(255,192,0,.8));
+    .title-text { flex: 1; font-weight: bold; letter-spacing: 0.4px; text-align: center; }
+
+    .window-body { padding: 22px 26px 28px; }
+
+    header.window-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; text-align: center; }
+
+    .hero { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
+    .subtitle { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+    .beta-note {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      text-align: center;
     }
 
-    button{
-      background:var(--accentSoft);
-      border:none;
-      border-radius:14px;
-      padding:14px 18px;
-      font-weight:700;
-      font-size:17px;
-      cursor:pointer;
-      width:100%;
-      color:#000;
-      box-shadow:0 6px 15px rgba(255,192,0,0.25);
-      transition:filter .15s;
-    }
-    button:hover{filter:brightness(1.05);}
-
-    footer{
-      margin-top:20px;
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.4;
+    .steps {
+      border: 1px solid #000;
+      background: var(--panel-mid);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
-    @media(max-height:700px){
-      .wrap{padding:20px;}
-      h1{font-size:22px;}
-      .emoji{font-size:32px;}
+    .steps b { display: block; margin-bottom: 6px; }
+    .steps ul { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .steps li { display: flex; gap: 8px; align-items: baseline; }
+    .steps li span { font-weight: bold; }
+    .steps footer { margin-top: 10px; font-size: 12px; text-align: center; color: var(--muted); }
+
+    form { display: flex; flex-direction: column; gap: 12px; }
+    label { font-size: 12px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--muted); }
+
+    select, textarea {
+      width: 100%;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      padding: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      resize: none;
+    }
+
+    select:focus, textarea:focus {
+      outline: none;
+      box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+    }
+
+    .emoji-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 6px 0 4px;
+    }
+
+    .emoji {
+      flex: 1;
+      text-align: center;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      padding: 10px 0;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .emoji:hover { box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow); }
+    .emoji.active { background: var(--panel-mid); font-weight: bold; }
+
+    .hint-inline { font-size: 11px; color: var(--muted); text-align: center; }
+
+    .btn-primary {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 11px 14px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow), 2px 2px 0 #000;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      color: inherit;
+      text-decoration: none;
+      transition: none;
+      width: 100%;
+    }
+
+    .btn-primary:hover { box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), 2px 2px 0 #000; }
+
+    .divider { height: 1px; background: #000; margin: 24px 0 14px; }
+
+    footer.page-footer {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    footer.page-footer a { color: inherit; font-weight: bold; text-decoration: none; }
+    footer.page-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 540px) {
+      body { padding: 16px; }
+      .menu-bar { font-size: 12px; gap: 12px; }
+      .window { width: 100%; margin-top: 12px; }
+      .window-body { padding: 18px; }
+      .emoji { font-size: 24px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>🍸 PODIUM CHALLENGE</h1>
-    <p class="subtitle">
-      Aidez votre serveur à remporter la bouteille 🍾<br>
-      <small>(chaque avis compte 👀)</small>
-    </p>
-
-    <div class="steps">
-      <b>Comment ça marche ?</b>
-      <span>1️⃣ Choisissez votre serveur 🕺💃</span>
-      <span>2️⃣ Donnez une note et laissez un mot ✍️</span>
-      <span>3️⃣ Votre message est copié — vous n’aurez plus qu’à le coller sur Google ⭐</span>
-      <p>Rien à réécrire, tout est prêt 👇</p>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">open source tools for hospitality workers</span>
     </div>
 
-    <form id="reviewForm">
-      <select name="server" required>
-        <option value="">Qui vous a servi ?</option>
-        <option value="Jules">🕺 Jules</option>
-        <option value="Chloé">💃 Chloé</option>
-      </select>
-
-      <p style="margin:8px 0 4px;font-weight:500;">Comment s’est passée votre expérience ?</p>
-      <div class="emoji-row" id="moodRow">
-        <div class="emoji" data-mood="🥲">🥲</div>
-        <div class="emoji" data-mood="😋">😋</div>
-        <div class="emoji" data-mood="🤩">🤩</div>
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Google Review Copier</span>
       </div>
-      <input type="hidden" name="mood" id="moodInput" />
 
-      <textarea name="comment" rows="3" placeholder="Partagez un petit mot sur votre expérience ✍️"></textarea>
+      <div class="window-body">
+        <header class="window-header">
+          <div class="hero">🍸 PODIUM CHALLENGE</div>
+          <p class="subtitle">
+            Help your server win the bottle 🍾<br />
+            <small>(every review matters 👀)</small>
+          </p>
+        </header>
 
-      <button type="submit">Envoyer & soutenir 🏆</button>
-    </form>
+        <p class="beta-note">This review helper is a beta build that is still being polished.</p>
 
-    <footer>
-      Merci pour votre avis — il aide notre équipe à briller 💛
-    </footer>
+        <section class="steps">
+          <b>How it works</b>
+          <ul>
+            <li><span>1️⃣</span><div>Pick your server 🕺💃</div></li>
+            <li><span>2️⃣</span><div>Select a mood and share a note ✍️</div></li>
+            <li><span>3️⃣</span><div>Paste it on Google and post ⭐</div></li>
+          </ul>
+          <footer>No rewrites needed — it is ready to post 👇</footer>
+        </section>
+
+        <form id="reviewForm">
+          <div>
+            <label for="serverSelect">Server</label>
+            <select id="serverSelect" name="server" required>
+              <option value="">Who looked after you?</option>
+              <option value="Jules">🕺 Jules</option>
+              <option value="Chloe">💃 Chloe</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Experience</label>
+            <div class="emoji-row" id="moodRow">
+              <div class="emoji" data-mood="🥲">🥲</div>
+              <div class="emoji" data-mood="😋">😋</div>
+              <div class="emoji" data-mood="🤩">🤩</div>
+            </div>
+            <p class="hint-inline">Tap the emoji that matches your vibe</p>
+          </div>
+
+          <input type="hidden" name="mood" id="moodInput" />
+
+          <div>
+            <label for="commentField">Your message</label>
+            <textarea id="commentField" name="comment" rows="4" placeholder="Share a quick note about your experience ✍️"></textarea>
+          </div>
+
+          <button class="btn-primary" type="submit">Send & support 🏆</button>
+        </form>
+
+        <div class="divider"></div>
+
+        <footer class="page-footer">
+          Thank you for your review — it helps our team shine 💛
+        </footer>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Sélection d’émoji
-    document.querySelectorAll('.emoji').forEach(e=>{
-      e.addEventListener('click',()=>{
-        document.querySelectorAll('.emoji').forEach(el=>el.classList.remove('active'))
-        e.classList.add('active')
-        document.getElementById('moodInput').value=e.dataset.mood
-      })
-    })
+    document.querySelectorAll('.emoji').forEach(emoji => {
+      emoji.addEventListener('click', () => {
+        document.querySelectorAll('.emoji').forEach(el => el.classList.remove('active'));
+        emoji.classList.add('active');
+        document.getElementById('moodInput').value = emoji.dataset.mood;
+      });
+    });
 
-    document.getElementById('reviewForm').addEventListener('submit', async (ev)=>{
-      ev.preventDefault()
-      const data = Object.fromEntries(new FormData(ev.target).entries())
-      if(!data.server || !data.mood || !data.comment){
-        alert("Veuillez compléter tous les champs ✨");
+    document.getElementById('reviewForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const data = Object.fromEntries(new FormData(ev.target).entries());
+      if (!data.server || !data.mood || !data.comment) {
+        alert('Please complete every field ✨');
         return;
       }
 
-      try { await navigator.clipboard.writeText(data.comment) } 
-      catch(err) { console.warn("Clipboard error:", err) }
+      try { await navigator.clipboard.writeText(data.comment); }
+      catch (err) { console.warn('Clipboard error:', err); }
 
-      // 🔗 Envoi vers ton webhook Make
-      const webhookURL = "https://hook.eu2.make.com/nhx6dn3egqsqx4sg8knx2ycrbhpv7nof";
+      const webhookURL = 'https://hook.eu2.make.com/nhx6dn3egqsqx4sg8knx2ycrbhpv7nof';
 
       try {
         await fetch(webhookURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-      } catch(err) {
-        console.error("❌ Webhook error:", err);
+      } catch (err) {
+        console.error('❌ Webhook error:', err);
       }
 
-      alert(`🔥 Votre avis est copié !\n\nAidez ${data.server} à remporter la bouteille 🍾\n👉 Collez votre message sur la page Google du Podium et cliquez sur “Publier” ⭐`)
-      window.location.href = "https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4"
-    })
+      alert(`🔥 Your review is copied!\n\nHelp ${data.server} win the bottle 🍾\n👉 Paste your message on the Podium Google page and hit "Publish" ⭐`);
+      window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
+    });
   </script>
 </body>
 </html>

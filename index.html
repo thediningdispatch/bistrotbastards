@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Bistrot Bastards — Open Hospitality Tools</title>
-  <meta name="description" content="Bistrot Bastards — open-source tools rethinking tipping and team motivation in hospitality." />
+  <meta name="description" content="Bistrot Bastards — open hospitality tools in active development." />
   <style>
     :root {
       --bg-light: #d9d9d9;
@@ -131,6 +132,15 @@
       margin-bottom: 18px;
     }
 
+    .beta-note {
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
     .btns {
       display: flex;
       flex-direction: column;
@@ -218,11 +228,11 @@
       </div>
       <div class="window-body">
         <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
+        <p class="beta-note">Everything here is a beta build that is still under active development.</p>
         <p>
           Open-source tools to make hospitality more transparent, fun, and fair.<br>
           From crypto tipping to friendly service challenges.
         </p>
-
         <div class="btns">
           <a class="btn" href="waiter.html">Crypto Tipping</a>
           <a class="btn" href="googlereview.html">Podium Challenge</a>
