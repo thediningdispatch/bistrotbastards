@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Bistrot Bastards — Open Hospitality Tools</title>
   <meta name="description" content="Bistrot Bastards — outils open source pour l'hospitalité en développement." />
   <style>
@@ -131,6 +132,15 @@
       margin-bottom: 18px;
     }
 
+    .beta-note {
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
     .btns {
       display: flex;
       flex-direction: column;
@@ -217,7 +227,7 @@
       </div>
       <div class="window-body">
         <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
-        <p>Tout ce que tu vois ici est une version test encore en développement.</p>
+        <p class="beta-note">Tout ce que tu vois ici est une version test encore en développement.</p>
 
         <div class="btns">
           <a class="btn" href="waiter.html">Crypto Tipping</a>

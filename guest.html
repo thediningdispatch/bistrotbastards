@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Blockchain Payments — Guest</title>
   <meta name="description" content="Select your tip, scan the QR, and send your crypto payment securely." />
   <style>
@@ -123,6 +124,16 @@
       background: var(--panel-mid);
       box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
       font-size: 13px;
+    }
+
+    .beta-note {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      text-align: center;
     }
 
     .hint {
@@ -336,6 +347,8 @@
             <span class="tag" id="tagAddr">—</span>
           </div>
         </header>
+
+        <p class="beta-note">Cette console est une version test encore en développement.</p>
 
         <section>
           <div class="hint">Select your tip percentage</div>

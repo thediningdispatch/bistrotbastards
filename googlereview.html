@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>🍾 Podium Challenge — Avis Google</title>
   <meta name="description" content="Prépare ton avis Google avec cette version test du Podium Challenge." />
   <style>
@@ -95,6 +96,16 @@
     .title-text { flex: 1; font-weight: bold; letter-spacing: 0.4px; text-align: center; }
 
     .window-body { padding: 22px 26px 28px; }
+
+    .beta-note {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+      font-weight: bold;
+      text-align: center;
+    }
 
     header.window-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; text-align: center; }
 
@@ -243,6 +254,8 @@
             <small>(chaque avis compte 👀)</small>
           </p>
         </header>
+
+        <p class="beta-note">Cette aide à l'avis est une version test encore en développement.</p>
 
         <section class="steps">
           <b>Comment ça marche ?</b>
