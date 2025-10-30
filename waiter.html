@@ -3,104 +3,133 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>🦄 TipFi — Waiter Portal</title>
+  <title>Blockchain Payments</title>
   <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto.">
   <style>
-    :root{
-      --bg:#f8f9ff;
-      --card:#ffffffcc;
-      --line:rgba(0,0,0,.08);
-      --text:#2b2b3a;
-      --muted:#6b6b80;
-      --accent1:#c8b6ff;
-      --accent2:#b8e1ff;
-      --accent3:#ffd6e0;
-      --shadow:rgba(180,180,200,.25);
+    :root {
+      --bg:#f6f7f8;
+      --card:rgba(255,255,255,0.9);
+      --line:rgba(0,0,0,0.08);
+      --text:#222;
+      --muted:#666;
+      --accent:#FFC000;
+      --accentSoft:linear-gradient(135deg,#fff4b8,#ffe680);
+      --shadow:rgba(0,0,0,0.05);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+    *{box-sizing:border-box;}
+    html,body{height:100%;margin:0;padding:0;}
     body{
-      margin:0;
-      font-family:"Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
-      background:linear-gradient(160deg, var(--accent2), var(--accent3) 50%, var(--accent1) 100%);
+      background:linear-gradient(180deg,#fafafa,#f2f2f2);
+      font-family:"Inter","Space Grotesk",system-ui,sans-serif;
       color:var(--text);
-      line-height:1.5;
       display:flex;
       align-items:flex-start;
       justify-content:center;
       padding:40px 16px;
+      line-height:1.6;
     }
+
     .wrap{
+      width:100%;
+      max-width:640px;
       background:var(--card);
       border:1px solid var(--line);
       border-radius:20px;
-      box-shadow:0 10px 40px var(--shadow);
-      padding:28px;
-      max-width:780px;
-      width:100%;
-      backdrop-filter:blur(8px);
+      padding:36px;
+      box-shadow:0 12px 40px var(--shadow);
+      backdrop-filter:blur(12px);
     }
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-    .title{font-weight:800;font-size:22px;display:flex;align-items:center;gap:6px}
-    .title span{font-size:26px}
-    .tags{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{
-      background:#fff;
-      border:1px solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:28px;
     }
-    .card{padding:20px;border-radius:18px;border:1px solid var(--line);background:rgba(255, 255, 255, 0.6);}
-    .hint{color:var(--muted);font-size:14px;margin-bottom:8px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-    .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:240px}
-    label{font-size:13px;color:var(--muted);font-weight:500}
-    select,input{
-      width:100%;
-      background:white;
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px 14px;
-      font-size:16px;
-      outline:none;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    select:focus,input:focus{border-color:var(--accent1);box-shadow:0 0 6px var(--accent1);}
-    input::placeholder{color:#aaa}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-    .btn{
-      cursor:pointer;
-      background:linear-gradient(135deg,var(--accent1),var(--accent2));
-      color:#1a1a1a;
-      border:none;
-      padding:12px 16px;
-      border-radius:12px;
+
+    .title{
       font-weight:700;
-      letter-spacing:.3px;
-      box-shadow:0 6px 15px rgba(0,0,0,.1);
-      transition:transform .1s;
+      font-size:20px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      background:var(--accentSoft);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
     }
-    .btn:hover{transform:translateY(-2px)}
-    .btn.ghost{
-      background:transparent;
-      color:var(--text);
+
+    .tags{display:flex;gap:6px;flex-wrap:wrap;}
+    .tag{
+      background:rgba(255,255,255,0.6);
+      color:var(--muted);
       border:1px solid var(--line);
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:12px;
     }
-    .divider{height:1px;background:var(--line);margin:16px 0}
-    .note{text-align:center;color:var(--muted);font-size:14px;margin-top:8px}
-    footer{text-align:center;font-size:12px;color:#888;margin-top:18px}
-    footer a{color:#888;text-decoration:none}
-    footer a:hover{text-decoration:underline}
+
+    .card{display:flex;flex-direction:column;gap:16px;}
+    label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:500;
+      margin-bottom:4px;
+    }
+    input,select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:15px;
+      outline:none;
+      transition:border-color .2s;
+      background:rgba(255,255,255,0.7);
+    }
+    input:focus,select:focus{border-color:var(--accent);}
+
+    .row{display:flex;gap:12px;flex-wrap:wrap;}
+    .field{flex:1;min-width:240px;display:flex;flex-direction:column;}
+
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:10px;
+      padding:12px 16px;
+      font-weight:600;
+      font-size:15px;
+      transition:all .15s;
+    }
+    .btn.primary{
+      background:var(--accentSoft);
+      color:#000;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+    }
+    .btn.primary:hover{filter:brightness(1.05);}
+    .btn.ghost{
+      background:rgba(255,255,255,0.5);
+      border:1px solid var(--line);
+      color:var(--text);
+    }
+
+    .divider{height:1px;background:var(--line);margin:24px 0;}
+
+    footer{
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    footer a{color:var(--muted);text-decoration:none;}
+    footer a:hover{color:var(--accent);}
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <header>
-      <div class="title"><span>🦄</span> TipFi Waiter</div>
+      <div class="title">BLOCKCHAIN PAYMENTS</div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
         <span class="tag" id="tagFiat">—</span>
@@ -109,18 +138,16 @@
     </header>
 
     <section class="card">
-      <div class="hint">✨ Quick setup — fill in your info and let your guest scan & tip in crypto.</div>
-
       <div class="row">
         <div class="field">
-          <label for="crypto">💎 Choose crypto network</label>
+          <label for="crypto">Crypto network</label>
           <select id="crypto">
             <option value="ETH">Ethereum (ETH)</option>
             <option value="BTC">Bitcoin (BTC)</option>
           </select>
         </div>
         <div class="field">
-          <label for="fiat">💵 Choose bill currency</label>
+          <label for="fiat">Bill currency</label>
           <select id="fiat">
             <option value="USD">US Dollar ($)</option>
             <option value="EUR">Euro (€)</option>
@@ -130,26 +157,31 @@
 
       <div class="row">
         <div class="field">
-          <label for="bill">💰 Bill amount</label>
-          <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" inputmode="decimal">
+          <label for="bill">Bill amount</label>
+          <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount">
         </div>
         <div class="field">
-          <label for="address">🏦 Your wallet address</label>
-          <input id="address" placeholder="Enter wallet address" autocomplete="off" inputmode="text">
+          <label for="address">Wallet address</label>
+          <input id="address" placeholder="Enter your wallet address">
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn" id="toGuest">🚀 Open Guest Page</button>
-        <button class="btn ghost" id="saveDefaults">💾 Save defaults</button>
-        <button class="btn ghost" id="clearDefaults">🧹 Clear</button>
+        <button class="btn primary" id="toGuest">Open Guest Page</button>
+        <button class="btn ghost" id="saveDefaults">Save defaults</button>
+        <button class="btn ghost" id="clearDefaults">Clear</button>
       </div>
-
-      <div class="divider"></div>
-      <p class="note">“Cash is cringe. This tip is a 2x waiting to happen.” 🧠</p>
     </section>
 
-    <footer>yo ;) <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@pranklord666</a></footer>
+    <div class="divider"></div>
+    <footer>
+      <p>
+        <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a> —  
+        Open-source under the 
+        <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPL-3.0 License</a>.<br>
+        Feel free to reuse or remix this code as long as your project stays open-source too 💛
+      </p>
+    </footer>
   </div>
 
   <script>
@@ -181,12 +213,12 @@
       localStorage.setItem(LS.crypto, $('#crypto').value)
       localStorage.setItem(LS.fiat, $('#fiat').value)
       localStorage.setItem(LS.addr, ($('#address').value || '').trim())
-      alert('✨ Defaults saved on this device.')
+      alert('Defaults saved.')
     })
 
     $('#clearDefaults').addEventListener('click', () => {
       Object.values(LS).forEach(k => localStorage.removeItem(k))
-      alert('🧹 Cleared.')
+      alert('Cleared.')
     })
 
     $('#toGuest').addEventListener('click', () => {
@@ -195,8 +227,8 @@
       const bill   = parseFloat($('#bill').value)
       const fiat   = $('#fiat').value
 
-      if(!addr){ alert('⚠️ Please enter your wallet address.'); return }
-      if(!(bill > 0)){ alert('💸 Enter a bill amount greater than 0.'); return }
+      if(!addr){ alert('Please enter your wallet address.'); return }
+      if(!(bill > 0)){ alert('Enter a bill amount greater than 0.'); return }
 
       localStorage.setItem(LS.crypto, crypto)
       localStorage.setItem(LS.fiat, fiat)

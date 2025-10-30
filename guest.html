@@ -3,202 +3,219 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>🦄 TipFi — Guest Portal (Alpha Preview)</title>
-  <meta name="description" content="Alpha preview — shared on Reddit and X. Not audited; scanning wallet deeplinks/QRs from the web can be risky.">
+  <title>Blockchain Payments — Guest</title>
+  <meta name="description" content="Select your tip, scan the QR, and send your crypto payment securely.">
   <style>
     :root {
-      --bg:#f8f9ff;
-      --card:#ffffffcc;
-      --line:rgba(0,0,0,.08);
-      --text:#2b2b3a;
-      --muted:#6b6b80;
-      --accent1:#c8b6ff;
-      --accent2:#b8e1ff;
-      --accent3:#ffd6e0;
-      --shadow:rgba(180,180,200,.25);
-      --warn:#ffe8a3;
-      --warnBorder:#f5c65a;
+      --bg:#f6f7f8;
+      --card:rgba(255,255,255,0.9);
+      --line:rgba(0,0,0,0.08);
+      --text:#222;
+      --muted:#666;
+      --accent:#FFC000;
+      --accentSoft:linear-gradient(135deg, #fff4b8, #ffe680);
+      --shadow:rgba(0,0,0,0.05);
     }
-    * { box-sizing: border-box; }
-    html,body { height: 100%; margin: 0; }
+
+    * { box-sizing:border-box; }
+    html,body { height:100%; margin:0; padding:0; }
     body {
-      font-family: "Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
-      background: linear-gradient(160deg, var(--accent2), var(--accent3) 50%, var(--accent1) 100%);
-      color: var(--text);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 40px 16px;
-      line-height: 1.5;
+      background:linear-gradient(180deg,#fafafa,#f2f2f2);
+      font-family:"Inter","Space Grotesk",system-ui,sans-serif;
+      color:var(--text);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 16px;
+      line-height:1.6;
     }
+
     .wrap {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow);
-      padding: 28px;
-      max-width: 780px;
-      width: 100%;
-      backdrop-filter: blur(8px);
+      background:var(--card);
+      backdrop-filter:blur(12px);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:36px;
+      max-width:640px;
+      width:100%;
+      box-shadow:0 12px 40px var(--shadow);
     }
+
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:28px;
     }
+
     .title {
-      font-weight: 800;
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-weight:700;
+      font-size:20px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      background:var(--accentSoft);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
     }
-    .title span { font-size: 26px; }
-    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .tags {
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
     .tag {
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
+      background:rgba(255,255,255,0.6);
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      border-radius:999px;
+      padding:4px 10px;
     }
 
-    /* Alpha notice */
-    .notice {
-      border: 1px dashed var(--warnBorder);
-      background: linear-gradient(0deg, rgba(255,255,255,.9), rgba(255,255,255,.9)), var(--warn);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 13px;
-      color: #3a3626;
-      margin-bottom: 18px;
+    .hint {
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:10px;
     }
-    .notice b { font-weight: 900; }
-    .notice a { color: #2b2b3a; text-decoration: underline; }
-    .notice .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-
-    .card {
-      padding: 20px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.6);
-    }
-    .hint { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
 
     .percent-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 10px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
     }
-    @media (min-width: 760px) {
-      .percent-grid { grid-template-columns: repeat(4, 1fr); }
-    }
+    @media(min-width:640px){.percent-grid{grid-template-columns:repeat(4,1fr);}}
 
     .pill {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      text-align: center;
-      padding: 14px 10px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      box-shadow: 0 6px 15px rgba(0,0,0,.08);
+      background:rgba(255,255,255,0.8);
+      border:1px solid var(--line);
+      border-radius:12px;
+      text-align:center;
+      padding:14px 10px;
+      cursor:pointer;
+      transition:all .15s ease;
+      box-shadow:0 3px 10px rgba(0,0,0,0.03);
     }
-    .pill:hover { transform: translateY(-1px); }
+    .pill:hover { background:rgba(255,255,255,0.95); border-color:var(--accent); }
     .pill.active {
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #1a1a1a;
-      box-shadow: 0 6px 15px rgba(0,0,0,.1);
+      background:var(--accentSoft);
+      color:#000;
+      font-weight:700;
+      box-shadow:0 5px 12px rgba(255,192,0,0.25);
     }
-    .pill .pct { font-size: 22px; font-weight: 900; }
-    .pill .approx { font-size: 12px; color: var(--muted); }
+    .pill .pct { font-size:20px; font-weight:900; }
+    .pill .approx { font-size:12px; color:var(--muted); }
 
     .custom {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 12px;
-      flex-wrap: wrap;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:16px;
+      flex-wrap:wrap;
     }
+
     input[type="number"] {
-      width: 140px;
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 16px;
+      width:120px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:15px;
+      background:rgba(255,255,255,0.7);
+    }
+
+    .btn {
+      border:none;
+      cursor:pointer;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:600;
+      transition:all .15s;
+    }
+    .btn.primary {
+      background:var(--accentSoft);
+      color:#000;
+      box-shadow:0 3px 10px rgba(0,0,0,0.05);
+    }
+    .btn.primary:hover { filter:brightness(1.05); }
+    .btn.ghost {
+      background:rgba(255,255,255,0.5);
+      border:1px solid var(--line);
+      color:var(--text);
     }
 
     .summary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 16px 0;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:20px 0;
     }
     .kpi {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 14px;
-      text-align: center;
+      background:rgba(255,255,255,0.8);
+      border:1px solid var(--line);
+      border-radius:10px;
+      text-align:center;
+      padding:12px 14px;
     }
-    .kpi b { display: block; font-size: 12px; color: var(--muted); }
-    .kpi span { font-size: 20px; font-weight: 900; }
+    .kpi b { display:block; font-size:12px; color:var(--muted); }
+    .kpi span { font-size:20px; font-weight:900; }
 
-    .qrWrap { margin-top: 16px; display: none; text-align: center; }
+    .qrWrap { text-align:center; display:none; margin-top:20px; }
     .qrBox {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      border: 1px solid #eee;
-      border-radius: 16px;
-      width: 280px;
-      height: 280px;
-      margin: 0 auto;
-      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      width:260px;
+      height:260px;
+      margin:0 auto;
+      box-shadow:0 8px 24px rgba(0,0,0,0.08);
     }
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: contain;
-    }
+    canvas { width:100%!important; height:100%!important; }
+
     .hint-scan {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 10px;
-      text-align: center;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:10px;
+      text-align:center;
     }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
-    .btn {
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      border: none;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-weight: 700;
-      color: #1a1a1a;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+
+    .actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+      justify-content:center;
     }
-    .btn.ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--line);
+
+    .uri {
+      color:var(--muted);
+      font-size:12px;
+      word-break:break-all;
+      margin-top:6px;
     }
-    .uri { color: var(--muted); font-size: 12px; word-break: break-all; margin-top: 6px; }
-    footer { text-align:center; font-size:12px; color:#888; margin-top:18px; }
-    footer a{color:#888;text-decoration:none;}
-    footer a:hover{text-decoration:underline;}
+
+    .divider {
+      height:1px;
+      background:var(--line);
+      margin:24px 0;
+    }
+
+    footer {
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    footer a { color:var(--muted); text-decoration:none; }
+    footer a:hover { color:var(--accent); }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <header>
-      <div class="title"><span>💸</span> TipFi Guest <span style="font-size:12px;font-weight:700;opacity:.7;">ALPHA</span></div>
+      <div class="title">BLOCKCHAIN PAYMENTS</div>
       <div class="tags">
         <span class="tag" id="tagCrypto">—</span>
         <span class="tag" id="tagFiat">—</span>
@@ -206,19 +223,8 @@
       </div>
     </header>
 
-    <!-- Short, techy alpha preview banner -->
-    <div class="notice" role="note" aria-label="alpha preview">
-      <b>Alpha Preview.</b> This prototype was shared on
-      <a href="https://www.reddit.com/user/Square_Ad_7551/" target="_blank" rel="noopener noreferrer">Reddit</a>
-      and
-      <a href="https://x.com/pranklord666" target="_blank" rel="noopener noreferrer">X</a>.
-      It’s <b>not audited</b> or production-ready. Scanning wallet deeplinks/QRs from the web can be risky —
-      use a burner wallet or very small amounts only. We’ll harden it soon
-      (<span class="mono">domain-bound URIs</span>, <span class="mono">checksum</span>, <span class="mono">allowlists</span>, testnet-first).
-    </div>
-
-    <section class="card">
-      <div class="hint">Select your tip percentage 💖</div>
+    <section>
+      <div class="hint">Select your tip percentage</div>
       <div class="percent-grid" id="percentGroup">
         <button class="pill" data-p="5"><div class="pct">5%</div><div class="approx">≈ —</div></button>
         <button class="pill" data-p="10"><div class="pct">10%</div><div class="approx">≈ —</div></button>
@@ -228,8 +234,8 @@
 
       <div class="custom">
         <span class="hint">or enter a custom %</span>
-        <input id="customP" type="number" step="0.5" min="0" placeholder="Custom %" inputmode="decimal">
-        <button class="btn small" id="applyCustom">Apply</button>
+        <input id="customP" type="number" step="0.5" min="0" placeholder="Custom %">
+        <button class="btn ghost" id="applyCustom">Apply</button>
       </div>
 
       <div class="summary">
@@ -240,10 +246,10 @@
       <div class="qrWrap" id="qrWrap">
         <div class="qrBox" id="qrBox"><canvas id="qrCanvas"></canvas></div>
         <div class="hint-scan">
-          Using live rates (Coinbase API). Amounts are best-effort — always verify in your wallet before sending.
+          Live rates via Coinbase. Always verify the amount in your wallet before sending.
         </div>
         <div class="actions">
-          <a class="btn" id="openWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
+          <a class="btn primary" id="openWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
           <button class="btn ghost" id="copyLink">Copy Link</button>
           <button class="btn ghost" id="copyAmount">Copy Amount</button>
         </div>
@@ -251,15 +257,18 @@
       </div>
     </section>
 
+    <div class="divider"></div>
     <footer>
-      <a href="https://www.reddit.com/user/Square_Ad_7551/" target="_blank" rel="noopener noreferrer">Reddit: u/Square_Ad_7551</a>
-      &nbsp;•&nbsp;
-      <a href="https://x.com/pranklord666" target="_blank" rel="noopener noreferrer">X: @pranklord666</a>
+      <p>
+        <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a> —  
+        Open-source under the 
+        <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPL-3.0 License</a>.<br>
+        Feel free to reuse or remix this code as long as your project stays open-source too 💛
+      </p>
     </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/decimal.js@latest/decimal.min.js"></script>
   <script>
     const $ = s => document.querySelector(s)
     const qs = new URLSearchParams(location.search)
@@ -307,7 +316,7 @@
           uri = `ethereum:${addr}?value=${wei}`
         }
 
-        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 280, height: 280, margin: 1 })
+        await QRCode.toCanvas($('#qrCanvas'), uri, { width: 260, height: 260, margin: 1 })
         $('#uriPreview').textContent = uri
         $('#openWallet').href = uri
         $('#copyLink').onclick  = () => navigator.clipboard.writeText(uri)

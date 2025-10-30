@@ -6,155 +6,156 @@
   <title>🍾 Podium Challenge</title>
   <style>
     :root {
-      --bg1: #ffdee9;
-      --bg2: #b5fffc;
-      --text: #1a1a1a;
-      --muted: #555;
-      --accent: #ff70a6;
-      --card: rgba(255,255,255,0.9);
+      --bg1:#f8f8f8;
+      --bg2:#f0f0f0;
+      --text:#222;
+      --muted:#666;
+      --accent:#FFC000;
+      --accentSoft:linear-gradient(135deg,#fff5bf,#ffe680);
+      --card:rgba(255,255,255,0.9);
+      --shadow:rgba(0,0,0,0.05);
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box;}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: "Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
-      background: linear-gradient(160deg, var(--bg1), var(--bg2));
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+    html,body{
+      margin:0;padding:0;
+      font-family:"Space Grotesk",Inter,system-ui,-apple-system,sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: max(20px, env(safe-area-inset-top)) 16px 40px;
-      overflow-x: hidden;
+    body{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      padding:max(24px,env(safe-area-inset-top)) 16px 40px;
     }
 
-    .wrap {
-      background: var(--card);
-      backdrop-filter: blur(10px);
-      border-radius: 22px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.2);
-      padding: 24px;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      margin-top: 16px;
+    .wrap{
+      background:var(--card);
+      border:1px solid rgba(0,0,0,0.08);
+      border-radius:22px;
+      box-shadow:0 12px 40px var(--shadow);
+      backdrop-filter:blur(12px);
+      padding:28px 26px;
+      width:100%;
+      max-width:420px;
+      text-align:center;
     }
 
-    h1 {
-      font-size: clamp(22px, 6vw, 26px);
-      margin: 0 0 8px;
-      font-weight: 800;
-      line-height: 1.2;
+    h1{
+      font-size:clamp(22px,6vw,26px);
+      margin:0 0 8px;
+      font-weight:800;
+      background:var(--accentSoft);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
     }
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 15px;
-      margin-bottom: 18px;
-      line-height: 1.4;
+    .subtitle{
+      color:var(--muted);
+      font-size:15px;
+      margin-bottom:18px;
+      line-height:1.4;
     }
 
-    .steps {
-      background: rgba(255,255,255,.6);
-      border: 1px dashed rgba(0,0,0,.1);
-      border-radius: 16px;
-      padding: 12px 14px;
-      font-size: 15px;
-      text-align: left;
-      margin-bottom: 20px;
+    .steps{
+      background:rgba(255,255,255,0.6);
+      border:1px dashed rgba(0,0,0,0.1);
+      border-radius:16px;
+      padding:14px 16px;
+      font-size:15px;
+      text-align:left;
+      margin-bottom:20px;
+    }
+    .steps b{
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .steps span{
+      display:block;
+      margin-left:6px;
+      margin-bottom:3px;
+    }
+    .steps p{
+      margin-top:8px;
+      font-weight:600;
+      color:var(--accent);
+      text-align:center;
     }
 
-    .steps b {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 6px;
+    select,textarea{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:14px;
+      font-size:16px;
+      box-shadow:0 4px 10px rgba(0,0,0,.05);
+      margin-bottom:18px;
+      font-family:inherit;
+      background:rgba(255,255,255,0.85);
+      border:1px solid rgba(0,0,0,0.05);
+      transition:box-shadow .2s,border-color .2s;
+    }
+    select:focus,textarea:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(255,192,0,.2);
     }
 
-    .steps span {
-      display: block;
-      margin-left: 6px;
-      margin-bottom: 3px;
+    textarea{resize:none;}
+
+    .emoji-row{
+      display:flex;
+      justify-content:space-evenly;
+      margin:10px 0 20px;
+      gap:12px;
     }
 
-    select, textarea {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,.08);
-      margin-bottom: 18px;
-      font-family: inherit;
-      background: #fff;
+    .emoji{
+      font-size:38px;
+      cursor:pointer;
+      transition:transform .15s,filter .15s;
+      flex:1;
+      text-align:center;
+    }
+    .emoji:hover{transform:scale(1.1);}
+    .emoji.active{
+      transform:scale(1.25);
+      filter:drop-shadow(0 0 6px rgba(255,192,0,.8));
     }
 
-    textarea { resize: none; }
+    button{
+      background:var(--accentSoft);
+      border:none;
+      border-radius:14px;
+      padding:14px 18px;
+      font-weight:700;
+      font-size:17px;
+      cursor:pointer;
+      width:100%;
+      color:#000;
+      box-shadow:0 6px 15px rgba(255,192,0,0.25);
+      transition:filter .15s;
+    }
+    button:hover{filter:brightness(1.05);}
 
-    .emoji-row {
-      display: flex;
-      justify-content: space-evenly;
-      margin: 10px 0 20px;
-      gap: 12px;
+    footer{
+      margin-top:20px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
     }
 
-    .emoji {
-      font-size: 40px;
-      cursor: pointer;
-      transition: transform .15s;
-      flex: 1;
-      text-align: center;
-    }
-
-    .emoji:active { transform: scale(1.15); }
-
-    .emoji.active {
-      transform: scale(1.25);
-      filter: drop-shadow(0 0 5px gold);
-    }
-
-    button {
-      background: linear-gradient(135deg, #ffd6e0, #b8e1ff);
-      border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      font-weight: 700;
-      font-size: 17px;
-      cursor: pointer;
-      width: 100%;
-      animation: pulse 1.6s infinite;
-      margin-top: 8px;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255,112,166,.5); }
-      70% { box-shadow: 0 0 0 10px rgba(255,112,166,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,112,166,0); }
-    }
-
-    footer {
-      margin-top: 18px;
-      font-size: 13px;
-      color: #666;
-      line-height: 1.4;
-    }
-
-    @media (max-height: 700px) {
-      body { padding-top: 10px; }
-      .wrap { padding: 20px; }
-      h1 { font-size: 22px; }
-      .emoji { font-size: 32px; }
-    }
-
-    @media (max-width: 380px) {
-      .wrap { border-radius: 16px; }
-      textarea, select { font-size: 15px; }
+    @media(max-height:700px){
+      .wrap{padding:20px;}
+      h1{font-size:22px;}
+      .emoji{font-size:32px;}
     }
   </style>
 </head>
@@ -172,7 +173,7 @@
       <span>1️⃣ Choisissez votre serveur 🕺💃</span>
       <span>2️⃣ Donnez une note et laissez un mot ✍️</span>
       <span>3️⃣ Votre message est copié — vous n’aurez plus qu’à le coller sur Google ⭐</span>
-      <p style="margin-top:8px;font-weight:600;color:var(--accent);text-align:center;">Rien à réécrire, tout est prêt 👇</p>
+      <p>Rien à réécrire, tout est prêt 👇</p>
     </div>
 
     <form id="reviewForm">
@@ -182,7 +183,7 @@
         <option value="Chloé">💃 Chloé</option>
       </select>
 
-      <p style="margin:8px 0 4px;">Comment s’est passée votre expérience ?</p>
+      <p style="margin:8px 0 4px;font-weight:500;">Comment s’est passée votre expérience ?</p>
       <div class="emoji-row" id="moodRow">
         <div class="emoji" data-mood="🥲">🥲</div>
         <div class="emoji" data-mood="😋">😋</div>
@@ -196,7 +197,7 @@
     </form>
 
     <footer>
-      Merci pour votre avis —<br>il aide notre équipe à briller 🫶
+      Merci pour votre avis — il aide notre équipe à briller 💛
     </footer>
   </div>
 

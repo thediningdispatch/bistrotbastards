@@ -3,30 +3,140 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TipFi — Redirect</title>
-  <meta http-equiv="refresh" content="0; url=waiter.html">
-  <script>
-    // Fallback in case meta refresh fails (e.g., old browsers)
-    window.onload = () => {
-      window.location.replace('waiter.html')
-    }
-  </script>
+  <title>Bistrot Bastards — Open Hospitality Tools</title>
+  <meta name="description" content="Bistrot Bastards — open-source tools rethinking tipping and team motivation in hospitality.">
   <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      padding: 40px;
-      text-align: center;
-      background: #fafafa;
-      color: #111;
+    :root {
+      --bg: #e3e3e3;
+      --panel: rgba(255,255,255,0.85);
+      --text: #1a1a1a;
+      --muted: #555;
+      --accent: #ffc000;
+      --border: #bdbdbd;
     }
-    a {
-      color: #111827;
-      font-weight: 600;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .wrap {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      max-width: 480px;
+      width: 90%;
+      padding: 24px;
+      box-shadow: inset 1px 1px #fff, inset -1px -1px #aaa;
+      backdrop-filter: blur(4px);
+      animation: fadein 0.5s ease;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 180px;
+      height: auto;
+      margin-bottom: 16px;
+      opacity: 0.95;
+      max-width: 70%;
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        width: 120px;
+        margin-bottom: 12px;
+      }
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    a.btn {
+      display: block;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: #000;
+      background: #fff;
+      font-size: 14px;
       text-decoration: none;
+      transition: all .2s ease;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.06);
+    }
+
+    a.btn:hover {
+      background: var(--accent);
+      border-color: #000;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 18px;
+      padding-top: 10px;
+      line-height: 1.4;
+    }
+
+    footer a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+      text-decoration: underline;
     }
   </style>
 </head>
+
 <body>
-  <p>Redirecting to <a href="waiter.html">For Waiter</a>…</p>
+  <div class="wrap">
+    <img src="logo_1.svg" alt="Bistrot Bastards logo" class="logo" />
+
+    <p>
+      Open-source tools to make hospitality more transparent, fun, and fair.<br>
+      From crypto tipping to friendly service challenges.
+    </p>
+
+    <div class="btns">
+      <a class="btn" href="waiter.html">Crypto Tipping</a>
+      <a class="btn" href="googlereview.html">Podium Challenge</a>
+    </div>
+
+    <p style="font-size:13px;">
+      Licensed under AGPL-3.0 — reuse allowed if your version stays open.<br>
+      Community feedback and UX ideas are shared on Reddit.
+    </p>
+
+    <footer>
+      <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a>
+    </footer>
+  </div>
 </body>
 </html>
