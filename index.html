@@ -25,6 +25,9 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      flex-direction: column;
+      gap: 28px;
+      padding: 32px 0;
     }
 
     .wrap {
@@ -44,18 +47,17 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .logo {
-      width: 180px;
+    .hero-logo {
+      width: min(60vw, 360px);
       height: auto;
-      margin-bottom: 16px;
+      display: block;
+      margin: 0 auto;
       opacity: 0.95;
-      max-width: 70%;
     }
 
     @media (max-width: 480px) {
-      .logo {
-        width: 120px;
-        margin-bottom: 12px;
+      .hero-logo {
+        width: min(80vw, 260px);
       }
     }
 
@@ -116,9 +118,8 @@
 </head>
 
 <body>
+  <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
   <div class="wrap">
-    <img src="logo_1.svg" alt="Bistrot Bastards logo" class="logo" />
-
     <p>
       Open-source tools to make hospitality more transparent, fun, and fair.<br>
       From crypto tipping to friendly service challenges.
