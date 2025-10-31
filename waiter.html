@@ -6,282 +6,85 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Blockchain Payments — Waiter Console</title>
   <meta name="description" content="Configure your wallet defaults before generating a guest tipping link." />
-  <style>
-    :root {
-      --bg: #f5f5f5;
-      --surface: #ffffff;
-      --border: #e0e0e0;
-      --accent: #111111;
-      --muted: #5c5c5c;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      margin: 0;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--accent);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .top-bar {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 20px 20px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--accent);
-    }
-
-    .brand {
-      height: 44px;
-      width: auto;
-    }
-
-    main {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 20px 64px;
-      flex: 1;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px 24px;
-      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.08);
-    }
-
-    .page-head {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-
-    .page-head h1 {
-      font-size: 1.45rem;
-      margin: 0;
-    }
-
-    .page-head p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(17, 17, 17, 0.06);
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .beta-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255, 214, 107, 0.25);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #7a4c00;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-top: 24px;
-    }
-
-    .field-grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    @media (min-width: 640px) {
-      .field-grid.two {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      font-size: 1rem;
-      color: var(--accent);
-    }
-
-    input:focus,
-    select:focus {
-      outline: 2px solid rgba(17, 17, 17, 0.18);
-      outline-offset: 2px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      color: var(--accent);
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-
-    .btn:hover {
-      background: #efefef;
-      transform: translateY(-1px);
-    }
-
-    .btn.primary {
-      background: var(--accent);
-      color: #ffffff;
-      border-color: transparent;
-    }
-
-    .btn.primary:hover {
-      background: #000000;
-    }
-
-    footer {
-      margin-top: 30px;
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    footer a {
-      color: inherit;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" href="system7.css" />
 </head>
-
 <body>
-  <header class="top-bar">
-    <a class="back-link" href="index.html">← Home</a>
-    <img src="logo_1.svg" alt="Bistrot Bastards logo" class="brand" />
-  </header>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Crypto Tipping (staff setup)</span>
+    </div>
 
-  <main>
-    <section class="card">
-      <div class="page-head">
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Waiter Setup Console</span>
+      </div>
+
+      <div class="window-body">
+        <div class="toolbar">
+          <a class="btn" href="index.html">← Home</a>
+          <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
+        </div>
+
         <h1>Waiter Setup Console</h1>
         <p>Configure your defaults before handing guests the tipping page. Everything saves locally on this device.</p>
+
         <div class="tag-list">
           <span class="tag" id="tagCrypto">—</span>
           <span class="tag" id="tagFiat">—</span>
           <span class="tag" id="tagAddr">—</span>
         </div>
+
         <span class="beta-badge">Beta build — expect rough edges</span>
+
+        <form>
+          <div class="two-column">
+            <div>
+              <label for="crypto">Crypto network</label>
+              <select id="crypto">
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+              </select>
+            </div>
+            <div>
+              <label for="fiat">Bill currency</label>
+              <select id="fiat">
+                <option value="USD">US Dollar ($)</option>
+                <option value="EUR">Euro (€)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="two-column">
+            <div>
+              <label for="bill">Bill amount</label>
+              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
+            </div>
+            <div>
+              <label for="address">Wallet address</label>
+              <input id="address" placeholder="Enter your wallet address" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn" id="toGuest">Open Guest Page</button>
+            <button type="button" class="btn" id="saveDefaults">Save defaults</button>
+            <button type="button" class="btn" id="clearDefaults">Clear</button>
+          </div>
+        </form>
+
+        <footer class="footer">
+          <p>
+            <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
+            — Open-source under the
+            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
+            Feel free to reuse or remix this code as long as your project stays open-source too.
+          </p>
+        </footer>
       </div>
-
-      <form>
-        <div class="field-grid two">
-          <div>
-            <label for="crypto">Crypto network</label>
-            <select id="crypto">
-              <option value="ETH">Ethereum (ETH)</option>
-              <option value="BTC">Bitcoin (BTC)</option>
-            </select>
-          </div>
-          <div>
-            <label for="fiat">Bill currency</label>
-            <select id="fiat">
-              <option value="USD">US Dollar ($)</option>
-              <option value="EUR">Euro (€)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field-grid two">
-          <div>
-            <label for="bill">Bill amount</label>
-            <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
-          </div>
-          <div>
-            <label for="address">Wallet address</label>
-            <input id="address" placeholder="Enter your wallet address" />
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn primary" id="toGuest">Open Guest Page</button>
-          <button type="button" class="btn" id="saveDefaults">Save defaults</button>
-          <button type="button" class="btn" id="clearDefaults">Clear</button>
-        </div>
-      </form>
-
-      <footer>
-        <p>
-          <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
-          — Open-source under the
-          <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
-          Feel free to reuse or remix this code as long as your project stays open-source too.
-        </p>
-      </footer>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <script>
     const $ = selector => document.querySelector(selector);
