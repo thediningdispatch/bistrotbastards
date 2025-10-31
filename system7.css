@@ -29,9 +29,9 @@ body {
 }
 
 .desktop {
-  width: min(880px, 100%);
-  margin: 24px auto;
-  padding: 0 16px 48px;
+  width: min(820px, 100%);
+  margin: 16px auto 32px;
+  padding: 0 12px 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -99,15 +99,15 @@ body {
 }
 
 .window-body {
-  padding: 20px 24px 26px;
+  padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .hero-logo {
-  width: min(360px, 90vw);
-  max-width: 360px;
+  width: min(280px, 80vw);
+  max-width: 280px;
   height: auto;
   margin: 8px auto 18px;
   display: block;
@@ -163,7 +163,7 @@ h1 {
 .toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -252,7 +252,7 @@ textarea:focus {
 
 .two-column {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 @media (min-width: 620px) {
@@ -292,7 +292,7 @@ textarea:focus {
 
 .percent-grid {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -325,7 +325,7 @@ textarea:focus {
 
 .summary {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -339,7 +339,7 @@ textarea:focus {
   border: 1px solid #000000;
   background: var(--panel-light);
   box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-  padding: 14px 0;
+  padding: 12px 0;
   text-align: center;
 }
 
@@ -357,13 +357,13 @@ textarea:focus {
 
 .qr-wrap {
   display: none;
-  margin-top: 18px;
+  margin-top: 16px;
   text-align: center;
 }
 
 .qr-box {
-  width: 240px;
-  height: 240px;
+  width: 220px;
+  height: 220px;
   margin: 0 auto;
   border: 1px solid #000000;
   background: #ffffff;
@@ -397,7 +397,7 @@ canvas {
   border: 1px solid #000000;
   background: var(--panel-mid);
   box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-  padding: 14px 16px;
+  padding: 12px 14px;
 }
 
 .steps strong {
@@ -442,21 +442,22 @@ footer a:hover {
 
 @media (max-width: 640px) {
   .desktop {
-    margin: 16px auto 32px;
-    padding: 0 12px 32px;
+    margin: 12px auto 24px;
+    padding: 0 10px 24px;
+    gap: 12px;
   }
 
   .menu-bar {
     font-size: 12px;
-    gap: 10px;
+    gap: 8px;
   }
 
   .window-body {
-    padding: 18px;
-    gap: 14px;
+    padding: 14px;
+    gap: 10px;
   }
 
-  .hero-logo {
-    max-width: 220px;
+  .toolbar {
+    justify-content: center;
   }
 }
