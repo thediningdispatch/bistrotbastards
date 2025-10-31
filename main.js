@@ -33,6 +33,14 @@ function saveUser(user) {
     if (user.restaurant) {
       localStorage.setItem('restaurant', user.restaurant);
     }
+    if (user.username) {
+      localStorage.setItem('username', user.username);
+    }
+    if (user.avatar) {
+      localStorage.setItem('avatarURL', user.avatar);
+    } else {
+      localStorage.removeItem('avatarURL');
+    }
   } catch (error) {
     console.warn('Could not persist user:', error);
   }

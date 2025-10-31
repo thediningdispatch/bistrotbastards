@@ -37,6 +37,19 @@
           </table>
           <button class="btn" id="refreshLeaderboard">Refresh</button>
         </section>
+
+        <hr>
+
+        <section id="cryptoTip">
+          <h2>💸 Crypto Tipping</h2>
+          <p>Generate your personal QR code to receive direct crypto tips from guests.</p>
+          <div class="tip-container">
+            <input type="text" id="walletInput" placeholder="Enter your ETH or BTC wallet address" />
+            <button class="btn" id="generateQR">Generate QR</button>
+          </div>
+          <canvas id="qrCanvas"></canvas>
+          <p id="qrStatus"></p>
+        </section>
       </div>
     </div>
   </div>

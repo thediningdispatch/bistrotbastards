@@ -38,6 +38,12 @@ if (form) {
       if (payload.restaurant) {
         localStorage.setItem('restaurant', payload.restaurant);
       }
+      localStorage.setItem('username', payload.username || '');
+      if (payload.avatar) {
+        localStorage.setItem('avatarURL', payload.avatar);
+      } else {
+        localStorage.removeItem('avatarURL');
+      }
 
       window.location.href = 'dashboard.html';
     } catch (error) {

@@ -43,6 +43,8 @@ if (form) {
         role: position
       }));
       localStorage.setItem('restaurant', restaurant);
+      localStorage.setItem('username', username);
+      localStorage.setItem('avatarURL', avatarURL);
 
       window.location.href = 'dashboard.html';
     } catch (error) {

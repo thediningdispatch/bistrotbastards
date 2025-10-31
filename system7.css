@@ -603,6 +603,15 @@ footer a:hover {
   gap: 12px;
 }
 
+.toolbar .logo-text {
+  font-size: 2rem;
+  margin: 0 auto;
+}
+
+.window-body > .logo-text {
+  margin: 0 auto 12px;
+}
+
 .avatar-options {
   display: flex;
   gap: 12px;
@@ -644,10 +653,11 @@ footer a:hover {
   gap: 16px;
 }
 
-#leaderboard h2 {
-  margin: 0;
+#leaderboard h2,
+#cryptoTip h2 {
   font-size: 18px;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
   background: repeating-linear-gradient(
     -45deg,
     #000 0,
@@ -657,6 +667,7 @@ footer a:hover {
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin: 0;
 }
 
 #leaderboardTable {
@@ -678,6 +689,69 @@ footer a:hover {
 
 #refreshLeaderboard {
   align-self: flex-start;
+}
+
+#cryptoTip {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+#walletInput {
+  flex: 1;
+  min-width: 220px;
+  padding: 9px 10px;
+  border: 1px solid #000000;
+  background: var(--panel-light);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+}
+
+#generateQR {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border: 1px solid #000000;
+  background: var(--panel-light);
+  box-shadow:
+    inset 1px 1px var(--highlight),
+    inset -1px -1px var(--shadow),
+    2px 2px 0 #000000;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#generateQR:hover {
+  box-shadow:
+    inset -1px -1px var(--highlight),
+    inset 1px 1px var(--shadow),
+    2px 2px 0 #000000;
+}
+
+#qrCanvas {
+  width: 180px;
+  height: 180px;
+  border: 1px solid #000000;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+  margin-top: 12px;
+}
+
+#qrStatus {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #000000;
+  margin: 12px 0;
 }
 
 @media (max-width: 640px) {

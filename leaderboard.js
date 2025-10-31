@@ -1,5 +1,6 @@
 import { db } from './firebase.js';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import QRCode from 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/es/index.js';
 
 async function fetchLeaderboard() {
   const tbody = document.querySelector('#leaderboardTable tbody');
@@ -68,3 +69,32 @@ async function fetchLeaderboard() {
 document.getElementById('refreshLeaderboard')?.addEventListener('click', fetchLeaderboard);
 
 fetchLeaderboard();
+
+const walletInput = document.getElementById('walletInput');
+const qrCanvas = document.getElementById('qrCanvas');
+const qrStatus = document.getElementById('qrStatus');
+const generateBtn = document.getElementById('generateQR');
+
+if (generateBtn) {
+  generateBtn.addEventListener('click', async () => {
+    const wallet = walletInput?.value.trim();
+    if (!wallet) {
+      if (qrStatus) qrStatus.textContent = '⚠️ Please enter your wallet address.';
+      return;
+    }
+
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('bb_user') || '{}');
+      const username = storedUser.username || localStorage.getItem('username') || 'Anonymous';
+      const message = `Tip ${username} on Bistrot Bastards`;
+      const uri = `ethereum:${wallet}?message=${encodeURIComponent(message)}`;
+
+      await QRCode.toCanvas(qrCanvas, uri, { width: 180, margin: 1 });
+      if (qrStatus) qrStatus.textContent = '✅ QR ready — show this to your guest!';
+      console.log('✅ QR generated for', wallet);
+    } catch (error) {
+      console.error('❌ QR generation error:', error);
+      if (qrStatus) qrStatus.textContent = '❌ Failed to generate QR.';
+    }
+  });
+}
