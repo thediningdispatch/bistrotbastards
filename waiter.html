@@ -2,366 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Blockchain Payments</title>
-  <meta name="description" content="Enter your wallet and bill info — let your guest handle the tip in crypto." />
+  <title>Blockchain Payments — Waiter Console</title>
+  <meta name="description" content="Configure your wallet defaults before generating a guest tipping link." />
   <style>
     :root {
-      --bg-light: #d9d9d9;
-      --bg-dark: #c3c3c3;
-      --panel-light: #f5f5f5;
-      --panel-dark: #6f6f6f;
-      --panel-mid: #e0e0e0;
-      --text: #000;
-      --muted: #303030;
-      --highlight: #ffffff;
-      --shadow: #7d7d7d;
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e0e0e0;
+      --accent: #111111;
+      --muted: #5c5c5c;
+      --radius: 14px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
-      font-family: "Chicago", "Charcoal", "Geneva", "Segoe UI", sans-serif;
-      background:
-        linear-gradient(90deg, var(--bg-light) 0, var(--bg-light) 50%, var(--bg-dark) 50%, var(--bg-dark) 100%);
-      background-size: 8px 8px;
-      color: var(--text);
-    }
-
     body {
+      margin: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--accent);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 24px;
-      gap: 16px;
     }
 
-    .desktop {
-      width: min(960px, 100%);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .menu-bar {
+    .top-bar {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 20px 10px;
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 6px 12px;
-      background: linear-gradient(#6d6d6d, #4c4c4c);
-      color: #fff;
-      font-size: 14px;
-      letter-spacing: 0.3px;
-      border: 1px solid #000;
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-    }
-
-    .menu-item { display: inline-flex; gap: 6px; align-items: center; }
-    .menu-apple { font-size: 18px; margin-right: 8px; }
-
-    .window {
-      margin: 24px auto 0;
-      width: min(640px, 95%);
-      background: var(--panel-light);
-      border: 1px solid #000;
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-    }
-
-    .title-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      background: linear-gradient(#898989, #5c5c5c);
-      color: #fff;
-      border-bottom: 1px solid #000;
-      box-shadow: inset 1px 1px #bbb, inset -1px -1px #333;
-    }
-
-    .window-controls { display: inline-flex; gap: 4px; }
-
-    .window-controls span {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border: 1px solid #000;
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-    }
-
-    .title-text { flex: 1; font-weight: bold; letter-spacing: 0.4px; text-align: center; }
-
-    .window-body { padding: 22px 26px 28px; }
-
-    header.window-header {
-      display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 24px;
     }
 
-    .title { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .brand {
+      height: 44px;
+      width: auto;
+    }
+
+    main {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px 64px;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      box-shadow: 0 12px 32px rgba(17, 17, 17, 0.08);
+    }
+
+    .page-head {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .page-head h1 {
+      font-size: 1.45rem;
+      margin: 0;
+    }
+
+    .page-head p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
     .tag {
-      padding: 3px 10px;
-      border: 1px solid #000;
-      background: var(--panel-mid);
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(17, 17, 17, 0.06);
+      font-size: 0.8rem;
+      font-weight: 600;
     }
 
-    .beta-note {
-      margin-bottom: 16px;
-      padding: 10px 12px;
-      border: 1px solid #000;
-      background: var(--panel-light);
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-      font-weight: bold;
-      text-align: center;
+    .beta-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 214, 107, 0.25);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #7a4c00;
     }
 
-    .nav-home {
-      display: flex;
-      margin-bottom: 16px;
-    }
-
-    .brand-logo {
-      width: min(160px, 50%);
-      display: block;
-      margin: 0 auto 16px;
-      image-rendering: pixelated;
-    }
-
-    .card { display: flex; flex-direction: column; gap: 18px; }
-
-    label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: bold;
-      margin-bottom: 6px;
-      letter-spacing: 0.4px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 9px 10px;
-      border: 1px solid #000;
-      background: var(--panel-light);
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-      font-family: inherit;
-      font-size: 14px;
-    }
-
-    .row { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .field {
-      flex: 1;
-      min-width: 220px;
+    form {
       display: flex;
       flex-direction: column;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .field-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(17, 17, 17, 0.18);
+      outline-offset: 2px;
     }
 
     .actions {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      gap: 12px;
     }
 
-    button.btn, .btn {
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 9px 16px;
-      border: 1px solid #000;
-      background: var(--panel-light);
-      box-shadow:
-        inset 1px 1px var(--highlight),
-        inset -1px -1px var(--shadow),
-        2px 2px 0 #000;
-      cursor: pointer;
-      font-size: 13px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-weight: 600;
+      font-size: 0.95rem;
       text-decoration: none;
-      color: inherit;
-      transition: none;
-      font-family: inherit;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
     }
 
-    button.btn:hover, .btn:hover {
-      box-shadow:
-        inset -1px -1px var(--highlight),
-        inset 1px 1px var(--shadow),
-        2px 2px 0 #000;
+    .btn:hover {
+      background: #efefef;
+      transform: translateY(-1px);
     }
 
-    .btn.primary { background: var(--panel-mid); font-weight: bold; }
+    .btn.primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: transparent;
+    }
 
-    .divider { height: 1px; background: #000; margin: 24px 0; }
+    .btn.primary:hover {
+      background: #000000;
+    }
 
     footer {
-      font-size: 12px;
+      margin-top: 30px;
+      font-size: 0.85rem;
       color: var(--muted);
-      line-height: 1.4;
-      text-align: center;
+      line-height: 1.5;
     }
 
-    footer a { color: inherit; text-decoration: none; font-weight: bold; }
-    footer a:hover { text-decoration: underline; }
+    footer a {
+      color: inherit;
+      font-weight: 600;
+      text-decoration: none;
+    }
 
-    @media (max-width: 540px) {
-      body { padding: 16px; }
-      .menu-bar { font-size: 12px; gap: 12px; }
-      .window { width: 100%; margin-top: 12px; }
-      .window-body { padding: 18px; }
-      .row { flex-direction: column; }
-      .field { min-width: 100%; }
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 
 <body>
-  <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item menu-apple"></span>
-      <span class="menu-item">open source tools for hospitality workers</span>
-    </div>
+  <header class="top-bar">
+    <a class="back-link" href="index.html">← Home</a>
+    <img src="logo_1.svg" alt="Bistrot Bastards logo" class="brand" />
+  </header>
 
-    <div class="window">
-      <div class="title-bar">
-        <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Waiter Setup Console</span>
-      </div>
-
-      <div class="window-body">
-        <div class="nav-home">
-          <a class="btn" href="index.html">← Home</a>
+  <main>
+    <section class="card">
+      <div class="page-head">
+        <h1>Waiter Setup Console</h1>
+        <p>Configure your defaults before handing guests the tipping page. Everything saves locally on this device.</p>
+        <div class="tag-list">
+          <span class="tag" id="tagCrypto">—</span>
+          <span class="tag" id="tagFiat">—</span>
+          <span class="tag" id="tagAddr">—</span>
         </div>
-        <img src="logo_1.svg" alt="Bistrot Bastards logo" class="brand-logo" />
-        <header class="window-header">
-          <div class="title">BLOCKCHAIN PAYMENTS</div>
-          <div class="tags">
-            <span class="tag" id="tagCrypto">—</span>
-            <span class="tag" id="tagFiat">—</span>
-            <span class="tag" id="tagAddr">—</span>
-          </div>
-        </header>
-
-        <p class="beta-note">This setup console is a beta build that is still being polished.</p>
-
-        <section class="card">
-          <div class="row">
-            <div class="field">
-              <label for="crypto">Crypto network</label>
-              <select id="crypto">
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="fiat">Bill currency</label>
-              <select id="fiat">
-                <option value="USD">US Dollar ($)</option>
-                <option value="EUR">Euro (€)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="field">
-              <label for="bill">Bill amount</label>
-              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
-            </div>
-            <div class="field">
-              <label for="address">Wallet address</label>
-              <input id="address" placeholder="Enter your wallet address" />
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn primary" id="toGuest">Open Guest Page</button>
-            <button class="btn" id="saveDefaults">Save defaults</button>
-            <button class="btn" id="clearDefaults">Clear</button>
-          </div>
-        </section>
-
-        <div class="divider"></div>
-        <footer>
-          <p>
-            <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a> —
-            Open-source under the
-            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">AGPL-3.0 License</a>.<br />
-            Feel free to reuse or remix this code as long as your project stays open-source too.
-          </p>
-        </footer>
+        <span class="beta-badge">Beta build — expect rough edges</span>
       </div>
-    </div>
-  </div>
+
+      <form>
+        <div class="field-grid two">
+          <div>
+            <label for="crypto">Crypto network</label>
+            <select id="crypto">
+              <option value="ETH">Ethereum (ETH)</option>
+              <option value="BTC">Bitcoin (BTC)</option>
+            </select>
+          </div>
+          <div>
+            <label for="fiat">Bill currency</label>
+            <select id="fiat">
+              <option value="USD">US Dollar ($)</option>
+              <option value="EUR">Euro (€)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-grid two">
+          <div>
+            <label for="bill">Bill amount</label>
+            <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
+          </div>
+          <div>
+            <label for="address">Wallet address</label>
+            <input id="address" placeholder="Enter your wallet address" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn primary" id="toGuest">Open Guest Page</button>
+          <button type="button" class="btn" id="saveDefaults">Save defaults</button>
+          <button type="button" class="btn" id="clearDefaults">Clear</button>
+        </div>
+      </form>
+
+      <footer>
+        <p>
+          <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
+          — Open-source under the
+          <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
+          Feel free to reuse or remix this code as long as your project stays open-source too.
+        </p>
+      </footer>
+    </section>
+  </main>
 
   <script>
-    const $ = s => document.querySelector(s)
-    const LS = { crypto: 'TIPFI_CRYPTO', addr: 'TIPFI_ADDR', fiat: 'TIPFI_FIAT' }
+    const $ = selector => document.querySelector(selector);
+    const LS = { crypto: 'TIPFI_CRYPTO', addr: 'TIPFI_ADDR', fiat: 'TIPFI_FIAT' };
 
     window.addEventListener('DOMContentLoaded', () => {
-      $('#crypto').value = localStorage.getItem(LS.crypto) || 'ETH'
-      $('#address').value = localStorage.getItem(LS.addr) || ''
-      $('#fiat').value = localStorage.getItem(LS.fiat) || 'USD'
-      refreshTags()
-    })
+      $('#crypto').value = localStorage.getItem(LS.crypto) || 'ETH';
+      $('#address').value = localStorage.getItem(LS.addr) || '';
+      $('#fiat').value = localStorage.getItem(LS.fiat) || 'USD';
+      refreshTags();
+    });
 
-    ;['crypto', 'address', 'fiat'].forEach(id => {
-      $(`#${id}`).addEventListener('input', refreshTags)
-      $(`#${id}`).addEventListener('change', refreshTags)
-    })
+    ['crypto', 'address', 'fiat'].forEach(id => {
+      $(`#${id}`).addEventListener('input', refreshTags);
+      $(`#${id}`).addEventListener('change', refreshTags);
+    });
 
     function refreshTags() {
-      const c = $('#crypto').value
-      const f = $('#fiat').value
-      const a = ($('#address').value || '').trim()
-      $('#tagCrypto').textContent = c
-      $('#tagFiat').textContent = f
-      $('#tagAddr').textContent = a ? `…${a.slice(-6)}` : '—'
+      const c = $('#crypto').value;
+      const f = $('#fiat').value;
+      const a = ($('#address').value || '').trim();
+      $('#tagCrypto').textContent = c;
+      $('#tagFiat').textContent = f;
+      $('#tagAddr').textContent = a ? `…${a.slice(-6)}` : '—';
     }
 
     $('#saveDefaults').addEventListener('click', () => {
-      localStorage.setItem(LS.crypto, $('#crypto').value)
-      localStorage.setItem(LS.fiat, $('#fiat').value)
-      localStorage.setItem(LS.addr, ($('#address').value || '').trim())
-      alert('Defaults saved.')
-    })
+      localStorage.setItem(LS.crypto, $('#crypto').value);
+      localStorage.setItem(LS.fiat, $('#fiat').value);
+      localStorage.setItem(LS.addr, ($('#address').value || '').trim());
+      alert('Defaults saved.');
+    });
 
     $('#clearDefaults').addEventListener('click', () => {
-      Object.values(LS).forEach(k => localStorage.removeItem(k))
-      alert('Cleared.')
-    })
+      Object.values(LS).forEach(k => localStorage.removeItem(k));
+      refreshTags();
+      alert('Cleared.');
+    });
 
     $('#toGuest').addEventListener('click', () => {
-      const crypto = $('#crypto').value
-      const addr = ($('#address').value || '').trim()
-      const bill = parseFloat($('#bill').value)
-      const fiat = $('#fiat').value
+      const crypto = $('#crypto').value;
+      const addr = ($('#address').value || '').trim();
+      const bill = parseFloat($('#bill').value);
+      const fiat = $('#fiat').value;
 
       if (!addr) {
-        alert('Please enter your wallet address.')
-        return
+        alert('Please enter your wallet address.');
+        return;
       }
       if (!(bill > 0)) {
-        alert('Enter a bill amount greater than 0.')
-        return
+        alert('Enter a bill amount greater than 0.');
+        return;
       }
 
-      localStorage.setItem(LS.crypto, crypto)
-      localStorage.setItem(LS.fiat, fiat)
-      localStorage.setItem(LS.addr, addr)
+      localStorage.setItem(LS.crypto, crypto);
+      localStorage.setItem(LS.fiat, fiat);
+      localStorage.setItem(LS.addr, addr);
 
-      const params = new URLSearchParams({ crypto, fiat, addr, bill: bill.toString() })
-      location.href = `guest.html?${params.toString()}`
-    })
+      const params = new URLSearchParams({ crypto, fiat, addr, bill: bill.toString() });
+      location.href = `guest.html?${params.toString()}`;
+    });
   </script>
 </body>
 </html>

@@ -8,179 +8,113 @@
   <meta name="description" content="Bistrot Bastards — open hospitality tools in active development." />
   <style>
     :root {
-      --bg-light: #d9d9d9;
-      --bg-dark: #c3c3c3;
-      --panel-light: #f5f5f5;
-      --panel-dark: #6f6f6f;
-      --text: #000;
-      --muted: #333;
-      --highlight: #ffffff;
-      --shadow: #7d7d7d;
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --border: #e0e0e0;
+      --accent: #111111;
+      --muted: #5c5c5c;
+      --radius: 14px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
-      font-family: "Chicago", "Charcoal", "Geneva", "Segoe UI", sans-serif;
-      background:
-        linear-gradient(90deg, var(--bg-light) 0, var(--bg-light) 50%, var(--bg-dark) 50%, var(--bg-dark) 100%);
-      background-size: 8px 8px;
-      color: var(--text);
-    }
-
     body {
+      margin: 0;
+      font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--accent);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px 24px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 24px;
-      gap: 16px;
-    }
-
-    .desktop {
-      width: min(960px, 100%);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .menu-bar {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 6px 12px;
-      background: linear-gradient(#6d6d6d, #4c4c4c);
-      color: #fff;
-      font-size: 14px;
-      letter-spacing: 0.3px;
-      border: 1px solid #000;
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-    }
-
-    .menu-item {
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .menu-apple {
-      font-size: 18px;
-      margin-right: 8px;
-    }
-
-    .window {
-      margin: 24px auto 0;
-      width: min(520px, 95%);
-      background: var(--panel-light);
-      border: 1px solid #000;
-      box-shadow:
-        inset 1px 1px var(--highlight),
-        inset -1px -1px var(--shadow);
-    }
-
-    .title-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      background: linear-gradient(#898989, #5c5c5c);
-      color: #fff;
-      border-bottom: 1px solid #000;
-      box-shadow: inset 1px 1px #bbb, inset -1px -1px #333;
-    }
-
-    .window-controls {
-      display: inline-flex;
-      gap: 4px;
-    }
-
-    .window-controls span {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border: 1px solid #000;
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-    }
-
-    .title-text {
-      flex: 1;
-      font-weight: bold;
-      letter-spacing: 0.4px;
+      gap: 12px;
       text-align: center;
     }
 
-    .window-body {
-      padding: 22px 26px 28px;
-      text-align: center;
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
     }
 
-    .hero-logo {
-      width: min(220px, 60vw);
+    .logo {
+      width: 160px;
+      max-width: 60vw;
       height: auto;
       display: block;
-      margin: 0 auto 18px;
-      image-rendering: pixelated;
     }
 
-    p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 18px;
+    main {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
     }
 
     .beta-note {
-      padding: 10px 12px;
-      border: 1px solid #000;
-      background: var(--panel-light);
-      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-      font-weight: bold;
-      margin-bottom: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(17, 17, 17, 0.05);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
     }
 
-    .btns {
+    .btn-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin: 22px 0;
+      gap: 14px;
+      margin: 26px 0 10px;
     }
 
-    a.btn {
-      display: block;
-      padding: 10px 14px;
-      border: 2px solid #000;
-      background: var(--panel-light);
-      color: #000;
-      font-size: 14px;
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-weight: 600;
+      font-size: 0.95rem;
       text-decoration: none;
-      box-shadow:
-        inset 1px 1px var(--highlight),
-        inset -1px -1px var(--shadow),
-        2px 2px 0 #000;
-      transition: none;
+      color: var(--accent);
+      transition: background 0.2s ease, transform 0.15s ease;
     }
 
-    a.btn:hover {
-      box-shadow:
-        inset -1px -1px var(--highlight),
-        inset 1px 1px var(--shadow),
-        2px 2px 0 #000;
+    .btn-link:hover {
+      background: #efefef;
+      transform: translateY(-1px);
     }
 
     footer {
-      font-size: 12px;
+      margin-top: 36px;
+      font-size: 0.85rem;
       color: var(--muted);
-      border-top: 1px solid #000;
-      margin-top: 18px;
-      padding-top: 10px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     footer a {
-      color: #000;
+      color: inherit;
       text-decoration: none;
       font-weight: 600;
     }
@@ -188,61 +122,29 @@
     footer a:hover {
       text-decoration: underline;
     }
-
-    @media (max-width: 540px) {
-      body {
-        padding: 16px;
-      }
-
-      .menu-bar {
-        font-size: 12px;
-        gap: 12px;
-      }
-
-      .window {
-        width: 100%;
-      }
-
-      .window-body {
-        padding: 18px;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item menu-apple"></span>
-      <span class="menu-item">open source tools for hospitality workers</span>
-    </div>
+  <header>
+    <img src="logo_1.svg" alt="Bistrot Bastards logo" class="logo" />
+    <p>Open tools for hospitality workers. Everything you see here is still in beta.</p>
+  </header>
 
-    <div class="window">
-      <div class="title-bar">
-        <div class="window-controls">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <span class="title-text" aria-hidden="true">&nbsp;</span>
+  <main>
+    <section class="card">
+      <span class="beta-note">Beta workspace</span>
+
+      <div class="btn-list">
+        <a class="btn-link" href="waiter.html">Crypto Tipping (staff setup)</a>
+        <a class="btn-link" href="guest.html">Crypto Tipping (guest flow)</a>
+        <a class="btn-link" href="googlereview.html">Podium Challenge</a>
       </div>
-      <div class="window-body">
-        <img src="logo_1.svg" alt="Bistrot Bastards logo" class="hero-logo" />
-        <p class="beta-note">Everything here is a beta build that is still under active development.</p>
-        <div class="btns">
-          <a class="btn" href="waiter.html">Crypto Tipping</a>
-          <a class="btn" href="googlereview.html">Podium Challenge</a>
-        </div>
 
-        <p style="font-size:13px;">
-          Licensed under AGPL-3.0 — reuse allowed if your version stays open.<br>
-          Community feedback and UX ideas are shared on Reddit.
-        </p>
-
-        <footer>
-          <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank">@Square_Ad_7551</a>
-        </footer>
-      </div>
-    </div>
-  </div>
+      <footer>
+        Licensed under AGPL-3.0 — forks welcome if they stay open-source.<br>
+        Feedback? <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
+      </footer>
+    </section>
+  </main>
 </body>
 </html>
