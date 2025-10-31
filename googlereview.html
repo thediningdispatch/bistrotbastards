@@ -9,10 +9,29 @@
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Podium Challenge</span>
+      <span class="menu-item">Podium Challenge Toolkit</span>
     </div>
 
     <div class="window">
@@ -22,62 +41,65 @@
       </div>
 
       <div class="window-body">
-        <div class="toolbar">
-          <a class="btn" href="index.html">← Home</a>
-          <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
-        </div>
-
-        <h1>Podium Challenge</h1>
-        <p>Help your server win the bottle. Draft your review here, copy it, then paste it into Google.</p>
-
-        <div class="steps">
-          <strong>Three quick steps</strong>
-          <ol>
-            <li>Pick the server who looked after you.</li>
-            <li>Choose the mood that fits the service and add a short message.</li>
-            <li>Copy, paste on Google, and hit publish.</li>
-          </ol>
-        </div>
-
-        <form id="reviewForm">
-          <div>
-            <label for="serverSelect">Server</label>
-            <select id="serverSelect" name="server" required>
-              <option value="">Who looked after you?</option>
-              <option value="Jules">🕺 Jules</option>
-              <option value="Chloe">💃 Chloe</option>
-            </select>
+        <div id="app">
+          <div class="toolbar">
+            <a class="btn" href="index.html">← Home</a>
+            <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
           </div>
 
-          <div>
-            <label>Experience</label>
-            <div class="emoji-row" id="moodRow">
-              <div class="emoji" data-mood="🥲" aria-label="Needs improvement">🥲</div>
-              <div class="emoji" data-mood="😋" aria-label="Good service">😋</div>
-              <div class="emoji" data-mood="🤩" aria-label="Outstanding service">🤩</div>
+          <h1>Podium Challenge</h1>
+          <p>Help your server win the bottle. Draft your review here, copy it, then paste it into Google.</p>
+
+          <div class="steps">
+            <strong>Three quick steps</strong>
+            <ol>
+              <li>Pick the server who looked after you.</li>
+              <li>Choose the mood that fits the service and add a short message.</li>
+              <li>Copy, paste on Google, and hit publish.</li>
+            </ol>
+          </div>
+
+          <form id="reviewForm">
+            <div>
+              <label for="serverSelect">Server</label>
+              <select id="serverSelect" name="server" required>
+                <option value="">Who looked after you?</option>
+                <option value="Jules">🕺 Jules</option>
+                <option value="Chloe">💃 Chloe</option>
+              </select>
             </div>
-            <p class="hint-inline">Tap the emoji that best matches your visit.</p>
-          </div>
 
-          <input type="hidden" name="mood" id="moodInput" />
+            <div>
+              <label>Experience</label>
+              <div class="emoji-row" id="moodRow">
+                <div class="emoji" data-mood="🥲" aria-label="Needs improvement">🥲</div>
+                <div class="emoji" data-mood="😋" aria-label="Good service">😋</div>
+                <div class="emoji" data-mood="🤩" aria-label="Outstanding service">🤩</div>
+              </div>
+              <p class="hint-inline">Tap the emoji that best matches your visit.</p>
+            </div>
 
-          <div>
-            <label for="commentField">Your message</label>
-            <textarea id="commentField" name="comment" rows="4" placeholder="Share a quick note about your experience ✍️"></textarea>
-          </div>
+            <input type="hidden" name="mood" id="moodInput" />
 
-          <button class="btn" type="submit">Copy review & continue</button>
-        </form>
+            <div>
+              <label for="commentField">Your message</label>
+              <textarea id="commentField" name="comment" rows="4" placeholder="Share a quick note about your experience ✍️"></textarea>
+            </div>
 
-        <footer class="footer">
-          <p>
-            Thank you for your review — it helps our team shine.
-          </p>
-        </footer>
+            <button class="btn" type="submit">Copy review & continue</button>
+          </form>
+
+          <footer class="footer">
+            <p>
+              Thank you for your review — it helps our team shine.
+            </p>
+          </footer>
+        </div>
       </div>
     </div>
   </div>
 
+  <script src="main.js" defer></script>
   <script>
     document.querySelectorAll('.emoji').forEach(emoji => {
       emoji.addEventListener('click', () => {

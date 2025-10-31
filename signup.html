@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Sign Up — Bistrot Bastards</title>
+  <meta name="description" content="Create your waiter account for the Bistrot Bastards platform." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Waiter Sign-Up</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Create Your Account</span>
+      </div>
+
+      <div class="window-body">
+        <div id="app">
+          <p>Fill in your details to join Bistrot Bastards and start tracking your service performance.</p>
+
+          <form id="signupForm">
+            <div class="two-column">
+              <div>
+                <label for="signupName">Full name</label>
+                <input id="signupName" name="name" placeholder="Alex Waiter" required />
+              </div>
+              <div>
+                <label for="signupRestaurant">Restaurant code</label>
+                <input id="signupRestaurant" name="restaurant" placeholder="Enter code" required />
+              </div>
+            </div>
+
+            <div class="two-column">
+              <div>
+                <label for="signupEmail">Email</label>
+                <input id="signupEmail" name="email" type="email" placeholder="you@example.com" required />
+              </div>
+              <div>
+                <label for="signupPhone">Phone</label>
+                <input id="signupPhone" name="phone" type="tel" placeholder="Optional" />
+              </div>
+            </div>
+
+            <div class="two-column">
+              <div>
+                <label for="signupPassword">Password</label>
+                <input id="signupPassword" name="password" type="password" placeholder="Create a password" required />
+              </div>
+              <div>
+                <label for="signupRole">Role</label>
+                <select id="signupRole" name="role">
+                  <option value="waiter" selected>Waiter</option>
+                  <option value="manager">Manager</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn">Sign up</button>
+              <a class="btn" href="login.html">Already have an account?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', evt => {
+      evt.preventDefault();
+      const formData = new FormData(evt.target);
+      const user = {
+        username: formData.get('name'),
+        role: formData.get('role') || 'waiter',
+        avatar: null
+      };
+      window.appState.setUser(user);
+      alert('Account created! Redirecting to dashboard.');
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

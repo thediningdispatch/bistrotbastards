@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dashboard — Bistrot Bastards</title>
+  <meta name="description" content="Overview of your latest service metrics and quick actions." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Waiter Dashboard</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Service Overview</span>
+      </div>
+
+      <div class="window-body">
+        <div id="app">
+          <p>Your personal cockpit for tipping performance, guest feedback, and team milestones.</p>
+
+          <div class="two-column">
+            <section class="panel">
+              <h2>Shift summary</h2>
+              <ul>
+                <li><strong>Tips captured:</strong> 185 €</li>
+                <li><strong>Average rating:</strong> 4.7 / 5</li>
+                <li><strong>Guests served:</strong> 42</li>
+              </ul>
+            </section>
+            <section class="panel">
+              <h2>Goals</h2>
+              <ul>
+                <li>Collect 10 Google reviews this week</li>
+                <li>Maintain 4.6+ satisfaction score</li>
+                <li>Upsell signature cocktail 5 times</li>
+              </ul>
+            </section>
+          </div>
+
+          <section class="panel" id="profile">
+            <h2>Profile</h2>
+            <p>Update your personal details, availability, and preferred contact information.</p>
+            <div class="actions">
+              <a class="btn" href="signup.html">Edit profile</a>
+              <a class="btn" href="leaderboard.html">View team leaderboard</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

@@ -9,6 +9,25 @@
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -22,130 +41,123 @@
       </div>
 
       <div class="window-body">
-        <div class="toolbar">
-          <a class="btn" href="index.html">← Home</a>
-          <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
-        </div>
-
-        <h1>Waiter Setup Console</h1>
-        <p>Configure your defaults before handing guests the tipping page. Everything saves locally on this device.</p>
-
-        <div class="tag-list">
-          <span class="tag" id="tagCrypto">—</span>
-          <span class="tag" id="tagFiat">—</span>
-          <span class="tag" id="tagAddr">—</span>
-        </div>
-
-        <span class="beta-badge">Beta build — expect rough edges</span>
-
-        <form>
-          <div class="two-column">
-            <div>
-              <label for="crypto">Crypto network</label>
-              <select id="crypto">
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-              </select>
-            </div>
-            <div>
-              <label for="fiat">Bill currency</label>
-              <select id="fiat">
-                <option value="USD">US Dollar ($)</option>
-                <option value="EUR">Euro (€)</option>
-              </select>
-            </div>
+        <div id="app">
+          <div class="toolbar">
+            <a class="btn" href="index.html">← Home</a>
+            <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
           </div>
 
-          <div class="two-column">
-            <div>
-              <label for="bill">Bill amount</label>
-              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
+          <h1>Waiter Setup Console</h1>
+          <p>Configure your defaults before handing guests the tipping page. Everything saves locally on this device.</p>
+
+          <div class="tag-list">
+            <span class="tag" id="tagCrypto">—</span>
+            <span class="tag" id="tagFiat">—</span>
+            <span class="tag" id="tagAddr">—</span>
+          </div>
+
+          <span class="beta-badge">Beta build — expect rough edges</span>
+
+          <form>
+            <div class="two-column">
+              <div>
+                <label for="crypto">Crypto network</label>
+                <select id="crypto">
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="BTC">Bitcoin (BTC)</option>
+                </select>
+              </div>
+              <div>
+                <label for="fiat">Bill currency</label>
+                <select id="fiat">
+                  <option value="USD">US Dollar ($)</option>
+                  <option value="EUR">Euro (€)</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label for="address">Wallet address</label>
-              <input id="address" placeholder="Enter your wallet address" />
+
+            <div class="two-column">
+              <div>
+                <label for="bill">Bill amount</label>
+                <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
+              </div>
+              <div>
+                <label for="address">Wallet address</label>
+                <input id="address" placeholder="Enter your wallet address" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="button" class="btn" id="toGuest">Preview Guest Flow</button>
+              <button type="button" class="btn" id="saveDefaults">Save defaults</button>
+              <button type="button" class="btn" id="clearDefaults">Clear</button>
+            </div>
+          </form>
+
+          <div class="window" id="guestWindow">
+            <div class="title-bar">
+              <div class="window-controls"><span></span><span></span><span></span></div>
+              <span class="title-text">Guest Tipping Console</span>
+            </div>
+
+            <div class="window-body">
+              <h1>Guest Tipping Console</h1>
+              <p>Select your tip, scan the QR code, and confirm the amount inside your wallet.</p>
+
+              <div class="tag-list">
+                <span class="tag" id="guestTagCrypto">—</span>
+                <span class="tag" id="guestTagFiat">—</span>
+                <span class="tag" id="guestTagAddr">—</span>
+              </div>
+
+              <span class="beta-badge">Beta build — verify all details before sending funds</span>
+
+              <div class="hint">Select a preset percentage</div>
+              <div class="percent-grid" id="guestPercentGrid">
+                <button class="pill" data-p="5"><div class="pct">5%</div><div class="approx">≈ —</div></button>
+                <button class="pill" data-p="10"><div class="pct">10%</div><div class="approx">≈ —</div></button>
+                <button class="pill" data-p="15"><div class="pct">15%</div><div class="approx">≈ —</div></button>
+                <button class="pill" data-p="20"><div class="pct">20%</div><div class="approx">≈ —</div></button>
+              </div>
+
+              <div class="toolbar">
+                <span class="hint">Or enter a custom %</span>
+                <input id="guestCustomP" type="number" step="0.5" min="0" placeholder="Custom %" />
+                <button class="btn" id="guestApplyCustom" type="button">Apply</button>
+              </div>
+
+              <div class="summary">
+                <div class="kpi"><b>Bill</b><span id="guestBillFiat">—</span></div>
+                <div class="kpi"><b>Tip</b><span id="guestTipFiat">—</span></div>
+              </div>
+
+              <div class="qr-wrap" id="guestQrWrap">
+                <div class="qr-box"><canvas id="guestQrCanvas"></canvas></div>
+                <p class="qr-hint">Live rates from Coinbase. Always double-check the final amount before confirming.</p>
+                <div class="actions">
+                  <a class="btn" id="guestOpenWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
+                  <button class="btn" id="guestCopyLink" type="button">Copy Payment Link</button>
+                  <button class="btn" id="guestCopyAmount" type="button">Copy Tip Amount</button>
+                </div>
+                <div class="uri-preview" id="guestUriPreview">—</div>
+              </div>
+
+              <footer class="footer">
+                <p>
+                  <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
+                  — Open-source under the
+                  <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
+                  Feel free to reuse or remix this code as long as your project stays open-source too.
+                </p>
+              </footer>
             </div>
           </div>
-
-          <div class="actions">
-            <button type="button" class="btn" id="toGuest">Open Guest Page</button>
-            <button type="button" class="btn" id="saveDefaults">Save defaults</button>
-            <button type="button" class="btn" id="clearDefaults">Clear</button>
-          </div>
-        </form>
-
-        <footer class="footer">
-          <p>
-            <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
-            — Open-source under the
-            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
-            Feel free to reuse or remix this code as long as your project stays open-source too.
-          </p>
-        </footer>
-      </div>
-    </div>
-
-    <div class="window" id="guestWindow">
-      <div class="title-bar">
-        <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Guest Tipping Console</span>
-      </div>
-
-      <div class="window-body">
-        <h1>Guest Tipping Console</h1>
-        <p>Select your tip, scan the QR code, and confirm the amount inside your wallet.</p>
-
-        <div class="tag-list">
-          <span class="tag" id="guestTagCrypto">—</span>
-          <span class="tag" id="guestTagFiat">—</span>
-          <span class="tag" id="guestTagAddr">—</span>
         </div>
-
-        <span class="beta-badge">Beta build — verify all details before sending funds</span>
-
-        <div class="hint">Select a preset percentage</div>
-        <div class="percent-grid" id="guestPercentGrid">
-          <button class="pill" data-p="5"><div class="pct">5%</div><div class="approx">≈ —</div></button>
-          <button class="pill" data-p="10"><div class="pct">10%</div><div class="approx">≈ —</div></button>
-          <button class="pill" data-p="15"><div class="pct">15%</div><div class="approx">≈ —</div></button>
-          <button class="pill" data-p="20"><div class="pct">20%</div><div class="approx">≈ —</div></button>
-        </div>
-
-        <div class="toolbar">
-          <span class="hint">Or enter a custom %</span>
-          <input id="guestCustomP" type="number" step="0.5" min="0" placeholder="Custom %" />
-          <button class="btn" id="guestApplyCustom" type="button">Apply</button>
-        </div>
-
-        <div class="summary">
-          <div class="kpi"><b>Bill</b><span id="guestBillFiat">—</span></div>
-          <div class="kpi"><b>Tip</b><span id="guestTipFiat">—</span></div>
-        </div>
-
-        <div class="qr-wrap" id="guestQrWrap">
-          <div class="qr-box"><canvas id="guestQrCanvas"></canvas></div>
-          <p class="qr-hint">Live rates from Coinbase. Always double-check the final amount before confirming.</p>
-          <div class="actions">
-            <a class="btn" id="guestOpenWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
-            <button class="btn" id="guestCopyLink" type="button">Copy Payment Link</button>
-            <button class="btn" id="guestCopyAmount" type="button">Copy Tip Amount</button>
-          </div>
-          <div class="uri-preview" id="guestUriPreview">—</div>
-        </div>
-
-        <footer class="footer">
-          <p>
-            <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
-            — Open-source under the
-            <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">AGPL-3.0 License</a>.
-            Feel free to reuse or remix this code as long as your project stays open-source too.
-          </p>
-        </footer>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
+  <script src="main.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
   <script>
     const $ = selector => document.querySelector(selector);
@@ -174,7 +186,6 @@
     };
 
     const guestEls = {
-      container: document.getElementById('guestWindow'),
       tags: {
         crypto: $('#guestTagCrypto'),
         fiat: $('#guestTagFiat'),
@@ -202,14 +213,21 @@
       staffTags.addr.textContent = addr ? `…${addr.slice(-6)}` : '—';
     }
 
+    function updateGuestTags() {
+      const hasContext = guestState.bill > 0 && !!guestState.addr;
+      guestEls.tags.crypto.textContent = hasContext ? guestState.crypto : '—';
+      guestEls.tags.fiat.textContent = hasContext ? guestState.fiat : '—';
+      guestEls.tags.addr.textContent = hasContext ? `…${guestState.addr.slice(-6)}` : '—';
+      guestEls.summaryBill.textContent = hasContext
+        ? `${guestState.bill.toFixed(2)} ${guestState.fiat}`
+        : '—';
+    }
+
     function resetGuestView() {
       guestState.lastPercent = null;
       guestEls.percentButtons.forEach(btn => btn.classList.remove('active'));
       guestEls.qrWrap.style.display = 'none';
       guestEls.summaryTip.textContent = '—';
-      guestEls.summaryBill.textContent = guestState.bill > 0
-        ? `${guestState.bill.toFixed(2)} ${guestState.fiat}`
-        : '—';
       guestEls.uriPreview.textContent = '—';
     }
 
@@ -223,16 +241,6 @@
       });
     }
 
-    function updateGuestTags() {
-      const hasContext = guestState.bill > 0 && !!guestState.addr;
-      guestEls.tags.crypto.textContent = hasContext ? guestState.crypto : '—';
-      guestEls.tags.fiat.textContent = hasContext ? guestState.fiat : '—';
-      guestEls.tags.addr.textContent = hasContext ? `…${guestState.addr.slice(-6)}` : '—';
-      guestEls.summaryBill.textContent = hasContext
-        ? `${guestState.bill.toFixed(2)} ${guestState.fiat}`
-        : '—';
-    }
-
     function setGuestContext({ crypto, fiat, addr, bill }) {
       guestState.crypto = crypto;
       guestState.fiat = fiat;
@@ -241,7 +249,7 @@
       updateGuestTags();
       resetGuestView();
       refreshGuestApprox();
-      guestEls.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('guestWindow').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async function renderGuestForPercent(percent) {
@@ -300,6 +308,7 @@
       staffInputs.fiat.value = localStorage.getItem(LS.fiat) || 'USD';
       staffInputs.bill.value = '';
       refreshStaffTags();
+      updateGuestTags();
       resetGuestView();
       refreshGuestApprox();
     });

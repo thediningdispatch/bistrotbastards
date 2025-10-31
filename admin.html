@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Manager Dashboard — Bistrot Bastards</title>
+  <meta name="description" content="Track team satisfaction, send announcements, and review metrics." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">M</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">manager</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Manager Control Center</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Team Overview</span>
+      </div>
+
+      <div class="window-body">
+        <div id="app">
+          <p>Monitor satisfaction trends, broadcast announcements, and stay ahead of staffing needs.</p>
+
+          <div class="two-column">
+            <section class="panel">
+              <h2>Satisfaction pulse</h2>
+              <ul>
+                <li><strong>Overall score:</strong> 4.6 / 5</li>
+                <li><strong>Shift coverage:</strong> 98%</li>
+                <li><strong>Turnover risk:</strong> Low</li>
+              </ul>
+            </section>
+            <section class="panel">
+              <h2>Announcements</h2>
+              <textarea rows="3" placeholder="Draft your next service update…"></textarea>
+              <div class="actions" style="margin-top:8px;">
+                <button class="btn" type="button">Send to team</button>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel">
+            <h2>Actions</h2>
+            <div class="actions">
+              <a class="btn" href="leaderboard.html">View leaderboard</a>
+              <a class="btn" href="chat.html">Join team chat</a>
+              <a class="btn" href="signup.html">Invite a new waiter</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

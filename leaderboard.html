@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Leaderboard — Bistrot Bastards</title>
+  <meta name="description" content="Track hospitality performance across your restaurant team." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Team Leaderboard</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Restaurant Rankings</span>
+      </div>
+
+      <div class="window-body">
+        <div id="app">
+          <p>Celebrate top performers and spot coaching opportunities across the floor.</p>
+
+          <div class="panel">
+            <table style="width:100%; border-collapse:collapse;">
+              <thead>
+                <tr>
+                  <th style="text-align:left; padding:6px 4px;">Rank</th>
+                  <th style="text-align:left; padding:6px 4px;">Waiter</th>
+                  <th style="text-align:left; padding:6px 4px;">Tips (€)</th>
+                  <th style="text-align:left; padding:6px 4px;">Reviews</th>
+                  <th style="text-align:left; padding:6px 4px;">Satisfaction</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:6px 4px;">1</td>
+                  <td style="padding:6px 4px;">Jules</td>
+                  <td style="padding:6px 4px;">245</td>
+                  <td style="padding:6px 4px;">18</td>
+                  <td style="padding:6px 4px;">4.9 ★</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 4px;">2</td>
+                  <td style="padding:6px 4px;">Chloé</td>
+                  <td style="padding:6px 4px;">210</td>
+                  <td style="padding:6px 4px;">16</td>
+                  <td style="padding:6px 4px;">4.7 ★</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 4px;">3</td>
+                  <td style="padding:6px 4px;">Marco</td>
+                  <td style="padding:6px 4px;">188</td>
+                  <td style="padding:6px 4px;">12</td>
+                  <td style="padding:6px 4px;">4.6 ★</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="actions">
+            <a class="btn" href="dashboard.html">Back to dashboard</a>
+            <a class="btn" href="chat.html">Congratulate team</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

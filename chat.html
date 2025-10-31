@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Team Chat — Bistrot Bastards</title>
+  <meta name="description" content="Coordinate service in real-time with your teammates." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <nav class="top-nav window">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-avatar" id="navAvatar">B</div>
+        <div class="nav-username">
+          <span id="navUsername">Loading…</span>
+          <small id="navRole">waiter</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
+        <a href="chat.html" data-nav="chat">Chat</a>
+        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
+        <a href="logout" data-nav="logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Service Chat</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Team Channel</span>
+      </div>
+
+      <div class="window-body">
+        <div id="app">
+          <p>Coordinate breaks, share special requests, and celebrate wins in real-time.</p>
+
+          <div class="panel" style="height:220px; overflow:auto;">
+            <ul id="chatLog" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
+              <li><strong>Manager:</strong> Family of six arriving at 20:15 — prep terrace table.</li>
+              <li><strong>Chloé:</strong> Need backup on table 12 for dessert upsell 🍮</li>
+              <li><strong>Jules:</strong> Copy that, on my way.</li>
+            </ul>
+          </div>
+
+          <form id="chatForm" class="two-column" style="align-items:flex-end;">
+            <div>
+              <label for="chatMessage">Message</label>
+              <textarea id="chatMessage" rows="2" placeholder="Type your update…" required></textarea>
+            </div>
+            <div class="actions" style="justify-content:flex-end;">
+              <button type="submit" class="btn">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" defer></script>
+  <script>
+    const chatForm = document.getElementById('chatForm');
+    const chatLog = document.getElementById('chatLog');
+    const chatMessage = document.getElementById('chatMessage');
+
+    chatForm.addEventListener('submit', evt => {
+      evt.preventDefault();
+      const text = chatMessage.value.trim();
+      if (!text) return;
+      const user = window.appState.user;
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${user.username}:</strong> ${text}`;
+      chatLog.appendChild(li);
+      chatMessage.value = '';
+      chatLog.scrollTop = chatLog.scrollHeight;
+    });
+  </script>
+</body>
+</html>
