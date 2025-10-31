@@ -110,6 +110,29 @@
       text-align: center;
     }
 
+    .nav-home {
+      display: flex;
+      margin-bottom: 16px;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow), 2px 2px 0 #000;
+      font-size: 13px;
+      text-decoration: none;
+      color: inherit;
+      transition: none;
+    }
+
+    .btn-link:hover {
+      box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), 2px 2px 0 #000;
+    }
+
     .steps {
       border: 1px solid #000;
       background: var(--panel-mid);
@@ -216,14 +239,17 @@
       <span class="menu-item">open source tools for hospitality workers</span>
     </div>
 
-    <div class="window">
-      <div class="title-bar">
-        <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Google Review Copier</span>
-      </div>
+      <div class="window">
+        <div class="title-bar">
+          <div class="window-controls"><span></span><span></span><span></span></div>
+          <span class="title-text">Google Review Copier</span>
+        </div>
 
-      <div class="window-body">
-        <header class="window-header">
+        <div class="window-body">
+          <div class="nav-home">
+            <a class="btn-link" href="index.html">← Home</a>
+          </div>
+          <header class="window-header">
           <div class="hero">🍸 PODIUM CHALLENGE</div>
           <p class="subtitle">
             Help your server win the bottle 🍾<br />
