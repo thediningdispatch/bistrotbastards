@@ -25,6 +25,10 @@ body {
   padding-top: 112px;
 }
 
+body.no-nav {
+  padding-top: 32px;
+}
+
 .desktop {
   width: min(820px, 100%);
   margin: 12px auto 24px;
@@ -135,6 +139,14 @@ h1 {
   letter-spacing: 0.4px;
 }
 
+h2 {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
 .beta-note,
 .beta-badge {
   display: inline-flex;
@@ -162,6 +174,15 @@ h1 {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+}
+
+.toolbar .logo-text {
+  font-size: 2rem;
+  margin: 0 auto;
+}
+
+.window-body > .logo-text {
+  margin: 0 auto 12px;
 }
 
 button,
@@ -437,6 +458,41 @@ footer a:hover {
   line-height: 1.4;
 }
 
+.avatar-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.avatar-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #000000;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+}
+
+.avatar-option input {
+  margin: 0;
+}
+
+.avatar-option img {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #000000;
+  background: var(--panel-light);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.avatar-option input:checked + img {
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+  background: var(--panel-mid);
+}
+
 .top-nav {
   position: fixed;
   top: 12px;
@@ -459,10 +515,36 @@ footer a:hover {
   gap: 12px;
 }
 
+
+.logo-text {
+  font-family: "Chicago", "Geneva", system-ui, sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: repeating-linear-gradient(
+    -45deg,
+    #000 0,
+    #000 2px,
+    #fff 2px,
+    #fff 4px
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.top-nav .logo-text {
+  flex: 1;
+}
+
 .nav-left {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .nav-avatar {
@@ -498,6 +580,7 @@ footer a:hover {
   gap: 8px;
   justify-content: flex-end;
   font-size: 13px;
+  flex-shrink: 0;
 }
 
 .nav-links a {
@@ -520,6 +603,83 @@ footer a:hover {
   gap: 12px;
 }
 
+.avatar-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.avatar-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #000000;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+}
+
+.avatar-option input {
+  margin: 0;
+}
+
+.avatar-option img {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #000000;
+  background: var(--panel-light);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.avatar-option input:checked + img {
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+  background: var(--panel-mid);
+}
+
+#leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#leaderboard h2 {
+  margin: 0;
+  font-size: 18px;
+  text-transform: uppercase;
+  background: repeating-linear-gradient(
+    -45deg,
+    #000 0,
+    #000 2px,
+    #fff 2px,
+    #fff 4px
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#leaderboardTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#leaderboardTable th,
+#leaderboardTable td {
+  padding: 8px 6px;
+  border: 1px solid #000000;
+  text-align: left;
+}
+
+#leaderboardTable thead {
+  background: var(--panel-mid);
+}
+
+#refreshLeaderboard {
+  align-self: flex-start;
+}
+
 @media (max-width: 640px) {
   .desktop {
     margin: 12px auto 24px;
@@ -530,6 +690,10 @@ footer a:hover {
   .top-nav {
     width: calc(100% - 16px);
     padding: 8px 10px;
+  }
+
+  .top-nav .logo-text {
+    font-size: 1.8rem;
   }
 
   .nav-links {

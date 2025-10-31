@@ -9,25 +9,6 @@
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
-  <nav class="top-nav window">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <div class="nav-avatar" id="navAvatar">B</div>
-        <div class="nav-username">
-          <span id="navUsername">Loading…</span>
-          <small id="navRole">waiter</small>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
-        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
-        <a href="chat.html" data-nav="chat">Chat</a>
-        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
-        <a href="logout" data-nav="logout">Logout</a>
-      </div>
-    </div>
-  </nav>
-
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -40,27 +21,25 @@
         <span class="title-text">Bistrot Bastards</span>
       </div>
 
-      <div class="window-body">
-        <div id="app">
-          <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
-          <p>Open tools for hospitality workers. Everything you see here is still in beta.</p>
+      <div class="window-body" id="app">
+        <h1 class="logo-text">Bistrot Bastards</h1>
+        <p>Open tools for hospitality workers. Everything you see here is still in beta.</p>
 
-          <span class="beta-note">Beta workspace</span>
+        <span class="beta-note">Beta workspace</span>
 
-          <div class="btns">
-            <a class="btn" href="waiter.html">Blockchain Tipping Console</a>
-            <a class="btn" href="googlereview.html">Podium Challenge</a>
-          </div>
-
-          <footer class="footer">
-            Licensed under AGPL-3.0 — forks welcome if they stay open-source.<br>
-            Feedback? <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
-          </footer>
+        <div class="btns">
+          <a class="btn" href="waiter.html">Blockchain Tipping Console</a>
+          <a class="btn" href="googlereview.html">Podium Challenge</a>
         </div>
+
+        <footer class="footer">
+          Licensed under AGPL-3.0 — forks welcome if they stay open-source.<br>
+          Feedback? <a href="https://www.reddit.com/u/Square_Ad_7551" target="_blank" rel="noopener noreferrer">@Square_Ad_7551</a>
+        </footer>
       </div>
     </div>
   </div>
 
-  <script src="main.js" defer></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>

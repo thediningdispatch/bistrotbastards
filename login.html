@@ -8,26 +8,7 @@
   <meta name="description" content="Access your Bistrot Bastards waiter dashboard." />
   <link rel="stylesheet" href="system7.css" />
 </head>
-<body>
-  <nav class="top-nav window">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <div class="nav-avatar" id="navAvatar">B</div>
-        <div class="nav-username">
-          <span id="navUsername">Loading…</span>
-          <small id="navRole">waiter</small>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
-        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
-        <a href="chat.html" data-nav="chat">Chat</a>
-        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
-        <a href="logout" data-nav="logout">Logout</a>
-      </div>
-    </div>
-  </nav>
-
+<body class="no-nav">
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -40,42 +21,30 @@
         <span class="title-text">Welcome back</span>
       </div>
 
-      <div class="window-body">
-        <div id="app">
-          <p>Sign in with your restaurant credentials to access the Bistrot Bastards platform.</p>
+      <div class="window-body" id="app">
+        <p>Sign in with your restaurant credentials to access the Bistrot Bastards platform.</p>
 
-          <form id="loginForm">
-            <div class="two-column">
-              <div>
-                <label for="loginEmail">Email</label>
-                <input id="loginEmail" name="email" type="email" placeholder="you@example.com" required />
-              </div>
-              <div>
-                <label for="loginPassword">Password</label>
-                <input id="loginPassword" name="password" type="password" placeholder="Password" required />
-              </div>
+        <form id="loginForm">
+          <div class="two-column">
+            <div>
+              <label for="loginEmail">Email</label>
+              <input id="loginEmail" name="email" type="email" placeholder="you@example.com" required />
             </div>
+            <div>
+              <label for="loginPassword">Password</label>
+              <input id="loginPassword" name="password" type="password" placeholder="Password" required />
+            </div>
+          </div>
 
-            <div class="actions">
-              <button type="submit" class="btn">Log in</button>
-              <a class="btn" href="signup.html">Need an account?</a>
-            </div>
-          </form>
-        </div>
+          <div class="actions">
+            <button type="submit" class="btn">Log In</button>
+            <a class="btn" href="signup.html">Need an account?</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
-  <script src="main.js" defer></script>
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', evt => {
-      evt.preventDefault();
-      const email = evt.target.email.value.trim();
-      const username = email ? email.split('@')[0].replace(/\./g, ' ') : 'Bistrot Waiter';
-      window.appState.setUser({ username, role: 'waiter', avatar: null });
-      alert('Logged in successfully!');
-      window.location.href = 'dashboard.html';
-    });
-  </script>
+  <script type="module" src="login.js"></script>
 </body>
 </html>

@@ -9,25 +9,6 @@
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
-  <nav class="top-nav window">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <div class="nav-avatar" id="navAvatar">B</div>
-        <div class="nav-username">
-          <span id="navUsername">Loading…</span>
-          <small id="navRole">waiter</small>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
-        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
-        <a href="chat.html" data-nav="chat">Chat</a>
-        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
-        <a href="logout" data-nav="logout">Logout</a>
-      </div>
-    </div>
-  </nav>
-
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -40,15 +21,14 @@
         <span class="title-text">Podium Challenge</span>
       </div>
 
-      <div class="window-body">
-        <div id="app">
-          <div class="toolbar">
-            <a class="btn" href="index.html">← Home</a>
-            <img src="logo_website.png" alt="Bistrot Bastards logo" class="hero-logo" onerror="this.onerror=null;this.src='logo_1.svg';" />
-          </div>
+      <div class="window-body" id="app">
+        <div class="toolbar" id="reviewLogoBar">
+          <a class="btn" href="index.html">← Home</a>
+          <h1 class="logo-text">Bistrot Bastards</h1>
+        </div>
 
-          <h1>Podium Challenge</h1>
-          <p>Help your server win the bottle. Draft your review here, copy it, then paste it into Google.</p>
+        <h2>Podium Challenge</h2>
+        <p>Help your server win the bottle. Draft your review here, copy it, then paste it into Google.</p>
 
           <div class="steps">
             <strong>Three quick steps</strong>
@@ -99,7 +79,8 @@
     </div>
   </div>
 
-  <script src="main.js" defer></script>
+  <script type="module" src="main.js"></script>
+  <script type="module" src="main.js"></script>
   <script>
     document.querySelectorAll('.emoji').forEach(emoji => {
       emoji.addEventListener('click', () => {

@@ -8,26 +8,7 @@
   <meta name="description" content="Create your waiter account for the Bistrot Bastards platform." />
   <link rel="stylesheet" href="system7.css" />
 </head>
-<body>
-  <nav class="top-nav window">
-    <div class="nav-inner">
-      <div class="nav-left">
-        <div class="nav-avatar" id="navAvatar">B</div>
-        <div class="nav-username">
-          <span id="navUsername">Loading…</span>
-          <small id="navRole">waiter</small>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
-        <a href="leaderboard.html" data-nav="leaderboard">Leaderboard</a>
-        <a href="chat.html" data-nav="chat">Chat</a>
-        <a href="dashboard.html#profile" data-nav="profile">Profile</a>
-        <a href="logout" data-nav="logout">Logout</a>
-      </div>
-    </div>
-  </nav>
-
+<body class="no-nav">
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -40,71 +21,66 @@
         <span class="title-text">Create Your Account</span>
       </div>
 
-      <div class="window-body">
-        <div id="app">
-          <p>Fill in your details to join Bistrot Bastards and start tracking your service performance.</p>
+      <div class="window-body" id="app">
+        <p>Fill in your details to join Bistrot Bastards and start tracking your service performance.</p>
 
-          <form id="signupForm">
-            <div class="two-column">
-              <div>
-                <label for="signupName">Full name</label>
-                <input id="signupName" name="name" placeholder="Alex Waiter" required />
-              </div>
-              <div>
-                <label for="signupRestaurant">Restaurant code</label>
-                <input id="signupRestaurant" name="restaurant" placeholder="Enter code" required />
-              </div>
+        <form id="signupForm">
+          <div class="two-column">
+            <div>
+              <label for="signupUsername">Username</label>
+              <input id="signupUsername" name="username" placeholder="Alex" required />
             </div>
+            <div>
+              <label for="signupEmail">Email</label>
+              <input id="signupEmail" name="email" type="email" placeholder="you@example.com" required />
+            </div>
+          </div>
 
-            <div class="two-column">
-              <div>
-                <label for="signupEmail">Email</label>
-                <input id="signupEmail" name="email" type="email" placeholder="you@example.com" required />
-              </div>
-              <div>
-                <label for="signupPhone">Phone</label>
-                <input id="signupPhone" name="phone" type="tel" placeholder="Optional" />
-              </div>
+          <div class="two-column">
+            <div>
+              <label for="signupPassword">Password</label>
+              <input id="signupPassword" name="password" type="password" placeholder="Create a password" required />
             </div>
+            <div>
+              <label for="signupPosition">Position</label>
+              <select id="signupPosition" name="position" required>
+                <option value="waiter" selected>Waiter</option>
+                <option value="bartender">Bartender</option>
+                <option value="chef de rang">Chef de rang</option>
+                <option value="runner">Runner</option>
+                <option value="host">Host</option>
+              </select>
+            </div>
+          </div>
 
-            <div class="two-column">
-              <div>
-                <label for="signupPassword">Password</label>
-                <input id="signupPassword" name="password" type="password" placeholder="Create a password" required />
-              </div>
-              <div>
-                <label for="signupRole">Role</label>
-                <select id="signupRole" name="role">
-                  <option value="waiter" selected>Waiter</option>
-                  <option value="manager">Manager</option>
-                </select>
-              </div>
-            </div>
+          <div>
+            <label for="signupRestaurant">Restaurant</label>
+            <input id="signupRestaurant" name="restaurant" placeholder="Your venue" required />
+          </div>
 
-            <div class="actions">
-              <button type="submit" class="btn">Sign up</button>
-              <a class="btn" href="login.html">Already have an account?</a>
+          <div>
+            <label>Choose your avatar</label>
+            <div class="avatar-options">
+              <label class="avatar-option">
+                <input type="radio" name="avatar" value="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect fill='%23f4a261' width='96' height='96'/><text x='50%' y='58%' font-size='40' font-family='sans-serif' fill='%23000' text-anchor='middle'>BB</text></svg>" required />
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect fill='%23f4a261' width='96' height='96'/><text x='50%' y='58%' font-size='40' font-family='sans-serif' fill='%23000' text-anchor='middle'>BB</text></svg>" alt="Avatar warm" />
+              </label>
+              <label class="avatar-option">
+                <input type="radio" name="avatar" value="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect fill='%233a86ff' width='96' height='96'/><text x='50%' y='58%' font-size='40' font-family='sans-serif' fill='%23ffffff' text-anchor='middle'>BB</text></svg>" />
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect fill='%233a86ff' width='96' height='96'/><text x='50%' y='58%' font-size='40' font-family='sans-serif' fill='%23ffffff' text-anchor='middle'>BB</text></svg>" alt="Avatar cool" />
+              </label>
             </div>
-          </form>
-        </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn">Create Account</button>
+            <a class="btn" href="login.html">Log in instead</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
-  <script src="main.js" defer></script>
-  <script>
-    document.getElementById('signupForm').addEventListener('submit', evt => {
-      evt.preventDefault();
-      const formData = new FormData(evt.target);
-      const user = {
-        username: formData.get('name'),
-        role: formData.get('role') || 'waiter',
-        avatar: null
-      };
-      window.appState.setUser(user);
-      alert('Account created! Redirecting to dashboard.');
-      window.location.href = 'dashboard.html';
-    });
-  </script>
+  <script type="module" src="signup.js"></script>
 </body>
 </html>
