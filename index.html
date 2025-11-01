@@ -21,17 +21,16 @@
           <span class="title-text">Enable JavaScript</span>
         </div>
         <div class="window-body">
-          <p>JavaScript must be enabled to continue.</p>
-          <a class="btn" href="login.html">Go to login</a>
+          <p>JavaScript is required. <a href="login.html">Go to login</a></p>
         </div>
       </div>
     </div>
   </noscript>
 
-  <div class="desktop" id="routerShell">
+  <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Routing to your workspace…</span>
+      <span class="menu-item">Checking session…</span>
     </div>
     <div class="window">
       <div class="title-bar">
@@ -39,75 +38,42 @@
         <span class="title-text">Bistrot Bastards</span>
       </div>
       <div class="window-body">
-        <h1 class="logo-text">Loading…</h1>
-        <p id="routerStatus">Checking your session, one moment.</p>
+        <h1 class="logo-text">Bistrot Bastards</h1>
+        <p id="routerStatus">Checking your session…</p>
       </div>
     </div>
   </div>
 
+  <script type="module" src="firebase.js"></script>
   <script type="module">
-    import { auth, db } from './firebase.js';
-    import { onAuthStateChanged } from 'firebase/auth';
-    import { doc, getDoc } from 'firebase/firestore';
+    import { auth } from './firebase.js';
+    import { onAuthStateChanged, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
-    const USER_KEY = 'bb_user';
     const statusEl = document.getElementById('routerStatus');
 
     function updateStatus(message) {
       if (statusEl) statusEl.textContent = message;
     }
 
-    function redirect(target) {
-      if (window.location.pathname.endsWith(target)) return;
-      window.location.replace(target);
-    }
-
-    function readStoredUser() {
+    async function initRouter() {
       try {
-        const raw = localStorage.getItem(USER_KEY);
-        return raw ? JSON.parse(raw) : null;
+        await setPersistence(auth, browserLocalPersistence);
       } catch (error) {
-        console.warn('Router state parse warning:', error);
-        return null;
+        console.warn('Router persistence warning:', error);
       }
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          updateStatus('Loading your workspace…');
+          location.replace('index_waiter.html');
+        } else {
+          updateStatus('Redirecting to login…');
+          location.replace('login.html');
+        }
+      });
     }
 
-    function writeStoredUser(payload) {
-      try {
-        localStorage.setItem(USER_KEY, JSON.stringify(payload));
-      } catch (error) {
-        console.warn('Router state persist warning:', error);
-      }
-    }
-
-    async function hydrateUser(firebaseUser) {
-      const cached = readStoredUser();
-      if (cached?.username) return;
-
-      try {
-        const profileRef = doc(db, 'users', firebaseUser.uid);
-        const snapshot = await getDoc(profileRef);
-        const fallback = firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Guest';
-        const username = snapshot.exists() ? snapshot.data().username || fallback : fallback;
-        writeStoredUser({ username });
-      } catch (error) {
-        console.warn('Router hydration warning:', error);
-        const fallback = firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Guest';
-        writeStoredUser({ username: fallback });
-      }
-    }
-
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        updateStatus('Welcome back! Loading your tools…');
-        await hydrateUser(firebaseUser);
-        redirect('index_waiter.html');
-        return;
-      }
-
-      updateStatus('Redirecting to login…');
-      redirect('login.html');
-    });
+    initRouter();
   </script>
 </body>
 </html>
