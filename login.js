@@ -1,5 +1,5 @@
 import { auth, db } from './firebase.js';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 const form = document.getElementById('loginForm');
@@ -19,6 +19,7 @@ if (form) {
     const pseudoEmail = `${username}@bistrotbastards.local`;
 
     try {
+      await setPersistence(auth, browserLocalPersistence);
       const credential = await signInWithEmailAndPassword(auth, pseudoEmail, password);
       const user = credential.user;
       const profileRef = doc(db, 'users', user.uid);

@@ -1,5 +1,5 @@
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 const form = document.getElementById('signupForm');
@@ -20,6 +20,7 @@ if (form) {
     const pseudoEmail = `${username}@bistrotbastards.local`;
 
     try {
+      await setPersistence(auth, browserLocalPersistence);
       const credential = await createUserWithEmailAndPassword(auth, pseudoEmail, password);
       const { user } = credential;
 
