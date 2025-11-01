@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const PUBLIC_PAGES = new Set(['', 'index.html', 'login.html', 'signup.html']);
 const USER_KEY = 'bb_user';

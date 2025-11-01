@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const form = document.getElementById('signupForm');
 
@@ -35,7 +35,23 @@ if (form) {
       window.location.href = 'index_waiter.html';
     } catch (error) {
       console.error(error);
-      alert(error.message || 'Sign-up failed. Please try again.');
+      const message = mapSignupError(error);
+      alert(message);
     }
   });
+}
+
+function mapSignupError(error) {
+  if (!error) return 'Sign-up failed. Please try again.';
+  const { code } = error;
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'This username is already taken. Choose another one.';
+    case 'auth/weak-password':
+      return 'Password is too weak. Try a longer password.';
+    case 'auth/operation-not-allowed':
+      return 'Sign-ups are temporarily disabled. Please contact support.';
+    default:
+      return 'Sign-up failed. Please try again.';
+  }
 }

@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
-import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const form = document.getElementById('loginForm');
 
@@ -39,7 +39,23 @@ if (form) {
       window.location.href = 'index_waiter.html';
     } catch (error) {
       console.error(error);
-      alert(error.message || 'Login failed. Please try again.');
+      const message = mapLoginError(error);
+      alert(message);
     }
   });
+}
+
+function mapLoginError(error) {
+  if (!error) return 'Login failed. Please try again.';
+  const { code } = error;
+  switch (code) {
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+      return 'Incorrect username or password. Please try again.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please wait a moment and try again.';
+    default:
+      return 'Login failed. Please try again.';
+  }
 }

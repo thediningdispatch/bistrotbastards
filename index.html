@@ -47,7 +47,7 @@
   <script type="module" src="firebase.js"></script>
   <script type="module">
     import { auth } from './firebase.js';
-    import { onAuthStateChanged, setPersistence, browserLocalPersistence } from 'firebase/auth';
+    import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const statusEl = document.getElementById('routerStatus');
 
@@ -55,25 +55,21 @@
       if (statusEl) statusEl.textContent = message;
     }
 
-    async function initRouter() {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-      } catch (error) {
-        console.warn('Router persistence warning:', error);
-      }
-
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          updateStatus('Loading your workspace…');
-          location.replace('index_waiter.html');
-        } else {
-          updateStatus('Redirecting to login…');
-          location.replace('login.html');
-        }
-      });
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+    } catch (error) {
+      console.warn('Router persistence warning:', error);
     }
 
-    initRouter();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        updateStatus('Loading your workspace…');
+        location.replace('index_waiter.html');
+      } else {
+        updateStatus('Redirecting to login…');
+        location.replace('login.html');
+      }
+    });
   </script>
 </body>
 </html>
