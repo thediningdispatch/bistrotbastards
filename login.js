@@ -8,16 +8,18 @@ if (form) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const email = (form.email.value || '').trim();
+    const username = (form.username.value || '').trim();
     const password = form.password.value || '';
 
-    if (!email || !password) {
-      alert('Enter both email and password.');
+    if (!username || !password) {
+      alert('Enter both username and password.');
       return;
     }
 
+    const pseudoEmail = `${username}@bistrotbastards.local`;
+
     try {
-      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const credential = await signInWithEmailAndPassword(auth, pseudoEmail, password);
       const user = credential.user;
       const profileRef = doc(db, 'users', user.uid);
       const snapshot = await getDoc(profileRef);
@@ -28,24 +30,12 @@ if (form) {
 
       const data = snapshot.data();
       const payload = {
-        username: data.username || email,
-        avatar: data.avatarURL || null,
-        restaurant: data.restaurant || '',
-        role: data.position || 'waiter'
+        username: data.username || username
       };
 
       localStorage.setItem('bb_user', JSON.stringify(payload));
-      if (payload.restaurant) {
-        localStorage.setItem('restaurant', payload.restaurant);
-      }
-      localStorage.setItem('username', payload.username || '');
-      if (payload.avatar) {
-        localStorage.setItem('avatarURL', payload.avatar);
-      } else {
-        localStorage.removeItem('avatarURL');
-      }
 
-      window.location.href = 'dashboard.html';
+      window.location.href = 'index_waiter.html';
     } catch (error) {
       console.error(error);
       alert(error.message || 'Login failed. Please try again.');

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Waiter Home — Bistrot Bastards</title>
+  <meta name="description" content="Welcome back to the Bistrot Bastards waiter console." />
+  <link rel="stylesheet" href="system7.css" />
+</head>
+<body>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Waiter Home</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Welcome Console</span>
+      </div>
+
+      <div class="window-body" id="app">
+        <h1 class="logo-text">Bistrot Bastards</h1>
+        <p>Bienvenue, <strong id="welcomeUsername">—</strong>!</p>
+        <p>Pick a tool from the navigation bar above or sign out when you are done.</p>
+
+        <div class="actions">
+          <a class="btn" href="leaderboard.html">View leaderboard</a>
+          <a class="btn" href="dashboard.html">Return to dashboard</a>
+          <a class="btn" id="logoutBtn" href="#">Log out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+  <script type="module">
+    import { auth } from './firebase.js';
+
+    const usernameTarget = document.getElementById('welcomeUsername');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    function renderUsername() {
+      const user = window.appState?.user || {};
+      if (usernameTarget) {
+        usernameTarget.textContent = user.username || 'there';
+      }
+    }
+
+    async function handleLogout(event) {
+      event.preventDefault();
+      try {
+        await auth.signOut();
+      } catch (error) {
+        console.warn('Sign-out warning:', error);
+      }
+      localStorage.removeItem('bb_user');
+      window.location.href = 'login.html';
+    }
+
+    renderUsername();
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+  </script>
+</body>
+</html>
