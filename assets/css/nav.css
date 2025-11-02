@@ -93,4 +93,9 @@
   opacity: 1;
   text-transform: none;
   letter-spacing: 0;
+  text-shadow: none;
+  background: none;
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
 }
