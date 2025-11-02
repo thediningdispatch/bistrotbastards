@@ -3,7 +3,7 @@ import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } 
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDHsl-wNXYGKO6YfDJoaqJhuNKQJnK8hmc",
+  apiKey: "AIzaSyDHsl-wNXYGKO6YfDJoaQjhuNKQJnK8hmc",
   authDomain: "bistrotbastards-login.firebaseapp.com",
   projectId: "bistrotbastards-login",
   storageBucket: "bistrotbastards-login.firebasestorage.app",
@@ -15,5 +15,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+console.log("[firebase] projectId:", app.options.projectId, "| apiKey6:", (firebaseConfig.apiKey || "").slice(0, 6));
 
 export { firebaseConfig, setPersistence, browserLocalPersistence, onAuthStateChanged };
