@@ -16,19 +16,19 @@ const sendBtn = document.getElementById('sendBtn');
 // Reference to messages collection
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
-// Generate color from username
+// Generate background color from username
 function getUserColor(username) {
   const colors = [
-    '#6d5bff', // purple
-    '#ff6b9d', // pink
-    '#4ecdc4', // teal
-    '#ff9f43', // orange
-    '#5f27cd', // deep purple
-    '#00d2d3', // cyan
-    '#ff6348', // red
-    '#2ecc71', // green
-    '#f39c12', // yellow
-    '#9b59b6'  // violet
+    { bg: '#e3ecff', text: '#2c3e50' }, // light blue
+    { bg: '#ffe3f0', text: '#2c3e50' }, // light pink
+    { bg: '#e3fff9', text: '#2c3e50' }, // light teal
+    { bg: '#fff3e3', text: '#2c3e50' }, // light orange
+    { bg: '#f0e3ff', text: '#2c3e50' }, // light purple
+    { bg: '#e3fffa', text: '#2c3e50' }, // light cyan
+    { bg: '#ffe3e3', text: '#2c3e50' }, // light red
+    { bg: '#e9ffe3', text: '#2c3e50' }, // light green
+    { bg: '#fffbe3', text: '#2c3e50' }, // light yellow
+    { bg: '#f5e3ff', text: '#2c3e50' }  // light violet
   ];
 
   let hash = 0;
@@ -66,8 +66,8 @@ function createMessageElement(data) {
   const username = data.username || 'Anonymous';
   const userColor = getUserColor(username);
 
-  // Apply user color to border and username
-  messageDiv.style.borderLeftColor = userColor;
+  // Apply user background color to message box
+  messageDiv.style.background = `linear-gradient(135deg, ${userColor.bg} 0%, ${userColor.bg} 100%)`;
 
   const headerDiv = document.createElement('div');
   headerDiv.className = 'chat-message-header';
@@ -75,7 +75,6 @@ function createMessageElement(data) {
   const userSpan = document.createElement('span');
   userSpan.className = 'chat-message-user';
   userSpan.textContent = username;
-  userSpan.style.color = userColor;
 
   const timeSpan = document.createElement('span');
   timeSpan.className = 'chat-message-time';

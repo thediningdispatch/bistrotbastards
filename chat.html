@@ -57,11 +57,11 @@
     .chat-message {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      padding: 6px 10px;
-      border-radius: 3px;
-      border-left: 3px solid;
-      background: rgba(255, 255, 255, 0.6);
+      gap: 4px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
       animation: slideIn 0.15s ease;
     }
 
@@ -85,17 +85,18 @@
 
     .chat-message-user {
       font-weight: 700;
-      font-size: 13px;
+      font-size: 14px;
+      color: #000;
     }
 
     .chat-message-time {
       font-size: 11px;
-      color: #888;
+      color: #666;
       font-style: italic;
     }
 
     .chat-message-text {
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.4;
       word-wrap: break-word;
       color: #222;
