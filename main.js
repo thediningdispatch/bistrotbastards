@@ -64,17 +64,27 @@ function ensureNav() {
           <small id="navRole"></small>
         </div>
       </div>
+      <a href="leaderboard.html#cryptoTip" class="btn bb-nav-crypto" id="bbNavCrypto" aria-label="Crypto tips" title="Crypto tips">
+        <span class="bb-eth-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 48" width="16" height="24" focusable="false">
+            <polygon points="16,0 0,24 16,32 32,24" fill="#111"></polygon>
+            <polygon points="16,48 0,28 16,36 32,28" fill="#222"></polygon>
+          </svg>
+        </span>
+        <span class="bb-nav-crypto-text">Crypto</span>
+      </a>
       <div class="bb-nav-inline" role="menubar" aria-label="Main">
         <a href="dashboard.html" class="btn" data-nav="dashboard">Dashboard</a>
         <a href="performances.html" class="btn" data-nav="performances">Performances</a>
         <button id="bbLogoutBtn" class="btn" type="button" data-nav="logout">Logout</button>
       </div>
       <div class="bb-nav-menu">
-        <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Tools ▾</button>
+        <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          <a href="dashboard.html" role="menuitem" data-nav="dashboard">Dashboard</a>
-          <a href="performances.html" role="menuitem" data-nav="performances">Performances</a>
-          <button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="logout" type="button">Logout</button>
+          <a href="leaderboard.html" role="menuitem" data-nav="leaderboard">Classement</a>
+          <a href="chat.html" role="menuitem" data-nav="chat">Chat</a>
+          <a href="dashboard.html#profile" role="menuitem" data-nav="profile">Profil</a>
+          <button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="logout" type="button">Sign Out</button>
         </div>
       </div>
     </nav>
@@ -114,11 +124,33 @@ function initNavigation(user, existingNav) {
   if (roleEl) roleEl.textContent = user.role || 'équipe';
 
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const currentHash = window.location.hash || '';
   const navLinks = nav.querySelectorAll('.bb-nav-inline a, #bbMenuDropdown a');
   navLinks.forEach(link => {
+    const key = link.dataset.nav;
     const href = link.getAttribute('href') || '';
-    const linkPath = href.split('#')[0];
-    const matches = linkPath ? linkPath === currentPath : false;
+    const [linkPath, hashFragment] = href.split('#');
+    let matches = false;
+    switch (key) {
+      case 'dashboard':
+        matches = currentPath === 'dashboard.html' && (!hashFragment || hashFragment === '');
+        break;
+      case 'performances':
+        matches = currentPath === 'performances.html';
+        break;
+      case 'leaderboard':
+        matches = currentPath === 'leaderboard.html';
+        break;
+      case 'chat':
+        matches = currentPath === 'chat.html';
+        break;
+      case 'profile':
+        matches = currentPath === 'dashboard.html' && currentHash === '#profile';
+        break;
+      default:
+        matches = linkPath ? linkPath === currentPath : false;
+        break;
+    }
     if (matches) {
       link.classList.add('is-active');
       link.setAttribute('aria-current', 'page');
@@ -178,6 +210,12 @@ function bindNavInteractions(nav) {
     });
     document.addEventListener('click', (e)=>{
       if (menuDrop && !menuDrop.contains(e.target) && e.target !== menuBtn){
+        menuDrop.setAttribute('hidden','');
+        menuBtn.setAttribute('aria-expanded','false');
+      }
+    });
+    menuDrop.addEventListener('click', (e)=>{
+      if (e.target.closest('a, button')){
         menuDrop.setAttribute('hidden','');
         menuBtn.setAttribute('aria-expanded','false');
       }
