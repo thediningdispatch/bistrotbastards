@@ -13,10 +13,11 @@ import {
 import {
   ref,
   set,
+  update,
   onDisconnect,
-  onValue,
-  serverTimestamp as rtdbServerTimestamp
+  onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 // DOM Elements
 const chatForm = document.getElementById('chatForm');
@@ -30,6 +31,8 @@ const typingIndicator = document.getElementById('typingIndicator');
 let lastVisible = null;
 let typingTimeout = null;
 let lastMessageTime = 0;
+let presenceInitialized = false;
+let presenceRefCache = null;
 const MESSAGE_COOLDOWN = 2000; // 2 seconds
 
 // Auto-resize textarea
@@ -43,11 +46,24 @@ const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
 // Get current user info
 function getCurrentUser() {
-  if (!auth.currentUser) return null;
-  const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
+  const firebaseUser = auth.currentUser;
+  if (!firebaseUser) return null;
+
+  let storedUser = {};
+  try {
+    storedUser = JSON.parse(localStorage.getItem('bb_user') || '{}');
+  } catch (error) {
+    console.warn('[Chat] Stored user parse failed', error);
+  }
+
+  const fallbackName =
+    storedUser.username ||
+    firebaseUser.displayName ||
+    (firebaseUser.email ? firebaseUser.email.split('@')[0] : null);
+
   return {
-    uid: auth.currentUser.uid,
-    username: user.username || 'Anonymous'
+    uid: firebaseUser.uid,
+    username: fallbackName || 'Anonymous'
   };
 }
 
@@ -56,6 +72,57 @@ function formatTime(timestamp) {
   if (!timestamp) return '';
   const date = timestamp.toDate();
   return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function getPresenceRef() {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return null;
+
+  if (!presenceRefCache || presenceRefCache.uid !== currentUser.uid) {
+    presenceRefCache = {
+      uid: currentUser.uid,
+      ref: ref(rtdb, `presence/${currentUser.uid}`)
+    };
+  }
+
+  return presenceRefCache.ref;
+}
+
+async function ensurePresenceOnline() {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  const userPresenceRef = getPresenceRef();
+  if (!userPresenceRef) return;
+
+  const payload = {
+    username: currentUser.username,
+    typing: false,
+    lastSeen: Date.now()
+  };
+
+  try {
+    await set(userPresenceRef, payload);
+    onDisconnect(userPresenceRef)
+      .remove()
+      .catch((error) => {
+        console.warn('[Presence] onDisconnect remove failed', error);
+      });
+    presenceInitialized = true;
+  } catch (error) {
+    console.warn('[Presence] ensure online failed', error);
+  }
+}
+
+function markLastSeen() {
+  const userPresenceRef = getPresenceRef();
+  if (!userPresenceRef) return;
+
+  update(userPresenceRef, {
+    lastSeen: Date.now()
+  }).catch((error) => {
+    console.debug('[Presence] mark last seen skipped', error?.message || error);
+  });
 }
 
 // Create message element
@@ -227,6 +294,10 @@ chatForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  if (!presenceInitialized) {
+    await ensurePresenceOnline();
+  }
+
   // Cooldown check
   const now = Date.now();
   if (now - lastMessageTime < MESSAGE_COOLDOWN) {
@@ -254,7 +325,7 @@ chatForm.addEventListener('submit', async (e) => {
     chatMessage.style.height = 'auto';
 
     // Reset typing indicator
-    updateTypingStatus(false);
+    await updateTypingStatus(false);
 
     // Scroll to bottom
     setTimeout(() => scrollToBottom(true), 100);
@@ -284,54 +355,62 @@ chatMessage.addEventListener('keydown', (e) => {
 
 // Update presence online/offline
 function updatePresence(online = true) {
-  const currentUser = getCurrentUser();
-  if (!currentUser) return;
+  if (!online) {
+    const userPresenceRef = getPresenceRef();
+    if (!userPresenceRef) return;
 
-  const userPresenceRef = ref(rtdb, `presence/${currentUser.uid}`);
+    presenceInitialized = false;
+    presenceRefCache = null;
 
-  if (online) {
-    const presenceData = {
-      username: currentUser.username,
+    return update(userPresenceRef, {
       typing: false,
-      lastSeen: rtdbServerTimestamp()
-    };
-
-    set(userPresenceRef, presenceData);
-
-    // Set offline on disconnect
-    onDisconnect(userPresenceRef).set({
-      username: currentUser.username,
-      typing: false,
-      lastSeen: rtdbServerTimestamp(),
-      online: false
-    });
-  } else {
-    set(userPresenceRef, {
-      username: currentUser.username,
-      typing: false,
-      lastSeen: rtdbServerTimestamp(),
-      online: false
+      lastSeen: Date.now()
+    }).catch((error) => {
+      console.debug('[Presence] update skip on unload', error?.message || error);
     });
   }
+
+  return ensurePresenceOnline();
 }
 
 // Update typing status
-function updateTypingStatus(isTyping) {
+async function updateTypingStatus(isTyping) {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
 
-  const userPresenceRef = ref(rtdb, `presence/${currentUser.uid}`);
+  if (!presenceInitialized) {
+    await ensurePresenceOnline();
+  }
 
-  set(userPresenceRef, {
-    username: currentUser.username,
-    typing: isTyping,
-    lastSeen: rtdbServerTimestamp()
-  });
+  const userPresenceRef = getPresenceRef();
+  if (!userPresenceRef) return;
+
+  try {
+    await update(userPresenceRef, {
+      typing: isTyping,
+      lastSeen: Date.now()
+    });
+  } catch (error) {
+    console.debug('[Presence] typing update fallback', error?.message || error);
+    try {
+      await set(userPresenceRef, {
+        username: currentUser.username,
+        typing: isTyping,
+        lastSeen: Date.now()
+      });
+      onDisconnect(userPresenceRef)
+        .remove()
+        .catch(() => {});
+      presenceInitialized = true;
+    } catch (innerError) {
+      console.warn('[Presence] typing status failed', innerError);
+    }
+  }
 }
 
 // Listen to typing input
 chatMessage.addEventListener('input', () => {
-  updateTypingStatus(true);
+  void updateTypingStatus(true);
 
   // Clear previous timeout
   if (typingTimeout) {
@@ -340,7 +419,7 @@ chatMessage.addEventListener('input', () => {
 
   // Set typing to false after 1.5s of inactivity
   typingTimeout = setTimeout(() => {
-    updateTypingStatus(false);
+    void updateTypingStatus(false);
   }, 1500);
 });
 
@@ -348,6 +427,8 @@ chatMessage.addEventListener('input', () => {
 const presenceRef = ref(rtdb, 'presence');
 
 onValue(presenceRef, (snapshot) => {
+  if (!presenceList || !typingIndicator) return;
+
   const currentUser = getCurrentUser();
   const presences = snapshot.val() || {};
 
@@ -355,15 +436,18 @@ onValue(presenceRef, (snapshot) => {
   const typingUsers = [];
 
   Object.keys(presences).forEach((uid) => {
-    const user = presences[uid];
+    const entry = presences[uid];
+    if (!entry || typeof entry !== 'object') return;
+    if (uid === currentUser?.uid) return;
 
-    // Skip current user and offline users
-    if (uid === currentUser?.uid || user.online === false) return;
+    const username = typeof entry.username === 'string' && entry.username.trim()
+      ? entry.username
+      : 'Anonyme';
 
-    onlineUsers.push(user.username);
+    onlineUsers.push(username);
 
-    if (user.typing) {
-      typingUsers.push(user.username);
+    if (entry.typing) {
+      typingUsers.push(username);
     }
   });
 
@@ -384,14 +468,37 @@ onValue(presenceRef, (snapshot) => {
     const typingText = typingUsers.length === 1
       ? `${typingUsers[0]} tape...`
       : `${typingUsers.join(', ')} tapent...`;
-    typingIndicator.querySelector('.typing-text').textContent = typingText;
+    const typingTextEl = typingIndicator.querySelector('.typing-text');
+    if (typingTextEl) {
+      typingTextEl.textContent = typingText;
+    }
   }
 });
 
-// Set presence online on load
-updatePresence(true);
+onAuthStateChanged(auth, (firebaseUser) => {
+  if (firebaseUser) {
+    presenceInitialized = false;
+    ensurePresenceOnline();
+  } else {
+    presenceInitialized = false;
+    presenceRefCache = null;
+  }
+});
 
-// Set presence offline on unload
+if (auth.currentUser) {
+  ensurePresenceOnline();
+}
+
+window.addEventListener('focus', ensurePresenceOnline);
+window.addEventListener('blur', markLastSeen);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    ensurePresenceOnline();
+  } else {
+    markLastSeen();
+  }
+});
+
 window.addEventListener('beforeunload', () => {
   updatePresence(false);
 });

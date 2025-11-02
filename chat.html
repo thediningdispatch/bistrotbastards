@@ -15,7 +15,7 @@
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Team Chat — Canal global</span>
+        <span class="title-text">Team Chat</span>
       </div>
 
       <div class="window-body chat-body" id="app">
@@ -26,7 +26,7 @@
             <span class="presence-label">● En ligne:</span>
             <span id="presenceList" class="presence-users">—</span>
           </div>
-          <div id="typingIndicator" class="typing-indicator" hidden>
+          <div id="typingIndicator" class="typing-indicator" hidden aria-live="polite">
             <span class="typing-text">—</span>
           </div>
         </div>
@@ -49,8 +49,8 @@
     </div>
   </div>
 
-  <script type="module" src="main.js"></script>
   <script type="module" src="chat.js"></script>
+  <script type="module" src="main.js"></script>
   <script type="module" src="auth-guard.js"></script>
 </body>
 </html>

@@ -114,6 +114,9 @@ body {
   border-radius: 3px;
   max-width: 100%;
   box-sizing: border-box;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chat-message {
@@ -187,6 +190,7 @@ body {
   display: flex;
   gap: 8px;
   padding: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
   background: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
@@ -306,4 +310,20 @@ body {
 
 .chat-stream::-webkit-scrollbar-thumb:hover {
   background: #aaa;
+}
+
+@media (max-width: 640px) {
+  .chat-presence {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+
+  .chat-body {
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0));
+  }
+
+  .chat-input-bar {
+    border-radius: 6px 6px 0 0;
+  }
 }
