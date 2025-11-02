@@ -28,6 +28,7 @@
 .bb-nav-menu {
   position: relative;
   display: none;
+  margin-left: auto;
 }
 
 .bb-nav-menu .bb-dropdown {
@@ -85,6 +86,10 @@
 @media (min-width: 640px) {
   .bb-nav-menu {
     display: none;
+  }
+
+  .bb-nav-inline {
+    margin-left: auto;
   }
 }
 
