@@ -9,16 +9,31 @@
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background: repeating-linear-gradient(90deg, #d9d9d9, #d9d9d9 4px, #c3c3c3 4px, #c3c3c3 8px);
     }
 
     .chat-body {
-      padding: 24px 28px 40px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
       height: calc(100vh - 180px);
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 640px) {
+      .chat-body {
+        padding: 24px 28px 40px;
+      }
     }
 
     #navHost {
@@ -44,6 +59,7 @@
     #chatLog {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       background: #fff;
       border: 1px solid #000;
       box-shadow: inset 2px 2px #7d7d7d, inset -1px -1px #fff;
@@ -52,6 +68,8 @@
       flex-direction: column;
       gap: 12px;
       border-radius: 2px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .chat-message {
@@ -63,6 +81,10 @@
       border: 1px solid #000;
       box-shadow: 2px 2px 0 #000;
       animation: slideIn 0.15s ease;
+      max-width: 100%;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     @keyframes slideIn {
@@ -99,7 +121,10 @@
       font-size: 14px;
       line-height: 1.4;
       word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
       color: #222;
+      max-width: 100%;
     }
 
     #chatForm {
