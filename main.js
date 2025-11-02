@@ -5,6 +5,14 @@ const defaultUser = {
   restaurant: ''
 };
 
+const NAV_ITEMS = [
+  { key: 'performances', label: 'Performances', href: 'performances.html', type: 'link' },
+  { key: 'leaderboard', label: 'Classement', href: 'leaderboard.html', type: 'link' },
+  { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
+  { key: 'profile', label: 'Profil', href: 'profile.html', type: 'link' },
+  { key: 'logout', label: 'Out', href: '#', type: 'action' }
+];
+
 function loadUser() {
   try {
     const stored = localStorage.getItem('bb_user');
@@ -65,20 +73,22 @@ function ensureNav() {
         </div>
       </div>
       <div class="bb-nav-inline" role="menubar" aria-label="Main">
-        <a href="performances.html" class="btn" data-nav="performances">Performances</a>
-        <a href="leaderboard.html" class="btn" data-nav="leaderboard">Classement</a>
-        <a href="chat.html" class="btn" data-nav="chat">Chat</a>
-        <a href="profile.html" class="btn" data-nav="profile">Profil</a>
-        <button id="bbLogoutBtn" class="btn" type="button" data-nav="logout">Out</button>
+        ${NAV_ITEMS.map(item => {
+          if (item.key === 'logout') {
+            return `<button class="btn" type="button" data-nav="${item.key}" id="bbLogoutBtn">${item.label}</button>`;
+          }
+          return `<a href="${item.href}" class="btn" data-nav="${item.key}">${item.label}</a>`;
+        }).join('')}
       </div>
       <div class="bb-nav-menu">
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          <a href="performances.html" role="menuitem" data-nav="performances">Performances</a>
-          <a href="leaderboard.html" role="menuitem" data-nav="leaderboard">Classement</a>
-          <a href="chat.html" role="menuitem" data-nav="chat">Chat</a>
-          <a href="profile.html" role="menuitem" data-nav="profile">Profil</a>
-          <button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="logout" type="button">Out</button>
+          ${NAV_ITEMS.map(item => {
+            if (item.key === 'logout') {
+              return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
+            }
+            return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
+          }).join('')}
         </div>
       </div>
     </nav>
