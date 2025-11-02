@@ -1,0 +1,94 @@
+.bb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.bb-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bb-nav-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bb-nav-inline .btn {
+  min-width: 110px;
+  justify-content: center;
+  text-align: center;
+}
+
+.bb-nav-menu {
+  position: relative;
+  display: none;
+}
+
+.bb-nav-menu .bb-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  border: 1px solid #000000;
+  background: var(--panel-light);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  z-index: 20;
+}
+
+.bb-nav-menu .bb-dropdown[hidden] {
+  display: none;
+}
+
+.bb-nav-menu .bb-dropdown a,
+.bb-nav-menu .bb-dropdown button {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bb-nav-menu .bb-dropdown a:hover,
+.bb-nav-menu .bb-dropdown button:hover,
+.bb-nav-menu .bb-dropdown a:focus,
+.bb-nav-menu .bb-dropdown button:focus {
+  background: var(--panel-mid);
+  outline: none;
+}
+
+.bb-nav-menu .linklike {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 639px) {
+  .bb-nav-inline {
+    display: none;
+  }
+
+  .bb-nav-menu {
+    display: block;
+  }
+}
+
+@media (min-width: 640px) {
+  .bb-nav-menu {
+    display: none;
+  }
+}
+
+.leaderboard-title {
+  color: inherit;
+  opacity: 1;
+}

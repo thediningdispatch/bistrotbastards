@@ -7,6 +7,7 @@
   <title>Waiter Home — Bistrot Bastards</title>
   <meta name="description" content="Welcome back to the Bistrot Bastards waiter console." />
   <link rel="stylesheet" href="system7.css" />
+  <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
     .waiter-home {
       padding: 28px 32px;
@@ -76,7 +77,7 @@
         </div>
 
         <section id="leaderboard" class="leaderboard-home">
-          <h2>🏅 Restaurant Leaderboard</h2>
+          <h2 class="leaderboard-title">🏅 Restaurant Leaderboard</h2>
           <table id="leaderboardTable">
             <thead>
               <tr>
@@ -100,10 +101,20 @@
   <script>
     window.__bb_redirecting = window.__bb_redirecting || false;
 
-    const navHost = document.getElementById('navHost');
-    const navElement = document.querySelector('.top-nav');
-    if (navHost && navElement) {
-      navHost.appendChild(navElement);
+    function mountNav() {
+      const navHost = document.getElementById('navHost');
+      const navElement = document.querySelector('.top-nav');
+      if (navHost && navElement && navElement.parentElement !== navHost) {
+        navHost.appendChild(navElement);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(mountNav, 0);
+      });
+    } else {
+      setTimeout(mountNav, 0);
     }
 
     const userData = JSON.parse(localStorage.getItem('bb_user') || '{}');
