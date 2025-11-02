@@ -13,30 +13,18 @@ const chatLog = document.getElementById('chatLog');
 const chatMessage = document.getElementById('chatMessage');
 const sendBtn = document.getElementById('sendBtn');
 
+// Auto-resize textarea
+chatMessage.addEventListener('input', () => {
+  chatMessage.style.height = 'auto';
+  chatMessage.style.height = Math.min(chatMessage.scrollHeight, 120) + 'px';
+});
+
 // Reference to messages collection
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
-// Generate background color from username
-function getUserColor(username) {
-  const colors = [
-    { bg: '#e3ecff', text: '#2c3e50' }, // light blue
-    { bg: '#ffe3f0', text: '#2c3e50' }, // light pink
-    { bg: '#e3fff9', text: '#2c3e50' }, // light teal
-    { bg: '#fff3e3', text: '#2c3e50' }, // light orange
-    { bg: '#f0e3ff', text: '#2c3e50' }, // light purple
-    { bg: '#e3fffa', text: '#2c3e50' }, // light cyan
-    { bg: '#ffe3e3', text: '#2c3e50' }, // light red
-    { bg: '#e9ffe3', text: '#2c3e50' }, // light green
-    { bg: '#fffbe3', text: '#2c3e50' }, // light yellow
-    { bg: '#f5e3ff', text: '#2c3e50' }  // light violet
-  ];
-
-  let hash = 0;
-  for (let i = 0; i < username.length; i++) {
-    hash = username.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  return colors[Math.abs(hash) % colors.length];
+// Get current user's UID
+function getCurrentUserUid() {
+  return auth.currentUser?.uid || null;
 }
 
 // Format timestamp
@@ -64,10 +52,15 @@ function createMessageElement(data) {
   messageDiv.className = 'chat-message';
 
   const username = data.username || 'Anonymous';
-  const userColor = getUserColor(username);
+  const currentUserUid = getCurrentUserUid();
+  const isCurrentUser = currentUserUid && data.uid === currentUserUid;
 
-  // Apply user background color to message box
-  messageDiv.style.background = `linear-gradient(135deg, ${userColor.bg} 0%, ${userColor.bg} 100%)`;
+  // Apply styling based on current user vs others
+  if (isCurrentUser) {
+    messageDiv.classList.add('is-current-user');
+  } else {
+    messageDiv.classList.add('is-other-user');
+  }
 
   const headerDiv = document.createElement('div');
   headerDiv.className = 'chat-message-header';
@@ -180,8 +173,9 @@ chatForm.addEventListener('submit', async (e) => {
 
     console.log('[Chat] Message sent successfully');
 
-    // Clear input
+    // Clear input and reset height
     chatMessage.value = '';
+    chatMessage.style.height = 'auto';
 
     // Scroll to bottom
     setTimeout(scrollToBottom, 100);
