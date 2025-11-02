@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
-    .bb-logo-wrap {
+    .bb-logo-polaroid {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,18 +17,19 @@
       padding: 0 12px;
     }
 
-    .bb-logo {
-      max-width: 920px;
+    .bb-logo-svg {
       width: 100%;
+      max-width: 1100px;
       height: auto;
+      display: block;
     }
 
     @media (max-width: 640px) {
-      .bb-logo-wrap {
+      .bb-logo-polaroid {
         margin: 16px auto 4px;
       }
 
-      .bb-logo {
+      .bb-logo-svg {
         max-width: 100%;
       }
     }
@@ -91,40 +92,24 @@
       </div>
 
       <div class="window-body waiter-home" id="app">
-        <div class="bb-logo-wrap" aria-label="Bistrot Bastards logo">
-          <svg class="bb-logo" viewBox="0 0 1200 220" role="img" aria-labelledby="bbLogoTitle">
+        <div class="bb-logo-polaroid" aria-label="Bistrot Bastards logo">
+          <svg class="bb-logo-svg" viewBox="0 0 1400 220" role="img" aria-labelledby="bbLogoTitle">
             <title id="bbLogoTitle">BISTROT BASTARDS</title>
-            <defs>
-              <linearGradient id="bbRainbow" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stop-color="#E60000"/>
-                <stop offset="20%" stop-color="#FF8C00"/>
-                <stop offset="40%" stop-color="#FFD700"/>
-                <stop offset="60%" stop-color="#00B050"/>
-                <stop offset="80%" stop-color="#1E90FF"/>
-                <stop offset="100%" stop-color="#6A0DAD"/>
-              </linearGradient>
-              <filter id="bbGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur"/>
-                <feMerge>
-                  <feMergeNode in="blur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
+            <g transform="translate(0,0)">
+              <rect x="0" y="0" width="220" height="220" rx="10" ry="10" fill="#4FA3FF"/>
+              <rect x="0" y="44" width="220" height="44" fill="#7CD652"/>
+              <rect x="0" y="88" width="220" height="44" fill="#FFF34B"/>
+              <rect x="0" y="132" width="220" height="44" fill="#F18B2A"/>
+              <rect x="0" y="176" width="220" height="44" fill="#E7362E"/>
+            </g>
 
-            <rect x="0" y="88" width="1200" height="44" fill="url(#bbRainbow)" opacity="0.85"/>
-
-            <g filter="url(#bbGlow)">
-              <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, 'ITC Serif Gothic', 'Georgia', serif"
-                    font-weight="800" letter-spacing="4" font-size="108" fill="#000">
-                BISTROT BASTARDS
-              </text>
-              <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, 'ITC Serif Gothic', 'Georgia', serif"
-                    font-weight="800" letter-spacing="4" font-size="108" fill="#fff" opacity="0.9" dy="-2">
-                BISTROT BASTARDS
-              </text>
+            <g transform="translate(260,0)">
+              <text x="0" y="155"
+                font-family="ui-rounded, system-ui, -apple-system, 'SF Pro Rounded', 'Avenir Next Rounded', 'Helvetica Neue', Arial, sans-serif"
+                font-weight="900" font-size="160" fill="#000">BISTROT</text>
+              <text x="0" y="315"
+                font-family="ui-rounded, system-ui, -apple-system, 'SF Pro Rounded', 'Avenir Next Rounded', 'Helvetica Neue', Arial, sans-serif"
+                font-weight="900" font-size="160" fill="#000">BASTARDS</text>
             </g>
           </svg>
         </div>
