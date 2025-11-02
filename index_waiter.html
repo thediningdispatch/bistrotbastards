@@ -9,11 +9,20 @@
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
+    html, body {
+      overflow: hidden;
+      height: 100%;
+      position: fixed;
+      width: 100%;
+    }
+
     .waiter-home {
       display: flex;
       flex-direction: column;
       gap: 20px;
       padding: 32px 28px 40px;
+      overflow-y: auto;
+      max-height: calc(100vh - 112px);
     }
 
     #navHost {
