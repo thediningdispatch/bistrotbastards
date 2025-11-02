@@ -1,13 +1,3 @@
-import { auth } from './firebase.js';
-
-const NAV_ITEMS = [
-  { label: 'Tableau de bord', href: 'dashboard.html', key: 'dashboard' },
-  { label: 'Classement', href: 'leaderboard.html', key: 'leaderboard' },
-  { label: 'Chat', href: 'chat.html', key: 'chat' },
-  { label: 'Profil', href: 'dashboard.html#profile', key: 'profile' },
-  { label: 'Déconnexion', href: '#', key: 'logout' }
-];
-
 const defaultUser = {
   username: 'Serveur Bistrot',
   role: 'serveur',
@@ -75,22 +65,16 @@ function ensureNav() {
         </div>
       </div>
       <div class="bb-nav-inline" role="menubar" aria-label="Main">
-        ${NAV_ITEMS.map(item => {
-          if (item.key === 'logout') {
-            return `<button type="button" class="btn" data-nav="${item.key}" id="bbLogoutBtn">${item.label}</button>`;
-          }
-          return `<a class="btn" href="${item.href}" data-nav="${item.key}">${item.label}</a>`;
-        }).join('')}
+        <a href="dashboard.html" class="btn" data-nav="dashboard">Dashboard</a>
+        <a href="performances.html" class="btn" data-nav="performances">Performances</a>
+        <button id="bbLogoutBtn" class="btn" type="button" data-nav="logout">Logout</button>
       </div>
       <div class="bb-nav-menu">
-        <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
+        <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Tools ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          ${NAV_ITEMS.map(item => {
-            if (item.key === 'logout') {
-              return `<button type="button" class="linklike" data-nav="${item.key}" id="bbLogoutBtnMobile" role="menuitem">${item.label}</button>`;
-            }
-            return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
-          }).join('')}
+          <a href="dashboard.html" role="menuitem" data-nav="dashboard">Dashboard</a>
+          <a href="performances.html" role="menuitem" data-nav="performances">Performances</a>
+          <button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="logout" type="button">Logout</button>
         </div>
       </div>
     </nav>
@@ -99,8 +83,15 @@ function ensureNav() {
   return nav;
 }
 
-function initNavigation(user) {
-  const nav = ensureNav();
+function mountNavIntoHost(nav) {
+  const host = document.getElementById('navHost');
+  if (nav && host && nav.parentElement !== host) {
+    host.appendChild(nav);
+  }
+}
+
+function initNavigation(user, existingNav) {
+  const nav = existingNav || ensureNav();
   if (!nav) return;
 
   const avatarEl = nav.querySelector('#navAvatar');
@@ -123,18 +114,11 @@ function initNavigation(user) {
   if (roleEl) roleEl.textContent = user.role || 'équipe';
 
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  const currentHash = window.location.hash || '';
-  nav.querySelectorAll('.bb-nav-inline a').forEach(link => {
-    const key = link.dataset.nav;
+  const navLinks = nav.querySelectorAll('.bb-nav-inline a, #bbMenuDropdown a');
+  navLinks.forEach(link => {
     const href = link.getAttribute('href') || '';
     const linkPath = href.split('#')[0];
-    let matches = linkPath ? linkPath === currentPath : false;
-    if (key === 'leaderboard') {
-      matches = matches || currentPath === 'index_waiter.html';
-    }
-    if (key === 'profile') {
-      matches = currentPath === 'dashboard.html' && currentHash === '#profile';
-    }
+    const matches = linkPath ? linkPath === currentPath : false;
     if (matches) {
       link.classList.add('is-active');
       link.setAttribute('aria-current', 'page');
@@ -144,26 +128,7 @@ function initNavigation(user) {
     }
   });
 
-  nav.querySelectorAll('#bbMenuDropdown a').forEach(link => {
-    const key = link.dataset.nav;
-    const href = link.getAttribute('href') || '';
-    const linkPath = href.split('#')[0];
-    let matches = linkPath ? linkPath === currentPath : false;
-    if (key === 'leaderboard') {
-      matches = matches || currentPath === 'index_waiter.html';
-    }
-    if (key === 'profile') {
-      matches = currentPath === 'dashboard.html' && currentHash === '#profile';
-    }
-    if (matches) {
-      link.classList.add('is-active');
-      link.setAttribute('aria-current', 'page');
-    } else {
-      link.classList.remove('is-active');
-      link.removeAttribute('aria-current');
-    }
-  });
-
+  mountNavIntoHost(nav);
   bindNavInteractions(nav);
 }
 
@@ -177,7 +142,7 @@ function bootstrap() {
   const user = loadUser();
   const nav = ensureNav();
   if (nav) {
-    initNavigation(user);
+    initNavigation(user, nav);
   }
   ensureDefaultRestaurant(user);
 }
@@ -198,66 +163,39 @@ function bindNavInteractions(nav) {
   if (!nav || nav.dataset.navBound === '1') return;
   nav.dataset.navBound = '1';
 
-  const menuToggle = nav.querySelector('#bbMenuToggle');
-  const dropdown = nav.querySelector('#bbMenuDropdown');
-
-  const closeMenu = () => {
-    if (!dropdown || dropdown.hidden) return;
-    dropdown.hidden = true;
-    if (menuToggle) {
-      menuToggle.setAttribute('aria-expanded', 'false');
-    }
-  };
-
-  if (menuToggle && dropdown) {
-    menuToggle.addEventListener('click', (event) => {
-      event.preventDefault();
-      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      if (expanded) {
-        closeMenu();
+  const menuBtn = nav.querySelector('#bbMenuToggle');
+  const menuDrop = nav.querySelector('#bbMenuDropdown');
+  if (menuBtn && menuDrop){
+    menuBtn.addEventListener('click', () => {
+      const open = !menuDrop.hasAttribute('hidden');
+      if (open) {
+        menuDrop.setAttribute('hidden','');
+        menuBtn.setAttribute('aria-expanded','false');
       } else {
-        dropdown.hidden = false;
-        menuToggle.setAttribute('aria-expanded', 'true');
+        menuDrop.removeAttribute('hidden');
+        menuBtn.setAttribute('aria-expanded','true');
       }
     });
-
-    document.addEventListener('click', (event) => {
-      if (!nav.contains(event.target)) {
-        closeMenu();
+    document.addEventListener('click', (e)=>{
+      if (menuDrop && !menuDrop.contains(e.target) && e.target !== menuBtn){
+        menuDrop.setAttribute('hidden','');
+        menuBtn.setAttribute('aria-expanded','false');
       }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        closeMenu();
-      }
-    });
-
-    dropdown.querySelectorAll('a, button').forEach(item => {
-      item.addEventListener('click', () => {
-        closeMenu();
-      });
     });
   }
 
-  const logoutButtons = nav.querySelectorAll('[data-nav="logout"]');
-  logoutButtons.forEach(button => {
-    if (button.dataset.logoutBound === '1') return;
-    button.dataset.logoutBound = '1';
-    button.addEventListener('click', async (event) => {
-      event.preventDefault();
-      await performLogout();
+  const logoutDesktop = nav.querySelector('#bbLogoutBtn');
+  const logoutMobile = nav.querySelector('#bbLogoutBtnMobile');
+  function wireLogout(btn){
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      const { auth } = await import('./firebase.js');
+      const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+      await signOut(auth);
+      localStorage.clear();
+      location.href = 'login.html';
     });
-  });
-}
-
-async function performLogout() {
-  try {
-    await auth.signOut();
-  } catch (error) {
-    console.warn('Sign-out warning:', error);
   }
-  localStorage.removeItem('bb_user');
-  localStorage.removeItem('restaurant');
-  window.location.href = 'login.html';
+  wireLogout(logoutDesktop);
+  wireLogout(logoutMobile);
 }

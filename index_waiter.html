@@ -10,50 +10,46 @@
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
     .waiter-home {
-      padding: 36px 32px 48px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 28px;
+      gap: 20px;
+      padding: 32px 28px 40px;
     }
 
-    .waiter-home #navHost {
-      width: 100%;
-    }
-
-    .bb-logo-wrap {
+    #navHost {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 0 12px;
     }
 
-    .bb-logo-svg {
-      width: 100%;
-      max-width: 960px;
-      height: auto;
-      display: block;
-      opacity: 0;
-      transform: translateY(-16px);
-      transition: opacity 2s ease, transform 2s ease;
+    /* nav */
+    .bb-nav { display:flex; align-items:center; gap:8px; justify-content:flex-end; }
+    .bb-nav-inline { display:flex; gap:8px; }
+    .bb-nav-menu { display:none; position:relative; }
+    .bb-dropdown { position:absolute; top:100%; right:0; background:#fff; border:1px solid #000; box-shadow:2px 2px 0 #000; padding:6px; display:flex; flex-direction:column; min-width:160px; z-index:10; }
+    .bb-dropdown a, .bb-dropdown button { text-align:left; padding:6px 8px; border:none; background:none; font:inherit; cursor:pointer; }
+    @media (max-width:640px){
+      .bb-nav-inline { display:none; }
+      .bb-nav-menu { display:block; }
     }
+    .bb-nav-left { margin-right:auto; }
 
-    .bb-logo-svg.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* welcome */
+    .bb-welcome { display:flex; flex-direction:column; gap:12px; }
+    .bb-welcome-title { margin:4px 0 8px; }
+    .bb-welcome-metrics { list-style:disc; margin:0 0 0 18px; padding:0; display:flex; flex-direction:column; gap:6px; }
+    .bb-cta { margin-top:10px; }
+    .bb-btn-guest { font-weight:700; font-size:18px; padding:10px 18px; }
 
-    @media (max-width: 640px) {
-      .waiter-home {
-        padding: 28px 16px 40px;
-        gap: 20px;
-      }
-
-      .bb-logo-svg {
-        max-width: 100%;
-      }
-    }
+    /* top3 */
+    .bb-top3 { margin-top:16px; }
+    .bb-top3-title { font-weight:700; margin-bottom:8px; }
+    .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+    .bb-top3-list li { display:flex; align-items:center; gap:10px; padding:8px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; }
+    .bb-rank { display:inline-block; min-width:28px; text-align:center; font-weight:800; padding:2px 6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#eee; }
+    .bb-rank-1 { background:#ffe89a; }
+    .bb-rank-2 { background:#e3ecff; }
+    .bb-rank-3 { background:#e9ffe3; }
+    .bb-user { font-weight:700; }
+    .bb-score { margin-left:auto; font-variant-numeric:tabular-nums; }
   </style>
 </head>
 <body>
@@ -67,91 +63,102 @@
       <div class="window-body waiter-home" id="app">
         <div id="navHost"></div>
 
-        <div class="bb-logo-wrap">
-          <svg class="bb-logo-svg" viewBox="0 0 920 360" role="img" aria-labelledby="bbLogoTitle">
-            <title id="bbLogoTitle">Bistrot Bastards</title>
-            <defs>
-              <filter id="bbShadow" x="-10%" y="-10%" width="130%" height="130%">
-                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.25" />
-              </filter>
-            </defs>
-
-            <!-- Bottle + corkscrew outline -->
-            <g stroke="#191919" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M96 18 H34 M65 18 V66 M30 66 H100 L96 122 C94 152 86 170 86 204 V328 H44 V204 C44 170 36 152 34 122 Z" />
-            </g>
-
-            <!-- Badge background -->
-            <g transform="translate(180,18)" filter="url(#bbShadow)">
-              <rect x="0" y="0" width="720" height="324" rx="38" ry="38" fill="#121212" stroke="#111" stroke-width="6" />
-              <rect x="12" y="12" width="696" height="300" rx="32" ry="32" fill="#050505" />
-
-              <!-- Rainbow stripes -->
-              <rect x="12" y="16" width="696" height="52" rx="28" ry="28" fill="#FF7722" />
-              <rect x="12" y="68" width="696" height="52" fill="#F53C3C" />
-              <rect x="12" y="120" width="696" height="52" fill="#FAD935" />
-              <rect x="12" y="172" width="696" height="52" fill="#3CC868" />
-              <rect x="12" y="224" width="696" height="52" fill="#2C8CFF" />
-
-              <!-- Wordmark -->
-              <g fill="#0C0C0C" stroke="#040404" stroke-width="4">
-                <text x="58" y="210" font-size="148" font-family="ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Nunito', system-ui, sans-serif" font-weight="900" letter-spacing="4" fill="#111">
-                  BISTROT
-                </text>
-                <text x="58" y="310" font-size="148" font-family="ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Nunito', system-ui, sans-serif" font-weight="900" letter-spacing="4" fill="#111">
-                  BASTARDS
-                </text>
-              </g>
-            </g>
-          </svg>
+        <div class="bb-welcome">
+          <h2 class="bb-welcome-title">
+            Content de te revoir, <span id="bbUserName">—</span> 👋
+          </h2>
+          <ul class="bb-welcome-metrics">
+            <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
+            <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
+            <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
+          </ul>
+          <div class="bb-cta">
+            <a href="waiter.html" class="btn bb-btn-guest">GUEST</a>
+          </div>
         </div>
+
+        <section class="bb-top3" aria-label="Top 3">
+          <div class="bb-top3-title">Top 3</div>
+          <ol id="bbTop3List" class="bb-top3-list">
+            <!-- Filled dynamically -->
+          </ol>
+        </section>
       </div>
     </div>
   </div>
 
-  <script type="module" src="main.js"></script>
-  <script type="module" src="auth-guard.js"></script>
-  <script type="module" src="leaderboard.js"></script>
   <script>
-    window.__bb_redirecting = window.__bb_redirecting || false;
+    (function(){
+      const u = JSON.parse(localStorage.getItem('bb_user') || '{}');
+      const name = (u.username || '').toString().trim();
+      if (name) document.getElementById('bbUserName').textContent = name.toUpperCase();
 
-    function mountNav() {
-      const navHost = document.getElementById('navHost');
-      const navElement = document.querySelector('.top-nav');
-      if (navHost && navElement && navElement.parentElement !== navHost) {
-        navHost.appendChild(navElement);
-      }
+      const d = new Date();
+      const jsDay = d.getDay(); // 0=Sun..6=Sat
+      const weekDay = jsDay === 0 ? 7 : jsDay; // Monday=1..Sunday=7
+      document.getElementById('bbWeekDay').textContent = weekDay;
+
+      const tips = Number(localStorage.getItem('bb_tips_week') || NaN);
+      document.getElementById('bbTipsWeek').textContent = Number.isFinite(tips) ? tips.toFixed(2) : '—';
+
+      // default contest ends Sunday of current week
+      const tmp = new Date(d);
+      const delta = (7 - (jsDay === 0 ? 7 : jsDay)) % 7;
+      tmp.setDate(d.getDate() + delta);
+      const msLeft = tmp.setHours(23,59,59,999) - Date.now();
+      const daysLeft = Math.max(0, Math.ceil(msLeft / (1000*60*60*24)));
+      document.getElementById('bbContestDays').textContent = daysLeft;
+    })();
+  </script>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const list = document.getElementById('bbTop3List');
+    function renderFallback(){
+      list.innerHTML = `
+        <li><span class="bb-rank bb-rank-1">#1</span><span class="bb-user">PLAYER_1</span><span class="bb-score">—</span></li>
+        <li><span class="bb-rank bb-rank-2">#2</span><span class="bb-user">PLAYER_2</span><span class="bb-score">—</span></li>
+        <li><span class="bb-rank bb-rank-3">#3</span><span class="bb-user">PLAYER_3</span><span class="bb-score">—</span></li>
+      `;
     }
 
-    function revealLogo() {
-      const logoSvg = document.querySelector('.bb-logo-svg');
-      if (logoSvg) {
-        logoSvg.classList.remove('is-visible');
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            logoSvg.classList.add('is-visible');
-          });
+    try {
+      const q = query(collection(db, 'users'), orderBy('score', 'desc'), limit(3));
+      const snap = await getDocs(q);
+      if (snap.empty) { renderFallback(); }
+      else {
+        const rows = [];
+        let rank = 1;
+        snap.forEach(docu => {
+          const d = docu.data() || {};
+          rows.push(`
+            <li>
+              <span class="bb-rank bb-rank-${rank}">#${rank}</span>
+              <span class="bb-user">${(d.username || 'PLAYER_'+rank).toString().toUpperCase()}</span>
+              <span class="bb-score">${Number.isFinite(Number(d.score)) ? Number(d.score).toFixed(0) : '—'}</span>
+            </li>`);
+          rank++;
         });
+        list.innerHTML = rows.join('');
+        // Fill missing ranks if fewer than 3
+        for (; rank<=3; rank++){
+          list.insertAdjacentHTML('beforeend', `
+            <li>
+              <span class="bb-rank bb-rank-${rank}">#${rank}</span>
+              <span class="bb-user">PLAYER_${rank}</span>
+              <span class="bb-score">—</span>
+            </li>`);
+        }
       }
-    }
-
-    function initializePage() {
-      mountNav();
-      revealLogo();
-      const userData = JSON.parse(localStorage.getItem('bb_user') || '{}');
-      const nameTarget = document.getElementById('waiterName');
-      if (userData.username && nameTarget) {
-        nameTarget.textContent = (userData.username || '').toUpperCase();
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initializePage, 0);
-      });
-    } else {
-      setTimeout(initializePage, 0);
+    } catch (e) {
+      console.error('[top3]', e);
+      renderFallback();
     }
   </script>
+
+  <script type="module" src="main.js"></script>
+  <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
