@@ -1,4 +1,4 @@
-import { db } from './firebase.js';
+import { db, auth } from './firebase.js';
 import {
   collection,
   addDoc,
@@ -12,11 +12,6 @@ const chatForm = document.getElementById('chatForm');
 const chatLog = document.getElementById('chatLog');
 const chatMessage = document.getElementById('chatMessage');
 const sendBtn = document.getElementById('sendBtn');
-
-// Get current user
-const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
-const username = user.username || 'Anonymous';
-const uid = user.uid || 'unknown';
 
 // Reference to messages collection
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
@@ -77,8 +72,9 @@ function scrollToBottom() {
 // Listen to messages in real-time
 const q = query(messagesRef, orderBy('createdAt', 'asc'));
 
+let isFirstLoad = true;
+
 onSnapshot(q, (snapshot) => {
-  // Clear loading message
   chatLog.innerHTML = '';
 
   if (snapshot.empty) {
@@ -95,27 +91,48 @@ onSnapshot(q, (snapshot) => {
     chatLog.appendChild(messageElement);
   });
 
-  // Scroll to bottom after loading messages
-  setTimeout(scrollToBottom, 100);
+  // Scroll to bottom
+  if (isFirstLoad) {
+    setTimeout(scrollToBottom, 100);
+    isFirstLoad = false;
+  } else {
+    scrollToBottom();
+  }
 }, (error) => {
-  console.error('Error loading messages:', error);
-  chatLog.innerHTML = '<div class="chat-empty">Erreur de chargement des messages.</div>';
+  console.error('[Chat Load Error]', error.code, error.message);
+  chatLog.innerHTML = '<div class="chat-empty">❌ Erreur de chargement des messages.</div>';
 });
 
 // Send message
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // Check authentication
+  if (!auth.currentUser) {
+    alert('⚠️ Session expirée\n\nVeuillez vous reconnecter pour envoyer des messages.');
+    window.location.href = 'login.html';
+    return;
+  }
+
   const text = chatMessage.value.trim();
+
+  // Validate message
   if (!text) return;
+  if (text.length > 400) {
+    alert('⚠️ Message trop long\n\nLe message ne doit pas dépasser 400 caractères.');
+    return;
+  }
 
   // Disable button while sending
   sendBtn.disabled = true;
 
   try {
+    const currentUser = auth.currentUser;
+    const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
+
     await addDoc(messagesRef, {
-      uid: uid,
-      username: username,
+      uid: currentUser.uid,
+      username: user.username || 'Anonymous',
       text: text,
       createdAt: serverTimestamp()
     });
@@ -126,8 +143,16 @@ chatForm.addEventListener('submit', async (e) => {
     // Scroll to bottom
     setTimeout(scrollToBottom, 100);
   } catch (error) {
-    console.error('Error sending message:', error);
-    alert('Erreur lors de l\'envoi du message. Réessaie.');
+    console.error('[Chat Error]', error.code, error.message);
+
+    if (error.code === 'permission-denied') {
+      alert('⚠️ Permission refusée\n\nVous n\'avez pas les droits pour envoyer des messages.');
+    } else if (error.code === 'unauthenticated') {
+      alert('⚠️ Non authentifié\n\nVeuillez vous reconnecter.');
+      window.location.href = 'login.html';
+    } else {
+      alert('❌ Erreur réseau\n\nImpossible d\'envoyer le message. Vérifiez votre connexion.');
+    }
   } finally {
     sendBtn.disabled = false;
     chatMessage.focus();
