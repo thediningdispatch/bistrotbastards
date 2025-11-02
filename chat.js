@@ -16,6 +16,29 @@ const sendBtn = document.getElementById('sendBtn');
 // Reference to messages collection
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
+// Generate color from username
+function getUserColor(username) {
+  const colors = [
+    '#6d5bff', // purple
+    '#ff6b9d', // pink
+    '#4ecdc4', // teal
+    '#ff9f43', // orange
+    '#5f27cd', // deep purple
+    '#00d2d3', // cyan
+    '#ff6348', // red
+    '#2ecc71', // green
+    '#f39c12', // yellow
+    '#9b59b6'  // violet
+  ];
+
+  let hash = 0;
+  for (let i = 0; i < username.length; i++) {
+    hash = username.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return colors[Math.abs(hash) % colors.length];
+}
+
 // Format timestamp
 function formatTime(timestamp) {
   if (!timestamp) return '';
@@ -40,12 +63,19 @@ function createMessageElement(data) {
   const messageDiv = document.createElement('div');
   messageDiv.className = 'chat-message';
 
+  const username = data.username || 'Anonymous';
+  const userColor = getUserColor(username);
+
+  // Apply user color to border and username
+  messageDiv.style.borderLeftColor = userColor;
+
   const headerDiv = document.createElement('div');
   headerDiv.className = 'chat-message-header';
 
   const userSpan = document.createElement('span');
   userSpan.className = 'chat-message-user';
-  userSpan.textContent = data.username || 'Anonymous';
+  userSpan.textContent = username;
+  userSpan.style.color = userColor;
 
   const timeSpan = document.createElement('span');
   timeSpan.className = 'chat-message-time';
@@ -108,7 +138,10 @@ chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   // Check authentication
+  console.log('[Chat] AUTH?', !!auth.currentUser, 'UID:', auth.currentUser?.uid);
+
   if (!auth.currentUser) {
+    console.error('[Chat] No auth.currentUser - redirecting to login');
     alert('⚠️ Session expirée\n\nVeuillez vous reconnecter pour envoyer des messages.');
     window.location.href = 'login.html';
     return;
@@ -117,9 +150,13 @@ chatForm.addEventListener('submit', async (e) => {
   const text = chatMessage.value.trim();
 
   // Validate message
-  if (!text) return;
-  if (text.length > 400) {
-    alert('⚠️ Message trop long\n\nLe message ne doit pas dépasser 400 caractères.');
+  if (!text) {
+    console.warn('[Chat] Empty message - ignoring');
+    return;
+  }
+  if (text.length < 1 || text.length > 400) {
+    console.warn('[Chat] Invalid text length:', text.length);
+    alert('⚠️ Message invalide\n\nLe message doit contenir entre 1 et 400 caractères.');
     return;
   }
 
@@ -129,13 +166,20 @@ chatForm.addEventListener('submit', async (e) => {
   try {
     const currentUser = auth.currentUser;
     const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
+    const username = user.username || 'Anonymous';
 
-    await addDoc(messagesRef, {
+    const payload = {
       uid: currentUser.uid,
-      username: user.username || 'Anonymous',
+      username: username,
       text: text,
       createdAt: serverTimestamp()
-    });
+    };
+
+    console.log('[Chat] Sending message:', { uid: payload.uid, username: payload.username, textLength: text.length });
+
+    await addDoc(messagesRef, payload);
+
+    console.log('[Chat] Message sent successfully');
 
     // Clear input
     chatMessage.value = '';
@@ -143,15 +187,16 @@ chatForm.addEventListener('submit', async (e) => {
     // Scroll to bottom
     setTimeout(scrollToBottom, 100);
   } catch (error) {
-    console.error('[Chat Error]', error.code, error.message);
+    console.error('[Chat Error]', 'CODE:', error.code, 'MESSAGE:', error.message);
+    console.error('[Chat Error] Full error:', error);
 
     if (error.code === 'permission-denied') {
-      alert('⚠️ Permission refusée\n\nVous n\'avez pas les droits pour envoyer des messages.');
+      alert('⚠️ Permission refusée\n\nVous n\'avez pas les droits pour envoyer des messages.\n\nVérifiez les règles Firestore.');
     } else if (error.code === 'unauthenticated') {
       alert('⚠️ Non authentifié\n\nVeuillez vous reconnecter.');
       window.location.href = 'login.html';
     } else {
-      alert('❌ Erreur réseau\n\nImpossible d\'envoyer le message. Vérifiez votre connexion.');
+      alert('❌ Erreur d\'envoi\n\nCode: ' + (error.code || 'unknown') + '\n\nVérifiez la console pour plus de détails.');
     }
   } finally {
     sendBtn.disabled = false;

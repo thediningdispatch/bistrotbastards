@@ -57,19 +57,18 @@
     .chat-message {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      padding: 10px 12px;
-      border-radius: 4px;
-      background: linear-gradient(135deg, #e3ecff 0%, #d4e3ff 100%);
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0 #000;
-      animation: slideIn 0.2s ease;
+      gap: 3px;
+      padding: 6px 10px;
+      border-radius: 3px;
+      border-left: 3px solid;
+      background: rgba(255, 255, 255, 0.6);
+      animation: slideIn 0.15s ease;
     }
 
     @keyframes slideIn {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(5px);
       }
       to {
         opacity: 1;
@@ -81,25 +80,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .chat-message-user {
       font-weight: 700;
-      font-size: 14px;
-      color: #6d5bff;
+      font-size: 13px;
     }
 
     .chat-message-time {
       font-size: 11px;
-      color: #666;
+      color: #888;
       font-style: italic;
     }
 
     .chat-message-text {
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.4;
       word-wrap: break-word;
+      color: #222;
     }
 
     #chatForm {
