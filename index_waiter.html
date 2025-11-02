@@ -8,6 +8,53 @@
   <meta name="description" content="Retourne sur ta console serveur Bistrot Bastards." />
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
+  <style>
+    .waiter-home {
+      padding: 36px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .waiter-home #navHost {
+      width: 100%;
+    }
+
+    .bb-logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 0 12px;
+    }
+
+    .bb-logo-svg {
+      width: 100%;
+      max-width: 960px;
+      height: auto;
+      display: block;
+      opacity: 0;
+      transform: translateY(-16px);
+      transition: opacity 2s ease, transform 2s ease;
+    }
+
+    .bb-logo-svg.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .waiter-home {
+        padding: 28px 16px 40px;
+        gap: 20px;
+      }
+
+      .bb-logo-svg {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="desktop">
@@ -17,7 +64,48 @@
         <span class="title-text">Console d’accueil</span>
       </div>
 
-      <div class="window-body waiter-home" id="app"></div>
+      <div class="window-body waiter-home" id="app">
+        <div id="navHost"></div>
+
+        <div class="bb-logo-wrap">
+          <svg class="bb-logo-svg" viewBox="0 0 920 360" role="img" aria-labelledby="bbLogoTitle">
+            <title id="bbLogoTitle">Bistrot Bastards</title>
+            <defs>
+              <filter id="bbShadow" x="-10%" y="-10%" width="130%" height="130%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.25" />
+              </filter>
+            </defs>
+
+            <!-- Bottle + corkscrew outline -->
+            <g stroke="#191919" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M96 18 H34 M65 18 V66 M30 66 H100 L96 122 C94 152 86 170 86 204 V328 H44 V204 C44 170 36 152 34 122 Z" />
+            </g>
+
+            <!-- Badge background -->
+            <g transform="translate(180,18)" filter="url(#bbShadow)">
+              <rect x="0" y="0" width="720" height="324" rx="38" ry="38" fill="#121212" stroke="#111" stroke-width="6" />
+              <rect x="12" y="12" width="696" height="300" rx="32" ry="32" fill="#050505" />
+
+              <!-- Rainbow stripes -->
+              <rect x="12" y="16" width="696" height="52" rx="28" ry="28" fill="#FF7722" />
+              <rect x="12" y="68" width="696" height="52" fill="#F53C3C" />
+              <rect x="12" y="120" width="696" height="52" fill="#FAD935" />
+              <rect x="12" y="172" width="696" height="52" fill="#3CC868" />
+              <rect x="12" y="224" width="696" height="52" fill="#2C8CFF" />
+
+              <!-- Wordmark -->
+              <g fill="#0C0C0C" stroke="#040404" stroke-width="4">
+                <text x="58" y="210" font-size="148" font-family="ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Nunito', system-ui, sans-serif" font-weight="900" letter-spacing="4" fill="#111">
+                  BISTROT
+                </text>
+                <text x="58" y="310" font-size="148" font-family="ui-rounded, 'SF Pro Rounded', 'Avenir Next Rounded', 'Nunito', system-ui, sans-serif" font-weight="900" letter-spacing="4" fill="#111">
+                  BASTARDS
+                </text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
   </div>
 
