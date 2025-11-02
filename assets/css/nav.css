@@ -91,4 +91,6 @@
 .leaderboard-title {
   color: inherit;
   opacity: 1;
+  text-transform: none;
+  letter-spacing: 0;
 }
