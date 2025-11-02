@@ -7,73 +7,247 @@
   <title>🍾 Défi Podium — Avis Google</title>
   <meta name="description" content="Rédige ton avis Google en un clic, copie-colle et publie." />
   <link rel="stylesheet" href="system7.css" />
+  <link rel="stylesheet" href="assets/css/nav.css" />
+  <style>
+    html, body {
+      overflow: hidden;
+      height: 100%;
+      position: fixed;
+      width: 100%;
+    }
+
+    .review-body {
+      overflow-y: auto;
+      max-height: calc(100vh - 112px);
+      padding: 24px 28px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #navHost {
+      display: flex;
+    }
+
+    .review-header {
+      text-align: center;
+      padding: 16px;
+      background: #ffe89a;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      margin-bottom: 8px;
+    }
+
+    .review-header h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .review-header p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .instruction-box {
+      padding: 16px;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      background: #e3ecff;
+      margin-bottom: 12px;
+    }
+
+    .instruction-box h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .instruction-box ol {
+      margin: 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .instruction-box li {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      background: #e9ffe3;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    #reviewForm {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #reviewForm > div {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #reviewForm label {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    #serverSelect {
+      padding: 8px 12px;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px #7d7d7d, inset -1px -1px #fff;
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .emoji-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      padding: 12px;
+      background: #f5f5f5;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px #7d7d7d, inset -1px -1px #fff;
+    }
+
+    .emoji {
+      font-size: 48px;
+      cursor: pointer;
+      padding: 12px;
+      border: 2px solid transparent;
+      transition: transform 0.1s;
+      user-select: none;
+    }
+
+    .emoji:hover {
+      transform: scale(1.1);
+    }
+
+    .emoji.active {
+      border: 2px solid #000;
+      background: #ffe89a;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .hint-inline {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #333;
+      text-align: center;
+    }
+
+    #commentField {
+      padding: 8px 12px;
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px #7d7d7d, inset -1px -1px #fff;
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-submit {
+      padding: 12px 24px;
+      font-weight: 700;
+      font-size: 16px;
+      background: #ffe89a;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: #ffd966;
+    }
+
+    .footer-note {
+      text-align: center;
+      padding: 16px;
+      background: #d1c8ff;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+  </style>
 </head>
 <body>
   <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Boîte à outils Podium</span>
-    </div>
-
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Défi Podium</span>
+        <span class="title-text">Défi Podium — Avis Google</span>
       </div>
 
-      <div class="window-body" id="app">
-        <div class="toolbar" id="reviewLogoBar">
-          <a class="btn" href="index.html">← Accueil</a>
-          <h1 class="logo-text">Bistrot Bastards</h1>
+      <div class="window-body review-body" id="app">
+        <div id="navHost"></div>
+
+        <div class="review-header">
+          <h2>🍾 Défi Podium</h2>
+          <p>Aide ton serveur à gagner la bouteille</p>
         </div>
 
-        <h2>Défi Podium</h2>
-        <p>Aide ton serveur à gagner la bouteille. Rédige ton avis ici, copie et colle-le sur Google.</p>
+        <div class="instruction-box">
+          <h3>Pour le serveur :</h3>
+          <ol>
+            <li>Tends ton téléphone au client</li>
+            <li>Le client remplit le formulaire et clique sur "Publier l'avis"</li>
+            <li>Le client est redirigé vers Google pour finaliser</li>
+          </ol>
+        </div>
 
-          <div class="steps">
-            <strong>Trois étapes simples</strong>
-            <ol>
-              <li>Choisis la personne qui s’est occupée de toi.</li>
-              <li>Sélectionne l’emoji qui correspond à ton expérience et ajoute un message court.</li>
-              <li>Copie, colle sur Google et clique sur publier.</li>
-            </ol>
+        <div class="section-label">Formulaire client</div>
+
+        <form id="reviewForm">
+          <div>
+            <label for="serverSelect">Qui vous a servi ?</label>
+            <select id="serverSelect" name="server" required>
+              <option value="">Choisissez votre serveur·se</option>
+              <option value="Jules">🕺 Jules</option>
+              <option value="Chloe">💃 Chloe</option>
+            </select>
           </div>
 
-          <form id="reviewForm">
-            <div>
-              <label for="serverSelect">Serveur·se</label>
-              <select id="serverSelect" name="server" required>
-                <option value="">Qui s’est occupé·e de toi ?</option>
-                <option value="Jules">🕺 Jules</option>
-                <option value="Chloe">💃 Chloe</option>
-              </select>
+          <div>
+            <label>Votre expérience</label>
+            <div class="emoji-row" id="moodRow">
+              <div class="emoji" data-mood="🥲" aria-label="À améliorer" title="À améliorer">🥲</div>
+              <div class="emoji" data-mood="😋" aria-label="Bon service" title="Bon service">😋</div>
+              <div class="emoji" data-mood="🤩" aria-label="Excellent" title="Excellent">🤩</div>
             </div>
+            <p class="hint-inline">Touchez l'emoji qui décrit le mieux votre visite</p>
+          </div>
 
-            <div>
-              <label>Expérience</label>
-              <div class="emoji-row" id="moodRow">
-                <div class="emoji" data-mood="🥲" aria-label="À améliorer">🥲</div>
-                <div class="emoji" data-mood="😋" aria-label="Bon service">😋</div>
-                <div class="emoji" data-mood="🤩" aria-label="Service exceptionnel">🤩</div>
-              </div>
-              <p class="hint-inline">Appuie sur l’emoji qui décrit le mieux ta visite.</p>
-            </div>
+          <input type="hidden" name="mood" id="moodInput" />
 
-            <input type="hidden" name="mood" id="moodInput" />
+          <div>
+            <label for="commentField">Votre message</label>
+            <textarea id="commentField" name="comment" rows="4" placeholder="Partagez votre expérience en quelques mots..."></textarea>
+          </div>
 
-            <div>
-              <label for="commentField">Ton message</label>
-              <textarea id="commentField" name="comment" rows="4" placeholder="Partage un mot sur ton expérience ✍️"></textarea>
-            </div>
+          <button class="btn btn-submit" type="submit">Publier l'avis</button>
+        </form>
 
-            <button class="btn" type="submit">Copier l’avis et continuer</button>
-          </form>
-
-          <footer class="footer">
-            <p>
-              Merci pour ton avis — il fait briller notre équipe.
-            </p>
-          </footer>
+        <div class="footer-note">
+          Votre avis sera copié automatiquement. Vous serez redirigé vers Google pour le publier.
         </div>
       </div>
     </div>
@@ -93,7 +267,7 @@
       ev.preventDefault();
       const data = Object.fromEntries(new FormData(ev.target).entries());
       if (!data.server || !data.mood || !data.comment) {
-        alert('Merci de remplir tous les champs ✨');
+        alert('Merci de remplir tous les champs avant de continuer 😊');
         return;
       }
 
@@ -112,7 +286,7 @@
         console.error('❌ Erreur webhook :', err);
       }
 
-      alert(`🔥 Ton avis est copié !\n\nAide ${data.server} à décrocher la bouteille 🍾\n👉 Colle ton message sur la page Google Podium et clique sur « Publier » ⭐`);
+      alert(`✅ Votre avis est prêt !\n\nVous allez être redirigé vers Google.\nCollez votre message (déjà copié) et cliquez sur "Publier" ⭐\n\nMerci d'aider ${data.server} ! 🍾`);
       window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
     });
   </script>
