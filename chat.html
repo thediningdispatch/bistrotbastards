@@ -4,65 +4,229 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Chat d’équipe — Bistrot Bastards</title>
+  <title>Chat d'équipe — Bistrot Bastards</title>
   <meta name="description" content="Coordonne le service en temps réel avec ton équipe." />
   <link rel="stylesheet" href="system7.css" />
+  <link rel="stylesheet" href="assets/css/nav.css" />
+  <style>
+    body {
+      background: repeating-linear-gradient(90deg, #d9d9d9, #d9d9d9 4px, #c3c3c3 4px, #c3c3c3 8px);
+    }
+
+    .chat-body {
+      padding: 24px 28px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: calc(100vh - 180px);
+    }
+
+    #navHost {
+      display: flex;
+    }
+
+    .chat-header {
+      text-align: center;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #d1c8ff 0%, #c4b5ff 100%);
+      border: 1px solid #000;
+      box-shadow: 3px 3px 0 #000;
+      border-radius: 4px;
+    }
+
+    .chat-header h2 {
+      margin: 0;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #chatLog {
+      flex: 1;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #000;
+      box-shadow: inset 2px 2px #7d7d7d, inset -1px -1px #fff;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-radius: 2px;
+    }
+
+    .chat-message {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #e3ecff 0%, #d4e3ff 100%);
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-message-user {
+      font-weight: 700;
+      font-size: 14px;
+      color: #6d5bff;
+    }
+
+    .chat-message-time {
+      font-size: 11px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .chat-message-text {
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    #chatForm {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px rgba(255,255,255,0.5);
+      border-radius: 4px;
+    }
+
+    #chatMessage {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #000;
+      box-shadow: inset 2px 2px #7d7d7d, inset -1px -1px #fff;
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+      resize: none;
+      border-radius: 2px;
+      line-height: 1.4;
+    }
+
+    #chatMessage:focus {
+      outline: 2px solid #6d5bff;
+      outline-offset: 2px;
+    }
+
+    .btn-send {
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
+      border: 1px solid #000;
+      box-shadow: 3px 3px 0 #000;
+      cursor: pointer;
+      text-transform: uppercase;
+      border-radius: 4px;
+      transition: all 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .btn-send:hover {
+      background: linear-gradient(135deg, #ffd966 0%, #ffc933 100%);
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .btn-send:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 #000;
+    }
+
+    .btn-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .chat-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .chat-loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    /* Scrollbar styling */
+    #chatLog::-webkit-scrollbar {
+      width: 16px;
+    }
+
+    #chatLog::-webkit-scrollbar-track {
+      background: #d9d9d9;
+      border: 1px solid #000;
+    }
+
+    #chatLog::-webkit-scrollbar-thumb {
+      background: #c3c3c3;
+      border: 1px solid #000;
+    }
+
+    #chatLog::-webkit-scrollbar-thumb:hover {
+      background: #b0b0b0;
+    }
+  </style>
 </head>
 <body>
   <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Chat service</span>
-    </div>
-
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Canal d’équipe</span>
+        <span class="title-text">Chat d'équipe — Canal global</span>
       </div>
 
-      <div class="window-body" id="app">
-        <p>Synchronise les pauses, partage les demandes spéciales et célèbre les victoires en direct.</p>
+      <div class="window-body chat-body" id="app">
+        <div id="navHost"></div>
 
-        <div class="panel" style="height:220px; overflow:auto;">
-          <ul id="chatLog" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;">
-            <li><strong>Manager :</strong> Famille de six à 20 h 15 — préparer la table terrasse.</li>
-            <li><strong>Chloé :</strong> Besoin d’aide table 12 pour vendre le dessert 🍮</li>
-            <li><strong>Jules :</strong> Bien reçu, j’arrive.</li>
-          </ul>
+        <div class="chat-header">
+          <h2>💬 Chat d'équipe</h2>
         </div>
 
-        <form id="chatForm" class="two-column" style="align-items:flex-end;">
-          <div>
-            <label for="chatMessage">Message</label>
-            <textarea id="chatMessage" rows="2" placeholder="Écris ta mise à jour…" required></textarea>
-          </div>
-          <div class="actions" style="justify-content:flex-end;">
-            <button type="submit" class="btn">Envoyer</button>
-          </div>
+        <div id="chatLog">
+          <div class="chat-loading">Chargement des messages...</div>
+        </div>
+
+        <form id="chatForm">
+          <textarea
+            id="chatMessage"
+            rows="2"
+            placeholder="Écris ton message..."
+            required
+          ></textarea>
+          <button type="submit" class="btn btn-send" id="sendBtn">Envoyer</button>
         </form>
       </div>
     </div>
   </div>
 
   <script type="module" src="main.js"></script>
-  <script>
-    const chatForm = document.getElementById('chatForm');
-    const chatLog = document.getElementById('chatLog');
-    const chatMessage = document.getElementById('chatMessage');
-
-    chatForm.addEventListener('submit', evt => {
-      evt.preventDefault();
-      const text = chatMessage.value.trim();
-      if (!text) return;
-      const user = window.appState.user;
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${user.username}:</strong> ${text}`;
-      chatLog.appendChild(li);
-      chatMessage.value = '';
-      chatLog.scrollTop = chatLog.scrollHeight;
-    });
-  </script>
+  <script type="module" src="chat.js"></script>
   <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
