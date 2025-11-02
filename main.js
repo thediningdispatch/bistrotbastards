@@ -6,10 +6,10 @@ const defaultUser = {
 };
 
 const NAV_ITEMS = [
-  { key: 'performances', label: 'Performances', href: 'performances.html', type: 'link' },
-  { key: 'leaderboard', label: 'Classement', href: 'leaderboard.html', type: 'link' },
-  { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
-  { key: 'profile', label: 'Profil', href: 'profile.html', type: 'link' },
+  { key: 'performances', label: 'Performances', href: '#', type: 'link' },
+  { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
+  { key: 'chat', label: 'Chat', href: '#', type: 'link' },
+  { key: 'profile', label: 'Profil', href: '#', type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 
