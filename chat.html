@@ -4,295 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Chat d'équipe — Bistrot Bastards</title>
-  <meta name="description" content="Coordonne le service en temps réel avec ton équipe." />
+  <title>Team Chat — Bistrot Bastards</title>
+  <meta name="description" content="Chat d'équipe en temps réel" />
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
-  <style>
-    html, body {
-      overflow-x: hidden;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-
-    body {
-      background: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .desktop {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .window {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .window-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .chat-body {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-      max-width: 100%;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    @media (min-width: 640px) {
-      .chat-body {
-        padding: 16px 20px;
-      }
-    }
-
-    #navHost {
-      display: flex;
-      flex-shrink: 0;
-    }
-
-    .chat-header {
-      text-align: center;
-      padding: 8px 12px;
-      background: linear-gradient(135deg, #d1c8ff 0%, #c4b5ff 100%);
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0 #000;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-
-    .chat-header h2 {
-      margin: 0;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    #chatLog {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: #fafafa;
-      border: 1px solid #ccc;
-      box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      border-radius: 3px;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-
-    .chat-message {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      animation: slideIn 0.15s ease;
-      max-width: 100%;
-      box-sizing: border-box;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .chat-message.is-current-user {
-      background: #d6e8ff;
-      border-color: #a8c8ff;
-    }
-
-    .chat-message.is-other-user {
-      background: #f2f2f2;
-      border-color: #e0e0e0;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(3px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .chat-message-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .chat-message-user {
-      font-weight: 700;
-      font-size: 13px;
-      color: #333;
-    }
-
-    .chat-message-time {
-      font-size: 10px;
-      color: #888;
-      font-style: normal;
-    }
-
-    .chat-message-text {
-      font-size: 14px;
-      line-height: 1.5;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      color: #222;
-      max-width: 100%;
-      margin-top: 2px;
-    }
-
-    #chatForm {
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
-      border-radius: 3px;
-      flex-shrink: 0;
-      position: sticky;
-      bottom: 0;
-    }
-
-    #chatMessage {
-      flex: 1;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.05);
-      background: #fff;
-      font: inherit;
-      font-size: 16px;
-      resize: none;
-      border-radius: 4px;
-      line-height: 1.4;
-      min-height: 38px;
-      max-height: 120px;
-      overflow-y: auto;
-    }
-
-    #chatMessage:focus {
-      outline: 2px solid #6d5bff;
-      outline-offset: 1px;
-      border-color: #6d5bff;
-    }
-
-    .btn-send {
-      padding: 8px 16px;
-      font-weight: 700;
-      font-size: 14px;
-      background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0 #000;
-      cursor: pointer;
-      text-transform: uppercase;
-      border-radius: 4px;
-      transition: all 0.1s ease;
-      white-space: nowrap;
-      align-self: flex-end;
-    }
-
-    .btn-send:hover {
-      background: linear-gradient(135deg, #ffd966 0%, #ffc933 100%);
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0 #000;
-    }
-
-    .btn-send:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 #000;
-    }
-
-    .btn-send:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .chat-empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #999;
-      font-style: italic;
-      font-size: 14px;
-    }
-
-    .chat-loading {
-      text-align: center;
-      padding: 20px;
-      color: #999;
-      font-size: 14px;
-    }
-
-    /* Scrollbar styling */
-    #chatLog::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    #chatLog::-webkit-scrollbar-track {
-      background: #f0f0f0;
-      border-radius: 5px;
-    }
-
-    #chatLog::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 5px;
-    }
-
-    #chatLog::-webkit-scrollbar-thumb:hover {
-      background: #aaa;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/chat.css" />
 </head>
 <body>
   <div class="desktop">
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Chat d'équipe — Canal global</span>
+        <span class="title-text">Team Chat — Canal global</span>
       </div>
 
       <div class="window-body chat-body" id="app">
         <div id="navHost"></div>
 
-        <div class="chat-header">
-          <h2>💬 Chat d'équipe</h2>
+        <div class="chat-presence" id="chatPresence">
+          <div class="presence-online">
+            <span class="presence-label">● En ligne:</span>
+            <span id="presenceList" class="presence-users">—</span>
+          </div>
+          <div id="typingIndicator" class="typing-indicator" hidden>
+            <span class="typing-text">—</span>
+          </div>
         </div>
 
-        <div id="chatLog">
-          <div class="chat-loading">Chargement des messages...</div>
+        <div class="chat-stream" id="chatStream">
+          <div class="chat-loading">⏳ Connexion au chat...</div>
         </div>
 
-        <form id="chatForm">
+        <form id="chatForm" class="chat-input-bar">
           <textarea
             id="chatMessage"
             rows="1"
-            placeholder="Écris ton message..."
+            placeholder="Message..."
+            maxlength="400"
             required
           ></textarea>
-          <button type="submit" class="btn btn-send" id="sendBtn">→</button>
+          <button type="submit" class="btn-send" id="sendBtn" title="Envoyer (Entrée)">→</button>
         </form>
       </div>
     </div>

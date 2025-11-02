@@ -1,17 +1,36 @@
-import { db, auth } from './firebase.js';
+import { db, auth, rtdb } from './firebase.js';
 import {
   collection,
   addDoc,
   query,
   orderBy,
+  limit,
   onSnapshot,
-  serverTimestamp
+  serverTimestamp,
+  startAfter,
+  getDocs
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {
+  ref,
+  set,
+  onDisconnect,
+  onValue,
+  serverTimestamp as rtdbServerTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
+// DOM Elements
 const chatForm = document.getElementById('chatForm');
-const chatLog = document.getElementById('chatLog');
+const chatStream = document.getElementById('chatStream');
 const chatMessage = document.getElementById('chatMessage');
 const sendBtn = document.getElementById('sendBtn');
+const presenceList = document.getElementById('presenceList');
+const typingIndicator = document.getElementById('typingIndicator');
+
+// State
+let lastVisible = null;
+let typingTimeout = null;
+let lastMessageTime = 0;
+const MESSAGE_COOLDOWN = 2000; // 2 seconds
 
 // Auto-resize textarea
 chatMessage.addEventListener('input', () => {
@@ -19,31 +38,24 @@ chatMessage.addEventListener('input', () => {
   chatMessage.style.height = Math.min(chatMessage.scrollHeight, 120) + 'px';
 });
 
-// Reference to messages collection
+// Message collection reference
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
-// Get current user's UID
-function getCurrentUserUid() {
-  return auth.currentUser?.uid || null;
+// Get current user info
+function getCurrentUser() {
+  if (!auth.currentUser) return null;
+  const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
+  return {
+    uid: auth.currentUser.uid,
+    username: user.username || 'Anonymous'
+  };
 }
 
 // Format timestamp
 function formatTime(timestamp) {
   if (!timestamp) return '';
   const date = timestamp.toDate();
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-  const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
-  if (messageDate.getTime() === today.getTime()) {
-    return timeStr;
-  } else if (messageDate.getTime() === today.getTime() - 86400000) {
-    return `Hier ${timeStr}`;
-  } else {
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) + ' ' + timeStr;
-  }
+  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 }
 
 // Create message element
@@ -51,11 +63,9 @@ function createMessageElement(data) {
   const messageDiv = document.createElement('div');
   messageDiv.className = 'chat-message';
 
-  const username = data.username || 'Anonymous';
-  const currentUserUid = getCurrentUserUid();
-  const isCurrentUser = currentUserUid && data.uid === currentUserUid;
+  const currentUser = getCurrentUser();
+  const isCurrentUser = currentUser && data.uid === currentUser.uid;
 
-  // Apply styling based on current user vs others
   if (isCurrentUser) {
     messageDiv.classList.add('is-current-user');
   } else {
@@ -67,7 +77,7 @@ function createMessageElement(data) {
 
   const userSpan = document.createElement('span');
   userSpan.className = 'chat-message-user';
-  userSpan.textContent = username;
+  userSpan.textContent = data.username || 'Anonymous';
 
   const timeSpan = document.createElement('span');
   timeSpan.className = 'chat-message-time';
@@ -86,110 +96,175 @@ function createMessageElement(data) {
   return messageDiv;
 }
 
-// Auto-scroll to bottom
-function scrollToBottom() {
-  chatLog.scrollTop = chatLog.scrollHeight;
+// Auto-scroll to bottom (only if near bottom)
+function scrollToBottom(force = false) {
+  const isNearBottom = chatStream.scrollHeight - chatStream.scrollTop - chatStream.clientHeight < 100;
+  if (force || isNearBottom) {
+    chatStream.scrollTop = chatStream.scrollHeight;
+  }
 }
 
-// Listen to messages in real-time
-const q = query(messagesRef, orderBy('createdAt', 'asc'));
+// Listen to messages in real-time (last 50)
+const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
 
 let isFirstLoad = true;
 
 onSnapshot(q, (snapshot) => {
-  chatLog.innerHTML = '';
+  // Store last visible for pagination
+  if (!snapshot.empty) {
+    lastVisible = snapshot.docs[snapshot.docs.length - 1];
+  }
 
-  if (snapshot.empty) {
+  const messages = [];
+  snapshot.forEach((doc) => {
+    messages.push({ id: doc.id, ...doc.data() });
+  });
+
+  // Reverse to show oldest first
+  messages.reverse();
+
+  chatStream.innerHTML = '';
+
+  if (messages.length === 0) {
     const emptyDiv = document.createElement('div');
     emptyDiv.className = 'chat-empty';
-    emptyDiv.textContent = 'Aucun message pour le moment. Sois le premier à écrire !';
-    chatLog.appendChild(emptyDiv);
+    emptyDiv.textContent = 'Aucun message. Sois le premier à écrire ! 💬';
+    chatStream.appendChild(emptyDiv);
     return;
   }
 
-  snapshot.forEach((doc) => {
-    const data = doc.data();
+  // Add "Load More" button if we have 50 messages
+  if (messages.length === 50) {
+    const loadMoreBtn = document.createElement('button');
+    loadMoreBtn.className = 'load-more-btn';
+    loadMoreBtn.textContent = '↑ Charger plus de messages';
+    loadMoreBtn.addEventListener('click', loadOlderMessages);
+    chatStream.appendChild(loadMoreBtn);
+  }
+
+  messages.forEach((data) => {
     const messageElement = createMessageElement(data);
-    chatLog.appendChild(messageElement);
+    chatStream.appendChild(messageElement);
   });
 
-  // Scroll to bottom
+  // Scroll to bottom on first load or new message
   if (isFirstLoad) {
-    setTimeout(scrollToBottom, 100);
+    setTimeout(() => scrollToBottom(true), 100);
     isFirstLoad = false;
   } else {
     scrollToBottom();
   }
 }, (error) => {
   console.error('[Chat Load Error]', error.code, error.message);
-  chatLog.innerHTML = '<div class="chat-empty">❌ Erreur de chargement des messages.</div>';
+  chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
 });
+
+// Load older messages
+async function loadOlderMessages() {
+  if (!lastVisible) return;
+
+  try {
+    const olderQuery = query(
+      messagesRef,
+      orderBy('createdAt', 'desc'),
+      startAfter(lastVisible),
+      limit(20)
+    );
+
+    const snapshot = await getDocs(olderQuery);
+
+    if (snapshot.empty) {
+      alert('Plus de messages à charger');
+      return;
+    }
+
+    // Update last visible
+    lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+    const messages = [];
+    snapshot.forEach((doc) => {
+      messages.push({ id: doc.id, ...doc.data() });
+    });
+
+    messages.reverse();
+
+    // Find load more button and insert before it
+    const loadMoreBtn = chatStream.querySelector('.load-more-btn');
+
+    messages.forEach((data) => {
+      const messageElement = createMessageElement(data);
+      if (loadMoreBtn) {
+        chatStream.insertBefore(messageElement, loadMoreBtn.nextSibling);
+      } else {
+        chatStream.insertBefore(messageElement, chatStream.firstChild);
+      }
+    });
+  } catch (error) {
+    console.error('[Load Older Error]', error);
+    alert('Erreur lors du chargement des messages');
+  }
+}
 
 // Send message
 chatForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Check authentication
-  console.log('[Chat] AUTH?', !!auth.currentUser, 'UID:', auth.currentUser?.uid);
+  const currentUser = getCurrentUser();
 
-  if (!auth.currentUser) {
-    console.error('[Chat] No auth.currentUser - redirecting to login');
-    alert('⚠️ Session expirée\n\nVeuillez vous reconnecter pour envoyer des messages.');
+  if (!currentUser) {
+    console.error('[Chat] Not authenticated');
+    alert('⚠️ Session expirée\n\nReconnectez-vous pour envoyer des messages.');
     window.location.href = 'login.html';
     return;
   }
 
   const text = chatMessage.value.trim();
 
-  // Validate message
-  if (!text) {
-    console.warn('[Chat] Empty message - ignoring');
-    return;
-  }
-  if (text.length < 1 || text.length > 400) {
-    console.warn('[Chat] Invalid text length:', text.length);
-    alert('⚠️ Message invalide\n\nLe message doit contenir entre 1 et 400 caractères.');
+  if (!text) return;
+
+  if (text.length > 400) {
+    alert('⚠️ Message trop long (max 400 caractères)');
     return;
   }
 
-  // Disable button while sending
+  // Cooldown check
+  const now = Date.now();
+  if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+    const remaining = Math.ceil((MESSAGE_COOLDOWN - (now - lastMessageTime)) / 1000);
+    alert(`⏳ Attendez ${remaining}s avant d'envoyer un autre message`);
+    return;
+  }
+
   sendBtn.disabled = true;
 
   try {
-    const currentUser = auth.currentUser;
-    const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
-    const username = user.username || 'Anonymous';
-
     const payload = {
       uid: currentUser.uid,
-      username: username,
+      username: currentUser.username,
       text: text,
       createdAt: serverTimestamp()
     };
 
-    console.log('[Chat] Sending message:', { uid: payload.uid, username: payload.username, textLength: text.length });
-
     await addDoc(messagesRef, payload);
 
-    console.log('[Chat] Message sent successfully');
+    lastMessageTime = now;
 
     // Clear input and reset height
     chatMessage.value = '';
     chatMessage.style.height = 'auto';
 
+    // Reset typing indicator
+    updateTypingStatus(false);
+
     // Scroll to bottom
-    setTimeout(scrollToBottom, 100);
+    setTimeout(() => scrollToBottom(true), 100);
   } catch (error) {
-    console.error('[Chat Error]', 'CODE:', error.code, 'MESSAGE:', error.message);
-    console.error('[Chat Error] Full error:', error);
+    console.error('[Chat Error]', error.code, error.message);
 
     if (error.code === 'permission-denied') {
-      alert('⚠️ Permission refusée\n\nVous n\'avez pas les droits pour envoyer des messages.\n\nVérifiez les règles Firestore.');
-    } else if (error.code === 'unauthenticated') {
-      alert('⚠️ Non authentifié\n\nVeuillez vous reconnecter.');
-      window.location.href = 'login.html';
+      alert('⚠️ Permission refusée\n\nVérifiez les règles Firestore.');
     } else {
-      alert('❌ Erreur d\'envoi\n\nCode: ' + (error.code || 'unknown') + '\n\nVérifiez la console pour plus de détails.');
+      alert('❌ Erreur d\'envoi\n\nVérifiez votre connexion.');
     }
   } finally {
     sendBtn.disabled = false;
@@ -203,4 +278,120 @@ chatMessage.addEventListener('keydown', (e) => {
     e.preventDefault();
     chatForm.dispatchEvent(new Event('submit'));
   }
+});
+
+// ========== PRESENCE & TYPING ==========
+
+// Update presence online/offline
+function updatePresence(online = true) {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  const userPresenceRef = ref(rtdb, `presence/${currentUser.uid}`);
+
+  if (online) {
+    const presenceData = {
+      username: currentUser.username,
+      typing: false,
+      lastSeen: rtdbServerTimestamp()
+    };
+
+    set(userPresenceRef, presenceData);
+
+    // Set offline on disconnect
+    onDisconnect(userPresenceRef).set({
+      username: currentUser.username,
+      typing: false,
+      lastSeen: rtdbServerTimestamp(),
+      online: false
+    });
+  } else {
+    set(userPresenceRef, {
+      username: currentUser.username,
+      typing: false,
+      lastSeen: rtdbServerTimestamp(),
+      online: false
+    });
+  }
+}
+
+// Update typing status
+function updateTypingStatus(isTyping) {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+
+  const userPresenceRef = ref(rtdb, `presence/${currentUser.uid}`);
+
+  set(userPresenceRef, {
+    username: currentUser.username,
+    typing: isTyping,
+    lastSeen: rtdbServerTimestamp()
+  });
+}
+
+// Listen to typing input
+chatMessage.addEventListener('input', () => {
+  updateTypingStatus(true);
+
+  // Clear previous timeout
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+
+  // Set typing to false after 1.5s of inactivity
+  typingTimeout = setTimeout(() => {
+    updateTypingStatus(false);
+  }, 1500);
+});
+
+// Listen to all presence data
+const presenceRef = ref(rtdb, 'presence');
+
+onValue(presenceRef, (snapshot) => {
+  const currentUser = getCurrentUser();
+  const presences = snapshot.val() || {};
+
+  const onlineUsers = [];
+  const typingUsers = [];
+
+  Object.keys(presences).forEach((uid) => {
+    const user = presences[uid];
+
+    // Skip current user and offline users
+    if (uid === currentUser?.uid || user.online === false) return;
+
+    onlineUsers.push(user.username);
+
+    if (user.typing) {
+      typingUsers.push(user.username);
+    }
+  });
+
+  // Update online list (limit 10)
+  if (onlineUsers.length === 0) {
+    presenceList.textContent = 'Personne';
+  } else if (onlineUsers.length <= 10) {
+    presenceList.textContent = onlineUsers.join(', ');
+  } else {
+    presenceList.textContent = `${onlineUsers.slice(0, 10).join(', ')} +${onlineUsers.length - 10}`;
+  }
+
+  // Update typing indicator
+  if (typingUsers.length === 0) {
+    typingIndicator.hidden = true;
+  } else {
+    typingIndicator.hidden = false;
+    const typingText = typingUsers.length === 1
+      ? `${typingUsers[0]} tape...`
+      : `${typingUsers.join(', ')} tapent...`;
+    typingIndicator.querySelector('.typing-text').textContent = typingText;
+  }
+});
+
+// Set presence online on load
+updatePresence(true);
+
+// Set presence offline on unload
+window.addEventListener('beforeunload', () => {
+  updatePresence(false);
 });
