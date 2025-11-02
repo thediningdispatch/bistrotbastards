@@ -89,6 +89,43 @@
     .leaderboard-home table {
       width: 100%;
     }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .leaderboard-icon {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .leaderboard-title-text {
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .leaderboard-header {
+        gap: 10px;
+      }
+
+      .leaderboard-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      .leaderboard-title-text {
+        font-size: 16px;
+        letter-spacing: 1.5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -125,12 +162,28 @@
         <div id="navHost"></div>
 
         <div class="intro">
-          <h2>Heureux de te revoir, <span id="waiterName"></span> 👋</h2>
-          <p class="subtitle">Tu as gagné <strong>+50 XP</strong> aujourd’hui ! Continue à grimper dans le classement 🏆</p>
+          <h2>Bon shift, <span id="waiterName"></span> ✨</h2>
+          <p class="subtitle">Tu viens de décrocher <strong>+50 XP</strong> — file grimper vers le podium !</p>
         </div>
 
         <section id="leaderboard" class="leaderboard-home">
-          <h2 class="leaderboard-title">🏅 Classement du restaurant</h2>
+          <div class="leaderboard-header" aria-label="Classement du restaurant">
+            <svg class="leaderboard-icon" viewBox="0 0 120 120" role="img" aria-hidden="true">
+              <defs>
+                <linearGradient id="lbGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#02b3ff"/>
+                  <stop offset="100%" stop-color="#ff0afe"/>
+                </linearGradient>
+              </defs>
+              <rect x="4" y="4" width="112" height="112" rx="18" ry="18" fill="#111" stroke="#fff" stroke-width="3"/>
+              <rect x="18" y="72" width="18" height="28" fill="#00c853"/>
+              <rect x="51" y="52" width="18" height="48" fill="#ffca28"/>
+              <rect x="84" y="32" width="18" height="68" fill="#ff5252"/>
+              <path d="M18 30 L102 16" stroke="url(#lbGlow)" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="96" cy="16" r="6" fill="#fff"/>
+            </svg>
+            <span class="leaderboard-title-text">Classement du restaurant</span>
+          </div>
           <table id="leaderboardTable">
             <thead>
               <tr>
