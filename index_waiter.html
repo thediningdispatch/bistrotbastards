@@ -7,64 +7,110 @@
   <title>Waiter Home — Bistrot Bastards</title>
   <meta name="description" content="Welcome back to the Bistrot Bastards waiter console." />
   <link rel="stylesheet" href="system7.css" />
+  <style>
+    .waiter-home {
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .waiter-home #navHost .top-nav {
+      margin: -12px 0 12px;
+      width: 100%;
+    }
+
+    .waiter-home #navHost .top-nav .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .waiter-home .intro {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .waiter-home .intro h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .waiter-home .intro .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .leaderboard-home {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .leaderboard-home table {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
   <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Waiter Home</span>
-    </div>
-
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
         <span class="title-text">Welcome Console</span>
       </div>
 
-      <div class="window-body" id="app">
+      <div class="window-body waiter-home" id="app">
         <h1 class="logo-text">Bistrot Bastards</h1>
-        <p>Bienvenue, <strong id="welcomeUsername">—</strong>!</p>
-        <p>Pick a tool from the navigation bar above or sign out when you are done.</p>
 
-        <div class="actions">
-          <a class="btn" href="leaderboard.html">View leaderboard</a>
-          <a class="btn" href="dashboard.html">Return to dashboard</a>
-          <a class="btn" id="logoutBtn" href="#">Log out</a>
+        <div id="navHost"></div>
+
+        <div class="intro">
+          <h2>Welcome back, <span id="waiterName"></span> 👋</h2>
+          <p class="subtitle">You’ve earned <strong>+50 XP</strong> today! Keep climbing the leaderboard 🏆</p>
         </div>
+
+        <section id="leaderboard" class="leaderboard-home">
+          <h2>🏅 Restaurant Leaderboard</h2>
+          <table id="leaderboardTable">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Position</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <button class="btn" id="refreshLeaderboard">Refresh</button>
+        </section>
       </div>
     </div>
   </div>
 
   <script type="module" src="main.js"></script>
-  <script type="module">
-    import { auth } from './firebase.js';
+  <script type="module" src="auth-guard.js"></script>
+  <script type="module" src="leaderboard.js"></script>
+  <script>
+    window.__bb_redirecting = window.__bb_redirecting || false;
 
-    const usernameTarget = document.getElementById('welcomeUsername');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    function renderUsername() {
-      const user = window.appState?.user || {};
-      if (usernameTarget) {
-        usernameTarget.textContent = user.username || 'there';
-      }
+    const navHost = document.getElementById('navHost');
+    const navElement = document.querySelector('.top-nav');
+    if (navHost && navElement) {
+      navHost.appendChild(navElement);
     }
 
-    async function handleLogout(event) {
-      event.preventDefault();
-      try {
-        await auth.signOut();
-      } catch (error) {
-        console.warn('Sign-out warning:', error);
-      }
-      localStorage.removeItem('bb_user');
-      window.location.href = 'login.html';
-    }
-
-    renderUsername();
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', handleLogout);
+    const userData = JSON.parse(localStorage.getItem('bb_user') || '{}');
+    const nameTarget = document.getElementById('waiterName');
+    if (userData.username && nameTarget) {
+      nameTarget.textContent = (userData.username || '').toUpperCase();
     }
   </script>
-  <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
