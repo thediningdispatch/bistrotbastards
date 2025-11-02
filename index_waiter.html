@@ -36,16 +36,16 @@
     .bb-welcome { display:flex; flex-direction:column; gap:12px; }
     .bb-welcome-title { margin:4px 0 8px; }
     .bb-welcome-metrics { list-style:disc; margin:0 0 0 18px; padding:0; display:flex; flex-direction:column; gap:6px; }
-    .bb-cta { margin-top:10px; }
-    .bb-btn-guest { font-weight:700; font-size:18px; padding:10px 18px; background:#ffe89a; border:1px solid #000; box-shadow:2px 2px 0 #000; color:#000; }
+    .bb-cta { margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .bb-btn-reviews { font-weight:700; font-size:18px; padding:10px 18px; background:#ffe89a; border:1px solid #000; box-shadow:2px 2px 0 #000; color:#000; }
+    .bb-eth-link { display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#d1c8ff; }
+    .bb-eth-icon { width:20px; height:30px; display:block; }
+    .bb-eth-icon polygon:first-of-type { fill:#6d5bff; }
+    .bb-eth-icon polygon:last-of-type { fill:#4432c8; }
 
     /* top3 */
     .bb-top3 { margin-top:16px; }
-    .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 12px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
-    .bb-top3-icon { display:flex; align-items:center; justify-content:center; width:46px; height:46px; background:#d1c8ff; border:1px solid #000; box-shadow:1px 1px 0 #000; }
-    .bb-top3-icon svg { width:22px; height:32px; display:block; }
-    .bb-top3-icon polygon:first-of-type { fill:#6d5bff; }
-    .bb-top3-icon polygon:last-of-type { fill:#4432c8; }
+    .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; padding:8px 12px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
     .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
     .bb-top3-list li { display:flex; align-items:center; gap:10px; padding:8px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; }
     .bb-rank { display:inline-block; min-width:28px; text-align:center; font-weight:800; padding:2px 6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#eee; }
@@ -77,20 +77,18 @@
             <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
           </ul>
           <div class="bb-cta">
-            <a href="waiter.html" class="btn bb-btn-guest">GUEST</a>
+            <a href="googlereview.html" class="btn bb-btn-reviews">REVIEWS</a>
+            <a href="waiter.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
+              <svg viewBox="0 0 32 48" class="bb-eth-icon" focusable="false">
+                <polygon points="16,0 0,24 16,32 32,24"></polygon>
+                <polygon points="16,48 0,28 16,36 32,28"></polygon>
+              </svg>
+            </a>
           </div>
         </div>
 
         <section class="bb-top3" aria-label="Top 3">
-          <div class="bb-top3-title">
-            <span>Top 3</span>
-            <span class="bb-top3-icon" aria-hidden="true">
-              <svg viewBox="0 0 32 48" focusable="false">
-                <polygon points="16,0 0,24 16,32 32,24"></polygon>
-                <polygon points="16,48 0,28 16,36 32,28"></polygon>
-              </svg>
-            </span>
-          </div>
+          <div class="bb-top3-title">Top 3</div>
           <ol id="bbTop3List" class="bb-top3-list">
             <!-- Filled dynamically -->
           </ol>

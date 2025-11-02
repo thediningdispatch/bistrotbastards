@@ -65,17 +65,19 @@ function ensureNav() {
         </div>
       </div>
       <div class="bb-nav-inline" role="menubar" aria-label="Main">
-        <a href="performances.html" class="btn" data-nav="performances">Performance</a>
+        <a href="performances.html" class="btn" data-nav="performances">Performances</a>
         <a href="leaderboard.html" class="btn" data-nav="leaderboard">Classement</a>
-        <a href="signup.html" class="btn" data-nav="profile">Profil</a>
+        <a href="chat.html" class="btn" data-nav="chat">Chat</a>
+        <a href="profile.html" class="btn" data-nav="profile">Profil</a>
         <button id="bbLogoutBtn" class="btn" type="button" data-nav="logout">Out</button>
       </div>
       <div class="bb-nav-menu">
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          <a href="performances.html" role="menuitem" data-nav="performances">Performance</a>
+          <a href="performances.html" role="menuitem" data-nav="performances">Performances</a>
           <a href="leaderboard.html" role="menuitem" data-nav="leaderboard">Classement</a>
-          <a href="signup.html" role="menuitem" data-nav="profile">Profil</a>
+          <a href="chat.html" role="menuitem" data-nav="chat">Chat</a>
+          <a href="profile.html" role="menuitem" data-nav="profile">Profil</a>
           <button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="logout" type="button">Out</button>
         </div>
       </div>
@@ -120,7 +122,7 @@ function initNavigation(user, existingNav) {
   navLinks.forEach(link => {
     const key = link.dataset.nav;
     const href = link.getAttribute('href') || '';
-    const [linkPath, hashFragment] = href.split('#');
+    const [linkPath] = href.split('#');
     let matches = false;
     switch (key) {
       case 'performances':
@@ -129,8 +131,11 @@ function initNavigation(user, existingNav) {
       case 'leaderboard':
         matches = currentPath === 'leaderboard.html';
         break;
+      case 'chat':
+        matches = currentPath === 'chat.html';
+        break;
       case 'profile':
-        matches = currentPath === 'signup.html';
+        matches = currentPath === 'profile.html';
         break;
       default:
         matches = linkPath ? linkPath === currentPath : false;
