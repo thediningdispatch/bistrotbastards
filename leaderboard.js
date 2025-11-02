@@ -6,12 +6,12 @@ async function fetchLeaderboard() {
   const tbody = document.querySelector('#leaderboardTable tbody');
   if (!tbody) return;
 
-  tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+  tbody.innerHTML = "<tr><td colspan='4'>Chargement…</td></tr>";
 
   try {
     const restaurant = localStorage.getItem('restaurant');
     if (!restaurant) {
-      tbody.innerHTML = "<tr><td colspan='4'>Set your restaurant first.</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='4'>Renseignez d’abord votre restaurant.</td></tr>";
       return;
     }
 
@@ -32,7 +32,7 @@ async function fetchLeaderboard() {
 
       users.push({
         username: data.username,
-        position: data.position || 'waiter',
+        position: data.position || 'serveur',
         total
       });
     });
@@ -40,7 +40,7 @@ async function fetchLeaderboard() {
     users.sort((a, b) => b.total - a.total);
 
     if (!users.length) {
-      tbody.innerHTML = "<tr><td colspan='4'>No waiters found for this restaurant.</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='4'>Aucun serveur trouvé pour ce restaurant.</td></tr>";
       return;
     }
 
@@ -62,7 +62,7 @@ async function fetchLeaderboard() {
     });
   } catch (error) {
     console.error(error);
-    tbody.innerHTML = `<tr><td colspan='4'>${error.message || 'Could not load leaderboard.'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan='4'>${error.message || 'Impossible de charger le classement.'}</td></tr>`;
   }
 }
 
@@ -79,22 +79,22 @@ if (generateBtn) {
   generateBtn.addEventListener('click', async () => {
     const wallet = walletInput?.value.trim();
     if (!wallet) {
-      if (qrStatus) qrStatus.textContent = '⚠️ Please enter your wallet address.';
+      if (qrStatus) qrStatus.textContent = '⚠️ Saisis ton adresse de portefeuille.';
       return;
     }
 
     try {
       const storedUser = JSON.parse(localStorage.getItem('bb_user') || '{}');
-      const username = storedUser.username || localStorage.getItem('username') || 'Anonymous';
-      const message = `Tip ${username} on Bistrot Bastards`;
+      const username = storedUser.username || localStorage.getItem('username') || 'Anonyme';
+      const message = `Pourboire pour ${username} sur Bistrot Bastards`;
       const uri = `ethereum:${wallet}?message=${encodeURIComponent(message)}`;
 
       await QRCode.toCanvas(qrCanvas, uri, { width: 180, margin: 1 });
-      if (qrStatus) qrStatus.textContent = '✅ QR ready — show this to your guest!';
-      console.log('✅ QR generated for', wallet);
+      if (qrStatus) qrStatus.textContent = '✅ QR prêt — montre-le à ton client !';
+      console.log('✅ QR généré pour', wallet);
     } catch (error) {
-      console.error('❌ QR generation error:', error);
-      if (qrStatus) qrStatus.textContent = '❌ Failed to generate QR.';
+      console.error('❌ Erreur génération QR :', error);
+      if (qrStatus) qrStatus.textContent = '❌ Impossible de générer le QR.';
     }
   });
 }

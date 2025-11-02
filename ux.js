@@ -10,7 +10,7 @@ export function withSubmitLock(form, buttonSelector = 'button[type="submit"]') {
   const btn = form ? form.querySelector(buttonSelector) : null;
   let locked = false;
   return {
-    lock(label = 'Loading…') {
+    lock(label = 'Chargement…') {
       if (locked) return;
       locked = true;
       if (btn) {
@@ -26,10 +26,9 @@ export function withSubmitLock(form, buttonSelector = 'button[type="submit"]') {
       locked = false;
       if (btn) {
         btn.disabled = false;
-        if (btn.dataset._label) {
-          btn.textContent = btn.dataset._label;
-          delete btn.dataset._label;
-        }
+        const original = btn.dataset._label || 'Valider';
+        btn.textContent = original;
+        delete btn.dataset._label;
       }
     }
   };

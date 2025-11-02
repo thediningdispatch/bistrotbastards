@@ -25,11 +25,11 @@ async function handleSubmit(event) {
   const displayName = rawUsername.trim() || username;
 
   if (!username || !password) {
-    showError(errElm, 'Please fill both fields.');
+    showError(errElm, 'Veuillez remplir les deux champs.');
     return;
   }
 
-  lock.lock('Logging in…');
+  lock.lock('Connexion…');
   let shouldUnlock = true;
 
   try {
@@ -44,7 +44,7 @@ async function handleSubmit(event) {
         : (displayName || username);
       localStorage.setItem('bb_user', JSON.stringify({ username: finalName }));
     } catch (profileError) {
-      console.debug('[login] profile fetch skipped', profileError);
+      console.debug('[login] profil non récupéré', profileError);
       localStorage.setItem('bb_user', JSON.stringify({ username: displayName || username }));
     }
 
@@ -57,11 +57,11 @@ async function handleSubmit(event) {
     console.error('[login]', error?.code, error?.message);
     const code = String(error?.code || '');
     if (code.includes('user-not-found') || code.includes('wrong-password')) {
-      showError(errElm, 'Invalid username or password.');
+      showError(errElm, 'Nom d’utilisateur ou mot de passe incorrect.');
     } else if (code.includes('too-many-requests')) {
-      showError(errElm, 'Too many attempts. Try again later.');
+      showError(errElm, 'Trop de tentatives. Réessayez plus tard.');
     } else {
-      showError(errElm, 'Login failed. Please try again.');
+      showError(errElm, 'Connexion impossible. Veuillez réessayer.');
     }
   } finally {
     if (shouldUnlock) {

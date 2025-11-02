@@ -1,16 +1,16 @@
 import { auth } from './firebase.js';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', href: 'dashboard.html', key: 'dashboard' },
-  { label: 'Leaderboard', href: 'leaderboard.html', key: 'leaderboard' },
+  { label: 'Tableau de bord', href: 'dashboard.html', key: 'dashboard' },
+  { label: 'Classement', href: 'leaderboard.html', key: 'leaderboard' },
   { label: 'Chat', href: 'chat.html', key: 'chat' },
-  { label: 'Profile', href: 'dashboard.html#profile', key: 'profile' },
-  { label: 'Logout', href: '#', key: 'logout' }
+  { label: 'Profil', href: 'dashboard.html#profile', key: 'profile' },
+  { label: 'Déconnexion', href: '#', key: 'logout' }
 ];
 
 const defaultUser = {
-  username: 'Bistrot Waiter',
-  role: 'waiter',
+  username: 'Serveur Bistrot',
+  role: 'serveur',
   avatar: null,
   restaurant: ''
 };
@@ -120,7 +120,7 @@ function initNavigation(user) {
   }
 
   if (usernameEl) usernameEl.textContent = user.username || 'Guest';
-  if (roleEl) roleEl.textContent = user.role || 'staff';
+  if (roleEl) roleEl.textContent = user.role || 'équipe';
 
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   const currentHash = window.location.hash || '';

@@ -1,77 +1,77 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>🍾 Podium Challenge — Google Reviews</title>
-  <meta name="description" content="Draft your Google review in a single tap, then copy and paste." />
+  <title>🍾 Défi Podium — Avis Google</title>
+  <meta name="description" content="Rédige ton avis Google en un clic, copie-colle et publie." />
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Podium Challenge Toolkit</span>
+      <span class="menu-item">Boîte à outils Podium</span>
     </div>
 
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Podium Challenge</span>
+        <span class="title-text">Défi Podium</span>
       </div>
 
       <div class="window-body" id="app">
         <div class="toolbar" id="reviewLogoBar">
-          <a class="btn" href="index.html">← Home</a>
+          <a class="btn" href="index.html">← Accueil</a>
           <h1 class="logo-text">Bistrot Bastards</h1>
         </div>
 
-        <h2>Podium Challenge</h2>
-        <p>Help your server win the bottle. Draft your review here, copy it, then paste it into Google.</p>
+        <h2>Défi Podium</h2>
+        <p>Aide ton serveur à gagner la bouteille. Rédige ton avis ici, copie et colle-le sur Google.</p>
 
           <div class="steps">
-            <strong>Three quick steps</strong>
+            <strong>Trois étapes simples</strong>
             <ol>
-              <li>Pick the server who looked after you.</li>
-              <li>Choose the mood that fits the service and add a short message.</li>
-              <li>Copy, paste on Google, and hit publish.</li>
+              <li>Choisis la personne qui s’est occupée de toi.</li>
+              <li>Sélectionne l’emoji qui correspond à ton expérience et ajoute un message court.</li>
+              <li>Copie, colle sur Google et clique sur publier.</li>
             </ol>
           </div>
 
           <form id="reviewForm">
             <div>
-              <label for="serverSelect">Server</label>
+              <label for="serverSelect">Serveur·se</label>
               <select id="serverSelect" name="server" required>
-                <option value="">Who looked after you?</option>
+                <option value="">Qui s’est occupé·e de toi ?</option>
                 <option value="Jules">🕺 Jules</option>
                 <option value="Chloe">💃 Chloe</option>
               </select>
             </div>
 
             <div>
-              <label>Experience</label>
+              <label>Expérience</label>
               <div class="emoji-row" id="moodRow">
-                <div class="emoji" data-mood="🥲" aria-label="Needs improvement">🥲</div>
-                <div class="emoji" data-mood="😋" aria-label="Good service">😋</div>
-                <div class="emoji" data-mood="🤩" aria-label="Outstanding service">🤩</div>
+                <div class="emoji" data-mood="🥲" aria-label="À améliorer">🥲</div>
+                <div class="emoji" data-mood="😋" aria-label="Bon service">😋</div>
+                <div class="emoji" data-mood="🤩" aria-label="Service exceptionnel">🤩</div>
               </div>
-              <p class="hint-inline">Tap the emoji that best matches your visit.</p>
+              <p class="hint-inline">Appuie sur l’emoji qui décrit le mieux ta visite.</p>
             </div>
 
             <input type="hidden" name="mood" id="moodInput" />
 
             <div>
-              <label for="commentField">Your message</label>
-              <textarea id="commentField" name="comment" rows="4" placeholder="Share a quick note about your experience ✍️"></textarea>
+              <label for="commentField">Ton message</label>
+              <textarea id="commentField" name="comment" rows="4" placeholder="Partage un mot sur ton expérience ✍️"></textarea>
             </div>
 
-            <button class="btn" type="submit">Copy review & continue</button>
+            <button class="btn" type="submit">Copier l’avis et continuer</button>
           </form>
 
           <footer class="footer">
             <p>
-              Thank you for your review — it helps our team shine.
+              Merci pour ton avis — il fait briller notre équipe.
             </p>
           </footer>
         </div>
@@ -93,7 +93,7 @@
       ev.preventDefault();
       const data = Object.fromEntries(new FormData(ev.target).entries());
       if (!data.server || !data.mood || !data.comment) {
-        alert('Please complete every field ✨');
+        alert('Merci de remplir tous les champs ✨');
         return;
       }
 
@@ -109,10 +109,10 @@
           body: JSON.stringify(data)
         });
       } catch (err) {
-        console.error('❌ Webhook error:', err);
+        console.error('❌ Erreur webhook :', err);
       }
 
-      alert(`🔥 Your review is copied!\n\nHelp ${data.server} win the bottle 🍾\n👉 Paste your message on the Podium Google page and hit "Publish" ⭐`);
+      alert(`🔥 Ton avis est copié !\n\nAide ${data.server} à décrocher la bouteille 🍾\n👉 Colle ton message sur la page Google Podium et clique sur « Publier » ⭐`);
       window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
     });
   </script>

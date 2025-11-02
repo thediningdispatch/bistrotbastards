@@ -25,16 +25,16 @@ async function handleSubmit(event) {
   const displayName = rawUsername.trim() || username;
 
   if (!username) {
-    showError(errElm, 'Choose a username.');
+    showError(errElm, 'Choisissez un nom d’utilisateur.');
     return;
   }
 
   if (password.length < 6) {
-    showError(errElm, 'Password must be at least 6 characters.');
+    showError(errElm, 'Le mot de passe doit contenir au moins 6 caractères.');
     return;
   }
 
-  lock.lock('Creating…');
+  lock.lock('Création…');
   let shouldUnlock = true;
 
   try {
@@ -59,13 +59,13 @@ async function handleSubmit(event) {
     console.error('[signup]', error?.code, error?.message);
     const code = String(error?.code || '');
     if (code.includes('weak-password')) {
-      showError(errElm, 'Password must be at least 6 characters.');
+      showError(errElm, 'Le mot de passe doit contenir au moins 6 caractères.');
     } else if (code.includes('email-already-in-use')) {
-      showError(errElm, 'This username is already taken.');
+      showError(errElm, 'Ce nom d’utilisateur est déjà utilisé.');
     } else if (code.includes('invalid-email')) {
-      showError(errElm, 'Invalid username.');
+      showError(errElm, 'Nom d’utilisateur invalide.');
     } else {
-      showError(errElm, 'Sign-up failed. Please try again.');
+      showError(errElm, 'Inscription impossible. Veuillez réessayer.');
     }
   } finally {
     if (shouldUnlock) {

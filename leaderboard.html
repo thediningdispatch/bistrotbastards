@@ -1,51 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Leaderboard — Bistrot Bastards</title>
-  <meta name="description" content="Track hospitality performance across your restaurant team." />
+  <title>Classement — Bistrot Bastards</title>
+  <meta name="description" content="Suis les performances de ton équipe en salle." />
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Team Leaderboard</span>
+      <span class="menu-item">Classement équipe</span>
     </div>
 
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Restaurant Rankings</span>
+        <span class="title-text">Classement du restaurant</span>
       </div>
 
       <div class="window-body" id="app">
         <section id="leaderboard">
-          <h2 class="leaderboard-title">🏅 Restaurant Leaderboard</h2>
+          <h2 class="leaderboard-title">🏅 Classement du restaurant</h2>
           <table id="leaderboardTable">
             <thead>
               <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Position</th>
+                <th>Rang</th>
+                <th>Nom d’utilisateur</th>
+                <th>Poste</th>
                 <th>Score</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <button class="btn" id="refreshLeaderboard">Refresh</button>
+          <button class="btn" id="refreshLeaderboard">Actualiser</button>
         </section>
 
         <hr>
 
         <section id="cryptoTip">
-          <h2>💸 Crypto Tipping</h2>
-          <p>Generate your personal QR code to receive direct crypto tips from guests.</p>
+          <h2>💸 Pourboires crypto</h2>
+          <p>Génère ton QR personnel pour recevoir un pourboire crypto directement du client.</p>
           <div class="tip-container">
-            <input type="text" id="walletInput" placeholder="Enter your ETH or BTC wallet address" />
-            <button class="btn" id="generateQR">Generate QR</button>
+            <input type="text" id="walletInput" placeholder="Adresse de portefeuille ETH ou BTC" />
+            <button class="btn" id="generateQR">Générer un QR</button>
           </div>
           <canvas id="qrCanvas"></canvas>
           <p id="qrStatus"></p>

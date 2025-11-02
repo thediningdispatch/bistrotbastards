@@ -1,34 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Blockchain Payments — Waiter Console</title>
-  <meta name="description" content="Configure your wallet defaults before generating a guest tipping link." />
+  <title>Paiements blockchain — Console serveur</title>
+  <meta name="description" content="Configure tes préférences de portefeuille avant de générer un lien de pourboire." />
   <link rel="stylesheet" href="system7.css" />
 </head>
 <body>
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Crypto Tipping (staff setup)</span>
+      <span class="menu-item">Pourboires crypto (réglages équipe)</span>
     </div>
 
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Waiter Setup Console</span>
+        <span class="title-text">Console de configuration serveur</span>
       </div>
 
       <div class="window-body" id="app">
         <div class="toolbar" id="waiterLogoBar">
-          <a class="btn" href="index.html">← Home</a>
+          <a class="btn" href="index.html">← Accueil</a>
           <h1 class="logo-text">Bistrot Bastards</h1>
         </div>
 
-        <h2>Waiter Setup Console</h2>
-        <p>Configure your defaults before handing guests the tipping page. Everything saves locally on this device.</p>
+        <h2>Console serveur</h2>
+        <p>Configure tes paramètres avant de montrer la page de pourboire au client. Tout est enregistré localement sur cet appareil.</p>
 
         <div class="tag-list">
           <span class="tag" id="tagCrypto">—</span>
@@ -36,19 +36,19 @@
           <span class="tag" id="tagAddr">—</span>
         </div>
 
-        <span class="beta-badge">Beta build — expect rough edges</span>
+        <span class="beta-badge">Version bêta — attendez-vous à quelques aspérités</span>
 
         <form>
           <div class="two-column">
             <div>
-              <label for="crypto">Crypto network</label>
+              <label for="crypto">Réseau crypto</label>
               <select id="crypto">
                 <option value="ETH">Ethereum (ETH)</option>
                 <option value="BTC">Bitcoin (BTC)</option>
               </select>
             </div>
             <div>
-              <label for="fiat">Bill currency</label>
+              <label for="fiat">Devise de l’addition</label>
               <select id="fiat">
                 <option value="USD">US Dollar ($)</option>
                 <option value="EUR">Euro (€)</option>
@@ -58,31 +58,31 @@
 
           <div class="two-column">
             <div>
-              <label for="bill">Bill amount</label>
-              <input id="bill" type="number" step="0.01" min="0" placeholder="Enter bill amount" />
+              <label for="bill">Montant de l’addition</label>
+              <input id="bill" type="number" step="0.01" min="0" placeholder="Saisis le montant de l’addition" />
             </div>
             <div>
-              <label for="address">Wallet address</label>
-              <input id="address" placeholder="Enter your wallet address" />
+              <label for="address">Adresse de portefeuille</label>
+              <input id="address" placeholder="Saisis ton adresse de portefeuille" />
             </div>
           </div>
 
           <div class="actions">
-            <button type="button" class="btn" id="toGuest">Preview Guest Flow</button>
-            <button type="button" class="btn" id="saveDefaults">Save defaults</button>
-            <button type="button" class="btn" id="clearDefaults">Clear</button>
+            <button type="button" class="btn" id="toGuest">Prévisualiser côté client</button>
+            <button type="button" class="btn" id="saveDefaults">Enregistrer</button>
+            <button type="button" class="btn" id="clearDefaults">Réinitialiser</button>
           </div>
         </form>
 
         <div class="window" id="guestWindow">
           <div class="title-bar">
             <div class="window-controls"><span></span><span></span><span></span></div>
-            <span class="title-text">Guest Tipping Console</span>
+            <span class="title-text">Console client pourboire</span>
           </div>
 
           <div class="window-body">
-            <h2>Guest Tipping Console</h2>
-            <p>Select your tip, scan the QR code, and confirm the amount inside your wallet.</p>
+            <h2>Console client pourboire</h2>
+            <p>Choisis ton pourboire, scanne le QR code et confirme le montant dans ton portefeuille.</p>
 
             <div class="tag-list">
               <span class="tag" id="guestTagCrypto">—</span>
@@ -90,9 +90,9 @@
               <span class="tag" id="guestTagAddr">—</span>
             </div>
 
-            <span class="beta-badge">Beta build — verify all details before sending funds</span>
+            <span class="beta-badge">Version bêta — vérifie les détails avant d’envoyer les fonds</span>
 
-            <div class="hint">Select a preset percentage</div>
+            <div class="hint">Sélectionne un pourcentage prédéfini</div>
             <div class="percent-grid" id="guestPercentGrid">
               <button class="pill" data-p="5"><div class="pct">5%</div><div class="approx">≈ —</div></button>
               <button class="pill" data-p="10"><div class="pct">10%</div><div class="approx">≈ —</div></button>
@@ -101,23 +101,23 @@
             </div>
 
             <div class="toolbar">
-              <span class="hint">Or enter a custom %</span>
-              <input id="guestCustomP" type="number" step="0.5" min="0" placeholder="Custom %" />
-              <button class="btn" id="guestApplyCustom" type="button">Apply</button>
+              <span class="hint">Ou saisis ton propre %</span>
+              <input id="guestCustomP" type="number" step="0.5" min="0" placeholder="% personnalisé" />
+              <button class="btn" id="guestApplyCustom" type="button">Appliquer</button>
             </div>
 
             <div class="summary">
-              <div class="kpi"><b>Bill</b><span id="guestBillFiat">—</span></div>
-              <div class="kpi"><b>Tip</b><span id="guestTipFiat">—</span></div>
+              <div class="kpi"><b>Addition</b><span id="guestBillFiat">—</span></div>
+              <div class="kpi"><b>Pourboire</b><span id="guestTipFiat">—</span></div>
             </div>
 
             <div class="qr-wrap" id="guestQrWrap">
               <div class="qr-box"><canvas id="guestQrCanvas"></canvas></div>
-              <p class="qr-hint">Live rates from Coinbase. Always double-check the final amount before confirming.</p>
+              <p class="qr-hint">Taux en direct depuis Coinbase. Vérifie toujours le montant final avant de confirmer.</p>
               <div class="actions">
-                <a class="btn" id="guestOpenWallet" target="_blank" rel="noopener noreferrer">Open Wallet</a>
-                <button class="btn" id="guestCopyLink" type="button">Copy Payment Link</button>
-                <button class="btn" id="guestCopyAmount" type="button">Copy Tip Amount</button>
+                <a class="btn" id="guestOpenWallet" target="_blank" rel="noopener noreferrer">Ouvrir le portefeuille</a>
+                <button class="btn" id="guestCopyLink" type="button">Copier le lien de paiement</button>
+                <button class="btn" id="guestCopyAmount" type="button">Copier le montant du pourboire</button>
               </div>
               <div class="uri-preview" id="guestUriPreview">—</div>
             </div>
@@ -224,7 +224,7 @@
 
     async function renderGuestForPercent(percent) {
       if (!(guestState.bill > 0) || !guestState.addr) {
-        alert('Configure the waiter console first.');
+        alert('Configure d’abord la console serveur.');
         return;
       }
 
@@ -250,7 +250,7 @@
         guestEls.qrWrap.style.display = 'block';
       } catch (error) {
         console.error(error);
-        alert('Could not fetch the live rate — please retry.');
+        alert('Impossible de récupérer le taux en direct — réessaie.');
       }
     }
 
@@ -265,7 +265,7 @@
     guestEls.applyCustom.addEventListener('click', () => {
       const percent = parseFloat(guestEls.customInput.value);
       if (!(percent >= 0)) {
-        alert('Enter a valid percentage.');
+        alert('Entre un pourcentage valide.');
         return;
       }
       guestEls.percentButtons.forEach(b => b.classList.remove('active'));
@@ -292,7 +292,7 @@
       localStorage.setItem(LS.crypto, staffInputs.crypto.value);
       localStorage.setItem(LS.fiat, staffInputs.fiat.value);
       localStorage.setItem(LS.addr, (staffInputs.address.value || '').trim());
-      alert('Defaults saved.');
+      alert('Préférences enregistrées.');
     });
 
     document.getElementById('clearDefaults').addEventListener('click', () => {
@@ -309,7 +309,7 @@
       updateGuestTags();
       resetGuestView();
       refreshGuestApprox();
-      alert('Cleared.');
+      alert('Réinitialisé.');
     });
 
     document.getElementById('toGuest').addEventListener('click', () => {
@@ -319,11 +319,11 @@
       const fiat = staffInputs.fiat.value;
 
       if (!addr) {
-        alert('Please enter your wallet address.');
+        alert('Saisis ton adresse de portefeuille.');
         return;
       }
       if (!(billValue > 0)) {
-        alert('Enter a bill amount greater than 0.');
+        alert('Entre un montant d’addition supérieur à 0.');
         return;
       }
 
