@@ -16,7 +16,13 @@ if (form) {
       return;
     }
 
-    const pseudoEmail = `${username}@bistrotbastards.local`;
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters.');
+      return;
+    }
+
+    const normalizedUsername = username.toLowerCase();
+    const pseudoEmail = `${normalizedUsername}@bistrotbastards.local`;
 
     try {
       await setPersistence(auth, browserLocalPersistence);
@@ -33,8 +39,24 @@ if (form) {
 
       window.location.href = 'index_waiter.html';
     } catch (error) {
-      console.error('[signup] error', error);
-      alert('Sign-up failed. Please try again.');
+      console.error('[signup]', error.code, error.message);
+      const message = mapSignupError(error);
+      alert(message);
     }
   });
+}
+
+function mapSignupError(error) {
+  if (!error) return 'Sign-up failed. Please try again.';
+  const { code } = error;
+  switch (code) {
+    case 'auth/weak-password':
+      return 'Password must be at least 6 characters.';
+    case 'auth/email-already-in-use':
+      return 'This username is already taken.';
+    case 'auth/invalid-email':
+      return 'Invalid username format.';
+    default:
+      return 'Sign-up failed. Please try again.';
+  }
 }

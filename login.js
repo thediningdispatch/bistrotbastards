@@ -16,7 +16,8 @@ if (form) {
       return;
     }
 
-    const pseudoEmail = `${username}@bistrotbastards.local`;
+    const normalizedUsername = username.toLowerCase();
+    const pseudoEmail = `${normalizedUsername}@bistrotbastards.local`;
 
     try {
       await setPersistence(auth, browserLocalPersistence);
@@ -35,8 +36,18 @@ if (form) {
 
       window.location.href = 'index_waiter.html';
     } catch (error) {
-      console.error('[login] error', error);
-      alert('Login failed. Please try again.');
+      console.error('[login]', error.code, error.message);
+      const message = mapLoginError(error);
+      alert(message);
     }
   });
+}
+
+function mapLoginError(error) {
+  if (!error) return 'Login failed. Please try again.';
+  const { code } = error;
+  if (code === 'auth/user-not-found' || code === 'auth/wrong-password') {
+    return 'Invalid username or password.';
+  }
+  return 'Login failed. Please try again.';
 }
