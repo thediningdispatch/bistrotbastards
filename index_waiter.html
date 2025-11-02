@@ -45,7 +45,11 @@
 
     /* top3 */
     .bb-top3 { margin-top:16px; }
-    .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; gap:8px; padding:8px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
+    .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; gap:12px; padding:8px 12px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
+    .bb-top3-icon { display:flex; align-items:center; justify-content:center; width:46px; height:46px; background:#d1c8ff; border:1px solid #000; box-shadow:1px 1px 0 #000; }
+    .bb-top3-icon svg { width:22px; height:32px; display:block; }
+    .bb-top3-icon polygon:first-of-type { fill:#6d5bff; }
+    .bb-top3-icon polygon:last-of-type { fill:#4432c8; }
     .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
     .bb-top3-list li { display:flex; align-items:center; gap:10px; padding:8px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; }
     .bb-rank { display:inline-block; min-width:28px; text-align:center; font-weight:800; padding:2px 6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#eee; }
@@ -82,7 +86,15 @@
         </div>
 
         <section class="bb-top3" aria-label="Top 3">
-          <div class="bb-top3-title">Top 3</div>
+          <div class="bb-top3-title">
+            <span class="bb-top3-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 48" focusable="false">
+                <polygon points="16,0 0,24 16,32 32,24"></polygon>
+                <polygon points="16,48 0,28 16,36 32,28"></polygon>
+              </svg>
+            </span>
+            <span>Top 3</span>
+          </div>
           <ol id="bbTop3List" class="bb-top3-list">
             <!-- Filled dynamically -->
           </ol>

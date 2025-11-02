@@ -81,6 +81,7 @@ function ensureNav() {
       <div class="bb-nav-menu">
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
+          <a href="performances.html" role="menuitem" data-nav="performances">Performances</a>
           <a href="leaderboard.html" role="menuitem" data-nav="leaderboard">Classement</a>
           <a href="chat.html" role="menuitem" data-nav="chat">Chat</a>
           <a href="dashboard.html#profile" role="menuitem" data-nav="profile">Profil</a>
