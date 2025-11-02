@@ -21,53 +21,49 @@
           <span class="title-text">Enable JavaScript</span>
         </div>
         <div class="window-body">
-          <p>JavaScript is required. <a href="login.html">Go to login</a></p>
+          <p>JavaScript is required. <a class="btn" href="login.html">Go to login</a></p>
         </div>
       </div>
     </div>
   </noscript>
 
-  <div class="desktop">
+  <div class="desktop" id="landing" style="display:none">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
-      <span class="menu-item">Checking session…</span>
+      <span class="menu-item">Welcome</span>
     </div>
     <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Bistrot Bastards</span>
+        <span class="title-text">Welcome</span>
       </div>
       <div class="window-body">
         <h1 class="logo-text">Bistrot Bastards</h1>
-        <p id="routerStatus">Checking your session…</p>
+        <p>Choose an option to continue.</p>
+        <div class="btns">
+          <a class="btn" href="login.html">Log in</a>
+          <a class="btn" href="signup.html">Create account</a>
+        </div>
       </div>
     </div>
   </div>
 
-  <script type="module" src="firebase.js"></script>
   <script type="module">
-    import { auth } from './firebase.js';
-    import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { auth, setPersistence, browserLocalPersistence, onAuthStateChanged } from './firebase.js';
 
-    const statusEl = document.getElementById('routerStatus');
-
-    function updateStatus(message) {
-      if (statusEl) statusEl.textContent = message;
-    }
+    const landing = document.getElementById('landing');
 
     try {
       await setPersistence(auth, browserLocalPersistence);
     } catch (error) {
-      console.warn('Router persistence warning:', error);
+      console.warn('Landing persistence warning:', error);
     }
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        updateStatus('Loading your workspace…');
         location.replace('index_waiter.html');
       } else {
-        updateStatus('Redirecting to login…');
-        location.replace('login.html');
+        if (landing) landing.style.display = 'block';
       }
     });
   </script>

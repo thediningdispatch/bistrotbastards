@@ -25,37 +25,18 @@ if (form) {
       const profileRef = doc(db, 'users', user.uid);
       const snapshot = await getDoc(profileRef);
 
-      if (!snapshot.exists()) {
-        throw new Error('User profile not found.');
+      let storedUsername = username;
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        storedUsername = data.username || storedUsername;
       }
 
-      const data = snapshot.data();
-      const payload = {
-        username: data.username || username
-      };
-
-      localStorage.setItem('bb_user', JSON.stringify(payload));
+      localStorage.setItem('bb_user', JSON.stringify({ username: storedUsername }));
 
       window.location.href = 'index_waiter.html';
     } catch (error) {
-      console.error(error);
-      const message = mapLoginError(error);
-      alert(message);
+      console.error('[login] error', error);
+      alert('Login failed. Please try again.');
     }
   });
-}
-
-function mapLoginError(error) {
-  if (!error) return 'Login failed. Please try again.';
-  const { code } = error;
-  switch (code) {
-    case 'auth/invalid-credential':
-    case 'auth/user-not-found':
-    case 'auth/wrong-password':
-      return 'Incorrect username or password. Please try again.';
-    case 'auth/too-many-requests':
-      return 'Too many attempts. Please wait a moment and try again.';
-    default:
-      return 'Login failed. Please try again.';
-  }
 }
