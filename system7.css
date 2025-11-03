@@ -111,8 +111,8 @@ body.no-nav {
 .waiter-home {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px 16px 24px;
+  gap: 20px;
+  padding: 20px 24px 32px;
   box-sizing: border-box;
 }
 
@@ -126,8 +126,9 @@ body.no-nav {
 .waiter-main {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 16px;
+  padding: 16px 18px 20px;
+  margin-bottom: 12px;
 }
 
 .hero-logo {
@@ -813,7 +814,12 @@ hr {
   }
 
   .waiter-home {
-    padding: 12px 12px 24px;
+    padding: 16px 16px 28px;
+    gap: 18px;
+  }
+
+  .waiter-main {
+    padding: 14px 16px 20px;
     gap: 14px;
   }
 
