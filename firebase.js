@@ -18,7 +18,7 @@ export const firebaseConfig = {
   messagingSenderId: "479005578581",
   appId: "1:479005578581:web:6615d66dca477c69730bdc",
   measurementId: "G-DPMP82GM2Y",
-  databaseURL: "https://bistrotbastards-login-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL: "https://bistrotbastards-login-default-rtdb.firebaseio.com"
 };
 
 // ---- Initialize core services
