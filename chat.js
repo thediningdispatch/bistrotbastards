@@ -60,6 +60,32 @@ function getCurrentUser() {
   };
 }
 
+// 30 pastel colors for users
+const PASTEL_COLORS = [
+  '#FFE5E5', '#FFE5F0', '#FFE5FA', '#F0E5FF', '#E5E5FF',
+  '#E5F0FF', '#E5FAFF', '#E5FFFA', '#E5FFF0', '#E5FFE5',
+  '#F0FFE5', '#FAFFE5', '#FFFFE5', '#FFF0E5', '#FFFAE5',
+  '#FFD6E5', '#FFD6F5', '#F5D6FF', '#E5D6FF', '#D6E5FF',
+  '#D6F5FF', '#D6FFFF', '#D6FFF5', '#D6FFE5', '#E5FFD6',
+  '#F5FFD6', '#FFFFD6', '#FFF5D6', '#FFE5D6', '#FFDDE5'
+];
+
+// Hash function to convert username to color index
+function hashStringToColorIndex(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash) % PASTEL_COLORS.length;
+}
+
+// Get consistent color for a username
+function getUserColor(username) {
+  const index = hashStringToColorIndex(username);
+  return PASTEL_COLORS[index];
+}
+
 // Format timestamp
 function formatTime(timestamp) {
   if (!timestamp) return '';
@@ -126,6 +152,13 @@ function createMessageElement(data) {
   const currentUser = getCurrentUser();
   const isCurrentUser = currentUser && data.uid === currentUser.uid;
 
+  // Get unique color for this user
+  const username = data.username || 'Anonymous';
+  const userColor = getUserColor(username);
+
+  // Apply the color as background
+  messageDiv.style.backgroundColor = userColor;
+
   if (isCurrentUser) {
     messageDiv.classList.add('is-current-user');
   } else {
@@ -137,7 +170,7 @@ function createMessageElement(data) {
 
   const userSpan = document.createElement('span');
   userSpan.className = 'chat-message-user';
-  userSpan.textContent = data.username || 'Anonymous';
+  userSpan.textContent = username;
 
   const timeSpan = document.createElement('span');
   timeSpan.className = 'chat-message-time';

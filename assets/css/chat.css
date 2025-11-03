@@ -98,15 +98,14 @@ body {
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  /* Background color set dynamically via JS */
 }
 
 .chat-message.is-current-user {
-  background: #e3ecff;
   align-self: flex-end;
 }
 
 .chat-message.is-other-user {
-  background: #ffe89a;
   align-self: flex-start;
 }
 
