@@ -1,327 +1,226 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pourboires Crypto — Bistro Bastards</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flux pourboires crypto — Bistrot Bastards</title>
+  <link rel="stylesheet" href="system7.css">
+  <link rel="stylesheet" href="assets/css/nav.css">
   <style>
-    :root {
-      color-scheme: light;
-      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-    }
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      background: radial-gradient(circle at top, #1d2b53 0%, #0f172a 100%);
-      min-height: 100vh;
+      color: var(--text);
+    }
+    .bt-flow {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-      color: #0b172a;
+      flex-direction: column;
+      gap: 16px;
     }
-    .bt-layout {
-      background: #f5f7ff;
-      width: min(960px, 100%);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(3, 12, 47, 0.35);
-      overflow: hidden;
+    .bt-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+    .bt-pastel-blue { background: #eef1ff; }
+    .bt-pastel-green { background: #f0ffe8; }
+    .bt-pastel-cream { background: #fff9e5; }
+    .bt-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
-    header {
-      background: rgba(7, 17, 65, 0.9);
-      color: #fff;
-      padding: 28px 32px;
+    .bt-error {
+      color: #b1003f;
+      font-weight: 600;
+      min-height: 20px;
     }
-    header h1 {
-      margin: 0;
-      font-size: clamp(1.4rem, 2.6vw, 2rem);
-    }
-    header p {
-      margin: 8px 0 0;
-      opacity: 0.8;
-    }
-    main {
-      display: grid;
-      gap: 20px;
-      padding: 28px 24px 40px;
-    }
-    .bt-panel {
-      border-radius: 18px;
-      padding: 24px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-    }
-    .bt-panel h2 {
-      margin: 0 0 8px;
-      font-size: 1.3rem;
-    }
-    .bt-panel p.lead {
-      margin: 0 0 16px;
-      opacity: 0.75;
-    }
-    .bt-server {
-      background: #e3ecff;
-    }
-    .bt-client {
-      background: #e9ffe3;
-    }
-    .bt-section-hidden {
+    .bt-hidden {
       display: none !important;
     }
     .bt-summary {
-      margin-top: 16px;
-      padding: 16px 18px;
-      background: rgba(7, 17, 65, 0.08);
-      border-radius: 14px;
-      line-height: 1.6;
+      padding: 12px;
+      border: 1px dashed #000;
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
     }
-    .bt-summary strong {
-      font-weight: 600;
+    .bt-summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .bt-summary-row strong {
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
     }
     .bt-summary code {
       font-family: "Fira Code", "SFMono-Regular", ui-monospace, monospace;
-      background: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
       padding: 2px 4px;
-      border-radius: 6px;
-      font-size: 0.92rem;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 4px;
     }
-    form {
-      display: grid;
-      gap: 16px;
+    .bt-client-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
-    label {
+    .bt-tip-list {
       display: grid;
       gap: 8px;
-      font-weight: 600;
-    }
-    input[type="number"],
-    select,
-    input[type="text"] {
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(7, 17, 65, 0.15);
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.9);
-      color: #0b172a;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: rgba(20, 94, 255, 0.6);
-      box-shadow: 0 0 0 4px rgba(124, 164, 255, 0.25);
-    }
-    .bt-submit {
-      padding: 14px 18px;
-      border-radius: 14px;
-      border: none;
-      font-size: 1rem;
-      font-weight: 700;
-      background: #1437ff;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .bt-submit:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 30px rgba(20, 55, 255, 0.25);
-    }
-    .bt-submit:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-    .bt-error {
-      margin: -4px 0 0;
-      color: #b1003f;
-      font-weight: 600;
-      font-size: 0.95rem;
-      min-height: 20px;
-    }
-    .bt-client-top {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .bt-bill {
-      font-size: 1.1rem;
-    }
-    .bt-edit {
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(7, 17, 65, 0.25);
-      background: rgba(255, 255, 255, 0.85);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease, border 0.2s ease;
-    }
-    .bt-edit:hover {
-      background: #1437ff;
-      border-color: #1437ff;
-      color: #fff;
-    }
-    .bt-tip-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
     .bt-tip {
-      position: relative;
-      border-radius: 12px;
-      border: 2px solid transparent;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 14px 16px;
-      text-align: center;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-    .bt-tip:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+      background: #fff4cc;
     }
     .bt-tip.bt-active {
-      background: #ffe89a;
-      border-color: rgba(203, 138, 10, 0.6);
-      box-shadow: 0 10px 24px rgba(203, 138, 10, 0.25);
+      background: #ffe19a;
+      box-shadow:
+        inset -1px -1px var(--highlight),
+        inset 1px 1px var(--shadow),
+        2px 2px 0 #000;
     }
     .bt-tip-custom {
+      border: 1px dashed #000;
+      background: #fbe9ff;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
       display: flex;
       align-items: center;
-      gap: 8px;
       justify-content: center;
+      gap: 8px;
+      padding: 12px;
+    }
+    .bt-tip-custom.bt-active {
+      background: #ffd4f4;
     }
     .bt-tip-custom input {
-      width: 70px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(7, 17, 65, 0.2);
+      width: 74px;
       text-align: right;
-      font-weight: 600;
     }
     .bt-tip-custom button {
       padding: 8px 12px;
-      border-radius: 10px;
-      background: #0b7a45;
-      color: #fff;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-    .bt-tip-custom button:hover {
-      background: #09984f;
-      transform: translateY(-1px);
     }
     .bt-qr {
-      padding: 20px;
-      border-radius: 16px;
-      background: #fff;
-      border: 1px solid rgba(7, 17, 65, 0.1);
-      max-width: 220px;
-      display: grid;
-      justify-items: center;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
+      align-items: center;
       text-align: center;
-      margin-top: 4px;
+      padding: 16px;
     }
     .bt-qr-amount {
-      font-size: 1rem;
+      font-size: 16px;
       font-weight: 700;
     }
-    #btQRCode {
-      width: 200px;
-      height: 200px;
-      display: grid;
-      place-items: center;
+    #btQRCode canvas {
+      border: 1px solid #000;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
     }
-    footer {
-      text-align: center;
-      padding: 0 24px 28px;
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.7);
+    .bt-stage h2 {
+      margin: 0;
     }
-    @media (min-width: 960px) {
-      .bt-layout {
-        grid-template-columns: 1fr 1fr;
-      }
-      header {
-        grid-column: span 2;
-      }
-      main {
-        grid-column: span 2;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-      }
+    .bt-stage p {
+      margin: 0;
+    }
+    .bt-tip-note {
+      font-size: 13px;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
-  <div class="bt-layout">
-    <header>
-      <h1>Flux de pourboire crypto</h1>
-      <p>Crée ton ticket crypto, passe la tablette au client, génère le QR et encaisse le pourboire en quelques taps.</p>
-    </header>
-    <main>
-      <section id="btServerSection" class="bt-panel bt-server">
-        <h2>Espace serveur</h2>
-        <p class="lead">Renseigne les infos ci-dessous avant de passer la tablette au client.</p>
-        <form id="btServerForm" novalidate>
-          <label for="btBill">
-            Montant de l'addition (€)
-            <input id="btBill" name="bill" type="number" min="0" step="0.01" inputmode="decimal" placeholder="86.40" required>
-          </label>
-          <label for="btCrypto">
-            Crypto utilisée
-            <select id="btCrypto" name="crypto" required>
-              <option value="">— sélectionne —</option>
-              <option value="ETH">Ethereum (ETH)</option>
-              <option value="BTC">Bitcoin (BTC)</option>
-            </select>
-          </label>
-          <label for="btWallet">
-            Adresse du portefeuille
-            <input id="btWallet" name="wallet" type="text" inputmode="text" placeholder="0x..." required>
-          </label>
-          <button type="submit" class="bt-submit">✓ Prêt — passer au client</button>
-          <p id="btServerError" class="bt-error"></p>
-        </form>
-        <div id="btServerSummary" class="bt-summary bt-section-hidden" aria-live="polite">
-          <div><strong>Addition:</strong> <span id="btSummaryBill">—</span> €</div>
-          <div><strong>Crypto:</strong> <span id="btSummaryCrypto">—</span></div>
-          <div><strong>Wallet:</strong> <code id="btSummaryWallet">—</code></div>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Flux de pourboires crypto</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Serveur → Client</span>
+      </div>
+
+      <div class="window-body">
+        <div id="navHost"></div>
+
+        <p>Prépare l'addition, passe la tablette au client, puis génère le QR de paiement crypto — le tout reste sur cet appareil.</p>
+
+        <div class="bt-flow">
+          <section class="panel bt-stage bt-pastel-blue" id="btServerStage">
+            <h2>Étape serveur</h2>
+            <p class="bt-tip-note">Remplis ces champs avant de tendre la tablette.</p>
+            <form id="btServerForm" novalidate>
+              <div class="bt-grid">
+                <label for="btBill">
+                  Montant de l'addition (€)
+                  <input id="btBill" name="bill" type="number" min="0" step="0.01" inputmode="decimal" placeholder="86.40" required>
+                </label>
+                <label for="btCrypto">
+                  Crypto utilisée
+                  <select id="btCrypto" name="crypto" required>
+                    <option value="">— sélectionne —</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="BTC">Bitcoin (BTC)</option>
+                  </select>
+                </label>
+                <label for="btWallet">
+                  Adresse de portefeuille
+                  <input id="btWallet" name="wallet" type="text" inputmode="text" placeholder="0x..." required>
+                </label>
+              </div>
+              <p id="btServerError" class="bt-error"></p>
+              <div class="actions">
+                <button type="submit" class="btn">✓ Prêt — passer au client</button>
+              </div>
+            </form>
+            <div id="btServerSummary" class="bt-summary bt-pastel-cream bt-hidden" aria-live="polite">
+              <div class="bt-summary-row">
+                <strong>Addition</strong>
+                <span><span id="btSummaryBill">—</span> €</span>
+              </div>
+              <div class="bt-summary-row">
+                <strong>Crypto</strong>
+                <span id="btSummaryCrypto">—</span>
+              </div>
+              <div class="bt-summary-row">
+                <strong>Wallet</strong>
+                <code id="btSummaryWallet">—</code>
+              </div>
+            </div>
+          </section>
+
+          <section id="btClientSection" class="panel bt-stage bt-pastel-green bt-hidden" aria-live="polite">
+            <div class="bt-client-head">
+              <h2>Étape client</h2>
+              <button type="button" class="btn" id="btEdit">← Modifier</button>
+            </div>
+            <p class="bt-tip-note">Addition affichée : <strong><span id="btClientBill">—</span> €</strong></p>
+            <p class="bt-tip-note">Choisis un pourcentage de pourboire ou saisis une valeur personnalisée.</p>
+            <div class="bt-tip-list" role="group" aria-label="Choisir un pourcentage de pourboire">
+              <button type="button" class="btn bt-tip" data-tip="5">5 %</button>
+              <button type="button" class="btn bt-tip" data-tip="10">10 %</button>
+              <button type="button" class="btn bt-tip" data-tip="15">15 %</button>
+              <button type="button" class="btn bt-tip" data-tip="20">20 %</button>
+              <div class="bt-tip-custom" role="group" aria-label="Pourcentage personnalisé">
+                <input id="btCustomTip" type="number" min="1" max="100" placeholder="Autre %" aria-label="Pourcentage personnalisé">
+                <button type="button" class="btn" id="btApplyCustom">OK</button>
+              </div>
+            </div>
+            <div id="btQRWrapper" class="panel bt-qr bt-pastel-cream bt-hidden">
+              <h3>QR de paiement</h3>
+              <p class="bt-tip-note">Scanne ce code avec l'app crypto de ton client.</p>
+              <div class="bt-qr-amount">Pourboire : <span id="btTipAmount">—</span> €</div>
+              <div id="btQRCode" role="img" aria-label="Code QR de paiement"></div>
+            </div>
+          </section>
         </div>
-      </section>
-      <section id="btClientSection" class="bt-panel bt-client bt-section-hidden" aria-live="polite">
-        <div class="bt-client-top">
-          <div class="bt-bill">Addition: <strong><span id="btClientBill">—</span> €</strong></div>
-          <button type="button" id="btEdit" class="bt-edit">← Modifier</button>
-        </div>
-        <p class="lead">Choisis ton pourcentage. Scanne le QR pour finaliser le paiement crypto.</p>
-        <div class="bt-tip-grid" role="group" aria-label="Choisir un pourcentage de pourboire">
-          <button type="button" class="bt-tip" data-tip="5">5 %</button>
-          <button type="button" class="bt-tip" data-tip="10">10 %</button>
-          <button type="button" class="bt-tip" data-tip="15">15 %</button>
-          <button type="button" class="bt-tip" data-tip="20">20 %</button>
-          <div class="bt-tip bt-tip-custom">
-            <input id="btCustomTip" type="number" min="1" max="100" placeholder="Autre %" aria-label="Percent personnalisé">
-            <button type="button" id="btApplyCustom">OK</button>
-          </div>
-        </div>
-        <div id="btQRWrapper" class="bt-qr bt-section-hidden">
-          <div class="bt-qr-amount">Pourboire: <span id="btTipAmount">—</span> €</div>
-          <div id="btQRCode"></div>
-          <div class="bt-qr-caption">Scanne pour payer</div>
-        </div>
-      </section>
-    </main>
-    <footer>Powered by Bistro Bastards · Tips à la vitesse de la blockchain ⚡️</footer>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -365,7 +264,7 @@
         tips.forEach(function(btn) { btn.classList.remove("bt-active"); });
         if (customTile) { customTile.classList.remove("bt-active"); }
         customField.value = "";
-        qrWrapper.classList.add("bt-section-hidden");
+        qrWrapper.classList.add("bt-hidden");
         tipAmountDisplay.textContent = "—";
         qrCodeEl.innerHTML = "";
         state.tipPercent = null;
@@ -391,13 +290,13 @@
         var tipAmount = state.bill * percent / 100;
         tipAmountDisplay.textContent = formatAmount(tipAmount);
         var paymentDetails = [
-          "Bistro Bastards - Crypto Tip",
+          "Bistrot Bastards - Crypto Tip",
           "Addition: " + formatAmount(state.bill) + " EUR",
           "Pourboire: " + formatAmount(tipAmount) + " EUR (" + percent + "%)",
           "Crypto: " + state.crypto,
           "Wallet: " + state.wallet
         ].join("\n");
-        qrWrapper.classList.remove("bt-section-hidden");
+        qrWrapper.classList.remove("bt-hidden");
         qrCodeEl.innerHTML = "";
         new QRCode(qrCodeEl, {
           text: paymentDetails,
@@ -445,9 +344,9 @@
         summaryWallet.textContent = walletValue;
         clientBillValue.textContent = formatAmount(billValue);
 
-        serverSummary.classList.remove("bt-section-hidden");
-        form.classList.add("bt-section-hidden");
-        clientSection.classList.remove("bt-section-hidden");
+        serverSummary.classList.remove("bt-hidden");
+        form.classList.add("bt-hidden");
+        clientSection.classList.remove("bt-hidden");
         resetTips();
       });
 
@@ -480,12 +379,14 @@
       });
 
       editButton.addEventListener("click", function() {
-        form.classList.remove("bt-section-hidden");
-        serverSummary.classList.add("bt-section-hidden");
-        clientSection.classList.add("bt-section-hidden");
+        form.classList.remove("bt-hidden");
+        serverSummary.classList.add("bt-hidden");
+        clientSection.classList.add("bt-hidden");
         resetTips();
       });
     })();
   </script>
+  <script type="module" src="main.js"></script>
+  <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
