@@ -213,6 +213,8 @@ function initMessageListener() {
     chatStream.appendChild(messageElement);
   });
 
+  console.log('[Chat] ✅ Rendered', messages.length, 'messages to DOM');
+
   // Scroll to bottom on first load or new message
   if (isFirstLoad) {
     setTimeout(() => scrollToBottom(true), 100);
