@@ -169,6 +169,30 @@
   </script>
 
   <script type="module" src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nav = document.querySelector('.top-nav .bb-nav');
+      if (!nav) return;
+
+      const homeLink = nav.querySelector('.bb-nav-menu [data-nav="home"]');
+      if (homeLink) {
+        const chatBtn = document.createElement('a');
+        chatBtn.className = homeLink.className;
+        chatBtn.dataset.nav = 'chat';
+        chatBtn.href = 'chat.html';
+        chatBtn.textContent = 'Chat';
+        homeLink.replaceWith(chatBtn);
+      }
+
+      const dropdown = nav.querySelector('#bbMenuDropdown');
+      if (dropdown) {
+        const chatEntry = dropdown.querySelector('[data-nav="chat"]');
+        if (chatEntry) {
+          chatEntry.remove();
+        }
+      }
+    });
+  </script>
   <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
