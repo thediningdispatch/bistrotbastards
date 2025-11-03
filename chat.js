@@ -1,4 +1,3 @@
-console.log('[Chat] Starting to load...');
 import { db, auth, rtdb } from './firebase.js';
 import {
   collection,
@@ -18,7 +17,7 @@ import {
   onDisconnect,
   onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { authReady } from './auth-guard.js';
 
 // DOM Elements (initialized after DOM loads)
 let chatForm;
@@ -503,21 +502,23 @@ function initPresenceListener() {
 // Initialize chat only when authenticated
 let chatInitialized = false;
 
-function initChat() {
-  onAuthStateChanged(auth, (firebaseUser) => {
-    if (firebaseUser) {
-      if (!chatInitialized) {
-        initMessageListener();
-        initPresenceListener();
-        chatInitialized = true;
-      }
-      presenceInitialized = false;
-      ensurePresenceOnline();
-    } else {
-      presenceInitialized = false;
-      presenceRefCache = null;
-    }
-  });
+async function initChat() {
+  // Wait for auth-guard to confirm authentication
+  await authReady;
+
+  // Only initialize if user is authenticated (authReady resolves with user or true)
+  if (!auth.currentUser) {
+    return; // User not authenticated, auth-guard will redirect
+  }
+
+  if (!chatInitialized) {
+    initMessageListener();
+    initPresenceListener();
+    chatInitialized = true;
+  }
+
+  presenceInitialized = false;
+  ensurePresenceOnline();
 
   window.addEventListener('focus', ensurePresenceOnline);
   window.addEventListener('blur', markLastSeen);
