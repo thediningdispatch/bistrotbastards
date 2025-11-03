@@ -1,11 +1,9 @@
-console.log('[Auth Guard] Module loading...');
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const PUBLIC_PAGES = new Set(['', 'index.html', 'login.html', 'signup.html']);
 const USER_KEY = 'bb_user';
-console.log('[Auth Guard] ✅ Imports loaded');
 
 function currentPage() {
   return window.location.pathname.split('/').pop() || '';
@@ -44,27 +42,20 @@ async function hydrateUser(firebaseUser) {
 
 function guard() {
   const page = currentPage();
-  console.log('[Auth Guard] Checking page:', page);
 
   if (PUBLIC_PAGES.has(page)) {
-    console.log('[Auth Guard] Public page, skipping auth check');
     return;
   }
 
-  console.log('[Auth Guard] Protected page, setting up auth listener');
   onAuthStateChanged(auth, async (firebaseUser) => {
     if (!firebaseUser) {
-      console.log('[Auth Guard] ❌ No user, redirecting to login');
       localStorage.removeItem(USER_KEY);
       redirectToLogin();
       return;
     }
 
-    console.log('[Auth Guard] ✅ User authenticated:', firebaseUser.uid);
     await hydrateUser(firebaseUser);
   });
 }
 
-console.log('[Auth Guard] Starting guard()');
 guard();
-console.log('[Auth Guard] Guard initialized');

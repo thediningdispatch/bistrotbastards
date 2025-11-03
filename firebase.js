@@ -22,13 +22,11 @@ export const firebaseConfig = {
 };
 
 // ---- Initialize core services
-console.log('[Firebase] Initializing app...');
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 // ---- Realtime Database (explicit regional URL)
 export const rtdb = getDatabase(app, firebaseConfig.databaseURL);
-console.log('[Firebase] ✅ Initialized successfully');
 
 export { setPersistence, browserLocalPersistence, onAuthStateChanged };

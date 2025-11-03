@@ -1,5 +1,3 @@
-console.log('[Main] Module loading...');
-
 const defaultUser = {
   username: 'Serveur Bistrot',
   role: 'serveur',
@@ -173,17 +171,14 @@ function ensureDefaultRestaurant(user) {
 }
 
 function bootstrap() {
-  console.log('[Main] Bootstrap starting...');
   const user = loadUser();
   const nav = ensureNav();
   if (nav) {
     initNavigation(user, nav);
   }
   ensureDefaultRestaurant(user);
-  console.log('[Main] ✅ Bootstrap complete');
 }
 
-console.log('[Main] Setting up DOMContentLoaded listener');
 document.addEventListener('DOMContentLoaded', bootstrap);
 
 window.appState = {
