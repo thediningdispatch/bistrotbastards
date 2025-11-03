@@ -10,21 +10,68 @@
   <link rel="stylesheet" href="assets/css/nav.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <style>
-    body {
+    html, body {
       visibility: hidden;
       opacity: 0;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .desktop {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .window {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window-body.chat-body {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .chat-compact {
       width: 80%;
       max-width: 1200px;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
     }
 
     .chat-stream {
       height: 20vh;
       min-height: 20vh;
       max-height: 20vh;
+      flex-shrink: 0;
+    }
+
+    .chat-input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      z-index: 1000;
     }
 
     @media (max-width: 640px) {

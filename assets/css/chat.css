@@ -159,11 +159,16 @@ body {
   padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
   background: #fff;
   border: 1px solid #000;
+  border-left: none;
+  border-right: none;
   box-shadow: 0 -1px 2px rgba(0,0,0,0.1);
   margin-top: 8px;
   flex-shrink: 0;
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 #chatMessage {
