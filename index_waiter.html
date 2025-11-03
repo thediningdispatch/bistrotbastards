@@ -248,18 +248,7 @@
       const daysLeft = Math.max(0, Math.ceil(msLeft / (1000*60*60*24)));
       document.getElementById('bbContestDays').textContent = daysLeft;
 
-      const hasIncompleteWeek = totalDays === 0 || activeDays.some(day => {
-        const order = dayOrder[day] || 7;
-        if (order > todayIndex) return false;
-        if (!Object.prototype.hasOwnProperty.call(tipsWeekObj, day)) return true;
-        const raw = tipsWeekObj[day];
-        if (raw === '' || raw === null || raw === undefined) return true;
-        const value = Number(raw);
-        return !Number.isFinite(value) || value < 0;
-      });
-      if (jsDay === 1 && hasIncompleteWeek) {
-        alert('🔔 N’oublie pas de remplir ta semaine de travail et tes pourboires dans ton profil !');
-      }
+      // Reminder logic removed - no more popup alerts
     })();
   </script>
 
