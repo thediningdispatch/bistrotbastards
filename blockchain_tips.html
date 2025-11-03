@@ -312,6 +312,66 @@
         lastFallbackUri: ""
       };
 
+      function getUserProfile() {
+        if (window.appState && window.appState.user) {
+          return window.appState.user;
+        }
+        try {
+          var raw = localStorage.getItem("bb_user");
+          return raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          console.warn("Lecture du profil impossible:", error);
+          return {};
+        }
+      }
+
+      function cloneProfile() {
+        var profile = getUserProfile() || {};
+        var copy = Object.assign({}, profile);
+        if (profile.wallets) {
+          copy.wallets = Object.assign({}, profile.wallets);
+        }
+        return copy;
+      }
+
+      function saveProfile(profile) {
+        if (window.appState && typeof window.appState.setUser === "function") {
+          window.appState.setUser(profile);
+          return;
+        }
+        try {
+          localStorage.setItem("bb_user", JSON.stringify(profile));
+          if (profile.restaurant) {
+            localStorage.setItem("restaurant", profile.restaurant);
+          }
+          if (profile.username) {
+            localStorage.setItem("username", profile.username);
+          }
+          if (profile.avatar) {
+            localStorage.setItem("avatarURL", profile.avatar);
+          } else {
+            localStorage.removeItem("avatarURL");
+          }
+        } catch (error) {
+          console.warn("Sauvegarde du profil impossible:", error);
+        }
+      }
+
+      function persistWalletAddress(chain, address) {
+        if (!chain || !address) return;
+        var profile = cloneProfile();
+        if (!profile.wallets) profile.wallets = {};
+        if (profile.wallets[chain] === address) return;
+        profile.wallets[chain] = address;
+        saveProfile(profile);
+      }
+
+      function getStoredWalletAddress(chain) {
+        var profile = getUserProfile();
+        var wallets = profile && profile.wallets ? profile.wallets : {};
+        return wallets && typeof wallets[chain] === "string" ? wallets[chain] : "";
+      }
+
       function formatAmount(value) {
         return value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
@@ -506,6 +566,8 @@
         state.wallet = walletValue;
         state.tipPercent = null;
 
+        persistWalletAddress(state.crypto, state.wallet);
+
         summaryBill.textContent = formatAmount(billValue);
         summaryCrypto.textContent = cryptoValue;
         summaryWallet.textContent = walletValue;
@@ -552,6 +614,17 @@
         clientSection.classList.add("bt-hidden");
         resetTips();
         setRateStatus("Taux Coinbase chargé après validation.", false);
+      });
+
+      function applyStoredWallet(chain) {
+        var stored = getStoredWalletAddress(chain);
+        if (!stored) return;
+        walletInput.value = stored;
+      }
+
+      applyStoredWallet(cryptoSelect.value);
+      cryptoSelect.addEventListener("change", function() {
+        applyStoredWallet(cryptoSelect.value);
       });
     })();
   </script>
