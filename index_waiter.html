@@ -73,6 +73,7 @@
           </h2>
           <ul class="bb-welcome-metrics">
             <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
+            <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
             <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
             <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
           </ul>
@@ -108,8 +109,47 @@
       const weekDay = jsDay === 0 ? 7 : jsDay; // Monday=1..Sunday=7
       document.getElementById('bbWeekDay').textContent = weekDay;
 
-      const tips = Number(localStorage.getItem('bb_tips_week') || NaN);
-      document.getElementById('bbTipsWeek').textContent = Number.isFinite(tips) ? tips.toFixed(2) : '—';
+      function safeParse(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return fallback;
+          const parsed = JSON.parse(raw);
+          return parsed ?? fallback;
+        } catch (_err) {
+          return fallback;
+        }
+      }
+
+      const parsedActiveDays = safeParse('bb_active_days', []);
+      const activeDays = Array.isArray(parsedActiveDays) ? parsedActiveDays : [];
+      const parsedTips = safeParse('bb_tips_week', {});
+      const tipsWeekObj = parsedTips && typeof parsedTips === 'object' ? parsedTips : {};
+
+      const totalDays = Array.isArray(activeDays) ? activeDays.length : 0;
+      const sumTips = Object.values(tipsWeekObj || {}).reduce((acc, val) => {
+        const num = Number(val);
+        return Number.isFinite(num) && num >= 0 ? acc + num : acc;
+      }, 0);
+      const completedDays = totalDays
+        ? activeDays.reduce((count, day) => {
+            const value = Number(tipsWeekObj ? tipsWeekObj[day] : undefined);
+            return Number.isFinite(value) && value > 0 ? count + 1 : count;
+          }, 0)
+        : 0;
+
+      const weekSummaryEl = document.getElementById('bbWeekSummary');
+      if (weekSummaryEl) {
+        if (totalDays) {
+          weekSummaryEl.textContent = `Semaine : Jour ${completedDays}/${totalDays} — Total pourboires : ${sumTips.toFixed(2)} €`;
+        } else {
+          weekSummaryEl.textContent = 'Semaine : planifie tes jours dans ton profil.';
+        }
+      }
+
+      const tipsEl = document.getElementById('bbTipsWeek');
+      if (tipsEl) {
+        tipsEl.textContent = sumTips.toFixed(2);
+      }
 
       // default contest ends Sunday of current week
       const tmp = new Date(d);
@@ -118,6 +158,16 @@
       const msLeft = tmp.setHours(23,59,59,999) - Date.now();
       const daysLeft = Math.max(0, Math.ceil(msLeft / (1000*60*60*24)));
       document.getElementById('bbContestDays').textContent = daysLeft;
+
+      const hasIncompleteWeek = totalDays === 0 || activeDays.some(day => {
+        const raw = tipsWeekObj ? tipsWeekObj[day] : undefined;
+        if (raw === undefined || raw === null || raw === '') return true;
+        const value = Number(raw);
+        return !Number.isFinite(value);
+      });
+      if (jsDay === 1 && hasIncompleteWeek) {
+        alert('🔔 N’oublie pas de remplir ta semaine de travail et tes pourboires dans ton profil !');
+      }
     })();
   </script>
 

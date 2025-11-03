@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { key: 'performances', label: 'Performances', href: '#', type: 'link' },
   { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
   { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
-  { key: 'profile', label: 'Profil', href: '#', type: 'link' },
+  { key: 'profile', label: 'Profil', href: 'profile_waiter.html', type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 
@@ -146,7 +146,7 @@ function initNavigation(user, existingNav) {
         matches = currentPath === 'chat.html';
         break;
       case 'profile':
-        matches = currentPath === 'profile.html';
+        matches = currentPath === 'profile_waiter.html';
         break;
       default:
         matches = linkPath ? linkPath === currentPath : false;
