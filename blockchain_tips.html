@@ -130,6 +130,37 @@
       font-size: 13px;
       color: var(--muted);
     }
+    .bt-instructions {
+      margin: 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .bt-instructions li strong {
+      color: var(--text);
+    }
+    .bt-rate-status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .bt-qr-links {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+    }
+    .bt-qr-links code {
+      display: block;
+      word-break: break-all;
+      text-align: left;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      border-radius: 4px;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -153,7 +184,12 @@
         <div class="bt-flow">
           <section class="panel bt-stage bt-pastel-blue" id="btServerStage">
             <h2>Étape serveur</h2>
-            <p class="bt-tip-note">Remplis ces champs avant de tendre la tablette.</p>
+            <p class="bt-tip-note">Suis les étapes ci-dessous avant de tendre la tablette au client :</p>
+            <ol class="bt-instructions">
+              <li><strong>Remplis</strong> le montant de l'addition, choisis la crypto, puis colle l'adresse du portefeuille.</li>
+              <li><strong>Valide</strong> avec « Prêt — passer au client » pour vérifier l'adresse et récupérer le taux Coinbase.</li>
+              <li><strong>Passe</strong> ensuite la tablette : le client n'aura qu'à choisir son pourboire.</li>
+            </ol>
             <form id="btServerForm" novalidate>
               <div class="bt-grid">
                 <label for="btBill">
@@ -174,6 +210,7 @@
                 </label>
               </div>
               <p id="btServerError" class="bt-error"></p>
+              <p id="btRateStatus" class="bt-rate-status">Taux Coinbase chargé après validation.</p>
               <div class="actions">
                 <button type="submit" class="btn">✓ Prêt — passer au client</button>
               </div>
@@ -214,8 +251,16 @@
             <div id="btQRWrapper" class="panel bt-qr bt-pastel-cream bt-hidden">
               <h3>QR de paiement</h3>
               <p class="bt-tip-note">Scanne ce code avec l'app crypto de ton client.</p>
-              <div class="bt-qr-amount">Pourboire : <span id="btTipAmount">—</span> €</div>
+              <div class="bt-qr-amount">
+                Pourboire : <span id="btTipAmount">—</span> € · <span id="btTipCrypto">—</span>
+              </div>
               <div id="btQRCode" role="img" aria-label="Code QR de paiement"></div>
+              <div class="bt-qr-links">
+                <p class="bt-tip-note" id="btPrimaryLabel">URI portefeuille :</p>
+                <code id="btPrimaryUri">—</code>
+                <p class="bt-tip-note bt-hidden" id="btFallbackLabel">URI fallback :</p>
+                <code id="btFallbackUri" class="bt-hidden">—</code>
+              </div>
             </div>
           </section>
         </div>
@@ -247,17 +292,94 @@
       var qrWrapper = document.getElementById("btQRWrapper");
       var qrCodeEl = document.getElementById("btQRCode");
       var tipAmountDisplay = document.getElementById("btTipAmount");
+      var tipCryptoDisplay = document.getElementById("btTipCrypto");
       var editButton = document.getElementById("btEdit");
+      var rateStatus = document.getElementById("btRateStatus");
+      var primaryUriEl = document.getElementById("btPrimaryUri");
+      var fallbackUriEl = document.getElementById("btFallbackUri");
+      var primaryLabel = document.getElementById("btPrimaryLabel");
+      var fallbackLabel = document.getElementById("btFallbackLabel");
 
       var state = {
         bill: 0,
         crypto: "",
         wallet: "",
-        tipPercent: null
+        tipPercent: null,
+        rateEUR: null,
+        rateUpdatedAt: null,
+        rateLoading: false,
+        lastUri: "",
+        lastFallbackUri: ""
       };
 
       function formatAmount(value) {
         return value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function formatCrypto(amount, decimals) {
+        if (!isFinite(amount)) return "0";
+        var str = amount.toFixed(decimals);
+        if (str.indexOf(".") !== -1) {
+          str = str.replace(/\.?0+$/, "");
+        }
+        return str;
+      }
+
+      function toWeiString(amount) {
+        var fixed = amount.toFixed(18);
+        var parts = fixed.split(".");
+        var integer = parts[0].replace(/^0+(?=\d)/, "");
+        var fraction = (parts[1] || "").padEnd(18, "0");
+        var combined = (integer || "0") + fraction;
+        combined = combined.replace(/^0+(?=\d)/, "") || "0";
+        return combined;
+      }
+
+      function setRateStatus(message, isError) {
+        rateStatus.textContent = message;
+        if (isError) {
+          rateStatus.classList.add("bt-error");
+        } else {
+          rateStatus.classList.remove("bt-error");
+        }
+      }
+
+      function fetchRate(crypto) {
+        if (state.rateLoading) {
+          return state.rateLoading;
+        }
+        state.rateLoading = true;
+        setRateStatus("Récupération du taux Coinbase…", false);
+        state.rateEUR = null;
+        state.rateUpdatedAt = null;
+        state.rateLoading = fetch("https://api.coinbase.com/v2/exchange-rates?currency=" + encodeURIComponent(crypto))
+          .then(function(response) {
+            if (!response.ok) {
+              throw new Error("HTTP " + response.status);
+            }
+            return response.json();
+          })
+          .then(function(payload) {
+            var eur = payload && payload.data && payload.data.rates && payload.data.rates.EUR;
+            var value = parseFloat(eur);
+            if (!isFinite(value) || value <= 0) {
+              throw new Error("Taux invalide");
+            }
+            state.rateEUR = value;
+            state.rateUpdatedAt = new Date();
+            var formatted = value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            setRateStatus("Taux Coinbase : 1 " + crypto + " = " + formatted + " €", false);
+          })
+          .catch(function(error) {
+            console.error("Coinbase rate error:", error);
+            state.rateEUR = null;
+            state.rateUpdatedAt = null;
+            setRateStatus("Impossible de récupérer le taux Coinbase. Vérifie la connexion et réessaie.", true);
+          })
+          .finally(function() {
+            state.rateLoading = false;
+          });
+        return state.rateLoading;
       }
 
       function resetTips() {
@@ -266,8 +388,16 @@
         customField.value = "";
         qrWrapper.classList.add("bt-hidden");
         tipAmountDisplay.textContent = "—";
+        tipCryptoDisplay.textContent = "—";
         qrCodeEl.innerHTML = "";
         state.tipPercent = null;
+        state.lastUri = "";
+        state.lastFallbackUri = "";
+        primaryUriEl.textContent = "—";
+        primaryLabel.textContent = "URI portefeuille :";
+        fallbackLabel.classList.add("bt-hidden");
+        fallbackUriEl.classList.add("bt-hidden");
+        fallbackUriEl.textContent = "—";
       }
 
       function validateWallet(type, value) {
@@ -282,24 +412,61 @@
 
       function handleTip(percent) {
         if (!state.bill) { return; }
+        if (!state.rateEUR) {
+          if (!state.rateLoading) {
+            fetchRate(state.crypto);
+          }
+          setRateStatus("Taux absent : patiente un instant puis réessaie.", true);
+          return;
+        }
         state.tipPercent = percent;
         tips.forEach(function(btn) {
           var matches = parseFloat(btn.dataset.tip);
           btn.classList.toggle("bt-active", matches === percent);
         });
         var tipAmount = state.bill * percent / 100;
-        tipAmountDisplay.textContent = formatAmount(tipAmount);
-        var paymentDetails = [
-          "Bistrot Bastards - Crypto Tip",
-          "Addition: " + formatAmount(state.bill) + " EUR",
-          "Pourboire: " + formatAmount(tipAmount) + " EUR (" + percent + "%)",
-          "Crypto: " + state.crypto,
-          "Wallet: " + state.wallet
-        ].join("\n");
+        var eurosFormatted = formatAmount(tipAmount);
+        tipAmountDisplay.textContent = eurosFormatted;
+
+        var cryptoAmount = tipAmount / state.rateEUR;
+        var uriInfo;
+        if (state.crypto === "BTC") {
+          var btcAmountStr = formatCrypto(cryptoAmount, 8);
+          uriInfo = {
+            primary: "bitcoin:" + state.wallet + "?amount=" + btcAmountStr,
+            fallback: null,
+            cryptoDisplay: btcAmountStr + " BTC"
+          };
+          primaryLabel.textContent = "URI portefeuille (BIP21) :";
+          fallbackLabel.classList.add("bt-hidden");
+          fallbackUriEl.classList.add("bt-hidden");
+          fallbackUriEl.textContent = "—";
+        } else {
+          var ethAmountStr = formatCrypto(cryptoAmount, 18);
+          var weiBig = BigInt(toWeiString(cryptoAmount));
+          var primaryUri = "ethereum:pay-" + state.wallet + "@1?value=" + weiBig.toString();
+          var fallbackUri = "ethereum:" + state.wallet + "?amount=" + ethAmountStr;
+          uriInfo = {
+            primary: primaryUri,
+            fallback: fallbackUri,
+            cryptoDisplay: ethAmountStr + " ETH"
+          };
+          primaryLabel.textContent = "URI portefeuille (EIP-681) :";
+          fallbackLabel.textContent = "URI fallback (compatibilité) :";
+          fallbackLabel.classList.remove("bt-hidden");
+          fallbackUriEl.classList.remove("bt-hidden");
+          fallbackUriEl.textContent = fallbackUri;
+        }
+
+        tipCryptoDisplay.textContent = uriInfo.cryptoDisplay;
+        primaryUriEl.textContent = uriInfo.primary;
+        state.lastUri = uriInfo.primary;
+        state.lastFallbackUri = uriInfo.fallback || "";
+
         qrWrapper.classList.remove("bt-hidden");
         qrCodeEl.innerHTML = "";
         new QRCode(qrCodeEl, {
-          text: paymentDetails,
+          text: uriInfo.primary,
           width: 200,
           height: 200,
           colorDark: "#0b172a",
@@ -347,6 +514,7 @@
         serverSummary.classList.remove("bt-hidden");
         form.classList.add("bt-hidden");
         clientSection.classList.remove("bt-hidden");
+        fetchRate(cryptoValue);
         resetTips();
       });
 
@@ -383,6 +551,7 @@
         serverSummary.classList.add("bt-hidden");
         clientSection.classList.add("bt-hidden");
         resetTips();
+        setRateStatus("Taux Coinbase chargé après validation.", false);
       });
     })();
   </script>
