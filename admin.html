@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Administration — Bistrot Bastards</title>
+  <meta name="description" content="Panneau d'administration Bistrot Bastards." />
+  <link rel="stylesheet" href="system7.css" />
+  <link rel="stylesheet" href="assets/css/nav.css" />
+  <style>
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #000;
+    }
+
+    .admin-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .admin-table-wrapper {
+      overflow-x: auto;
+      border: 1px solid #000;
+      background: var(--panel-light);
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .admin-table thead {
+      background: var(--panel-mid);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .admin-table th {
+      padding: 10px 8px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid #000;
+      white-space: nowrap;
+    }
+
+    .admin-table td {
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .admin-table tbody tr:hover {
+      background: var(--panel-mid);
+    }
+
+    .admin-username {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .admin-input {
+      width: 80px;
+      padding: 4px 6px;
+      border: 1px solid #000;
+      background: #fff;
+      font-size: 12px;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+    }
+
+    .admin-input:focus {
+      outline: none;
+      box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+    }
+
+    .admin-input-wide {
+      width: 100px;
+    }
+
+    .admin-save-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      min-width: 80px;
+    }
+
+    .admin-status {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border: 1px solid #000;
+      background: var(--panel-mid);
+      font-size: 12px;
+      display: none;
+    }
+
+    .admin-status.show {
+      display: block;
+    }
+
+    .admin-status.success {
+      background: #e9ffe3;
+    }
+
+    .admin-status.error {
+      background: #ffe3e3;
+    }
+
+    .admin-loading {
+      padding: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      .admin-input {
+        width: 60px;
+      }
+
+      .admin-input-wide {
+        width: 80px;
+      }
+
+      .admin-table {
+        font-size: 11px;
+      }
+
+      .admin-table th,
+      .admin-table td {
+        padding: 6px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Administration</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Panneau Admin</span>
+      </div>
+
+      <div class="window-body" id="app">
+        <div class="admin-header">
+          <h2 class="admin-title">Gestion des serveurs</h2>
+          <div class="admin-actions">
+            <button id="refreshBtn" class="btn">Actualiser</button>
+            <a href="index_waiter.html" class="btn">Retour</a>
+          </div>
+        </div>
+
+        <div id="adminLoading" class="admin-loading">
+          ⏳ Chargement des données...
+        </div>
+
+        <div id="adminContent" style="display: none;">
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Serveur</th>
+                  <th>Ticket moyen (€)</th>
+                  <th>Reviews Google</th>
+                  <th>Note clients (/10)</th>
+                  <th>Ventes Ruinart</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Filled dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="adminStatus" class="admin-status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

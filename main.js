@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
   { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
   { key: 'profile', label: 'Profil', href: 'profile_waiter.html', type: 'link' },
+  { key: 'admin', label: 'Admin', href: 'admin.html', type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 
