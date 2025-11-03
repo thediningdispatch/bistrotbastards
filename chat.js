@@ -1,3 +1,4 @@
+console.log('[Chat] Module loading...');
 import { db, auth, rtdb } from './firebase.js';
 import {
   collection,
@@ -18,6 +19,7 @@ import {
   onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+console.log('[Chat] ✅ Imports loaded');
 
 // DOM Elements (initialized after DOM loads)
 let chatForm;
@@ -167,11 +169,13 @@ function scrollToBottom(force = false) {
 
 // Listen to messages in real-time (last 50)
 function initMessageListener() {
+  console.log('[Chat] initMessageListener() starting...');
   const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
 
   let isFirstLoad = true;
 
   onSnapshot(q, (snapshot) => {
+    console.log('[Chat] Messages snapshot received:', snapshot.size, 'messages');
   // Store last visible for pagination
   if (!snapshot.empty) {
     lastVisible = snapshot.docs[snapshot.docs.length - 1];
@@ -270,6 +274,7 @@ async function loadOlderMessages() {
 
 // Initialize DOM and event listeners
 function initDOM() {
+  console.log('[Chat] initDOM() starting...');
   chatForm = document.getElementById('chatForm');
   chatStream = document.getElementById('chatStream');
   chatMessage = document.getElementById('chatMessage');
@@ -277,8 +282,17 @@ function initDOM() {
   presenceList = document.getElementById('presenceList');
   typingIndicator = document.getElementById('typingIndicator');
 
+  console.log('[Chat] DOM elements:', {
+    chatForm: !!chatForm,
+    chatStream: !!chatStream,
+    chatMessage: !!chatMessage,
+    sendBtn: !!sendBtn,
+    presenceList: !!presenceList,
+    typingIndicator: !!typingIndicator
+  });
+
   if (!chatForm || !chatStream || !chatMessage || !sendBtn) {
-    console.error('[Chat] Required DOM elements not found');
+    console.error('[Chat] ❌ Required DOM elements not found');
     return false;
   }
 
@@ -314,6 +328,7 @@ function initDOM() {
     }, 1500);
   });
 
+  console.log('[Chat] ✅ initDOM() complete');
   return true;
 }
 
@@ -447,9 +462,11 @@ async function updateTypingStatus(isTyping) {
 
 // Listen to all presence data
 function initPresenceListener() {
+  console.log('[Chat] initPresenceListener() starting...');
   const presenceRef = ref(rtdb, 'presence');
 
   onValue(presenceRef, (snapshot) => {
+    console.log('[Chat] Presence snapshot received');
   if (!presenceList || !typingIndicator) return;
 
   const currentUser = getCurrentUser();
@@ -503,9 +520,12 @@ function initPresenceListener() {
 let chatInitialized = false;
 
 function initChat() {
+  console.log('[Chat] initChat() starting...');
   onAuthStateChanged(auth, (firebaseUser) => {
+    console.log('[Chat] Auth state changed:', !!firebaseUser);
     if (firebaseUser) {
       if (!chatInitialized) {
+        console.log('[Chat] First auth - initializing listeners');
         initMessageListener();
         initPresenceListener();
         chatInitialized = true;
@@ -513,6 +533,7 @@ function initChat() {
       presenceInitialized = false;
       ensurePresenceOnline();
     } else {
+      console.log('[Chat] No user - clearing presence');
       presenceInitialized = false;
       presenceRefCache = null;
     }
@@ -534,15 +555,24 @@ function initChat() {
 }
 
 // Main initialization - wait for DOM then start
+console.log('[Chat] Document ready state:', document.readyState);
 if (document.readyState === 'loading') {
+  console.log('[Chat] Waiting for DOMContentLoaded...');
   document.addEventListener('DOMContentLoaded', () => {
+    console.log('[Chat] DOMContentLoaded fired');
     if (initDOM()) {
       initChat();
+    } else {
+      console.error('[Chat] ❌ initDOM failed');
     }
   });
 } else {
   // DOM already loaded
+  console.log('[Chat] DOM already loaded, initializing immediately');
   if (initDOM()) {
     initChat();
+  } else {
+    console.error('[Chat] ❌ initDOM failed');
   }
 }
+console.log('[Chat] ✅ Module initialization complete');
