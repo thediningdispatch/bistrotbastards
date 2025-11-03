@@ -1,7 +1,13 @@
+const AVATAR_URLS = {
+  pup_orange: 'assets/img/avatar_pup_orange.svg',
+  pup_red: 'assets/img/avatar_pup_red.svg'
+};
+
 const defaultUser = {
   username: 'Serveur Bistrot',
   role: 'serveur',
   avatar: null,
+  avatarKey: null,
   restaurant: ''
 };
 
@@ -28,6 +34,9 @@ function loadUser() {
 
 function saveUser(user) {
   try {
+    if (user && !user.avatar && user.avatarKey && AVATAR_URLS[user.avatarKey]) {
+      user.avatar = AVATAR_URLS[user.avatarKey];
+    }
     localStorage.setItem('bb_user', JSON.stringify(user));
     if (user.restaurant) {
       localStorage.setItem('restaurant', user.restaurant);
@@ -35,8 +44,9 @@ function saveUser(user) {
     if (user.username) {
       localStorage.setItem('username', user.username);
     }
-    if (user.avatar) {
-      localStorage.setItem('avatarURL', user.avatar);
+    const resolvedAvatar = getAvatarUrl(user);
+    if (resolvedAvatar) {
+      localStorage.setItem('avatarURL', resolvedAvatar);
     } else {
       localStorage.removeItem('avatarURL');
     }
@@ -66,6 +76,16 @@ function bindNavOffsetUpdates(nav) {
   window.addEventListener('resize', handler);
   window.addEventListener('orientationchange', handler);
   window.addEventListener('load', handler);
+}
+
+function getAvatarUrl(user) {
+  if (!user) return null;
+  if (user.avatar) return user.avatar;
+  if (user.avatarKey && AVATAR_URLS[user.avatarKey]) {
+    return AVATAR_URLS[user.avatarKey];
+  }
+  const stored = localStorage.getItem('avatarURL');
+  return stored || null;
 }
 
 function ensureNavStyles() {
@@ -138,8 +158,9 @@ function initNavigation(user, existingNav) {
   const roleEl = nav.querySelector('#navRole');
 
   if (avatarEl) {
-    if (user.avatar) {
-      avatarEl.style.backgroundImage = `url(${user.avatar})`;
+    const avatarUrl = getAvatarUrl(user);
+    if (avatarUrl) {
+      avatarEl.style.backgroundImage = `url(${avatarUrl})`;
       avatarEl.style.backgroundSize = 'cover';
       avatarEl.style.backgroundPosition = 'center';
       avatarEl.textContent = '';

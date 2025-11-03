@@ -3,6 +3,11 @@ import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence
 import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onceBind, withSubmitLock, showError, normUsername } from './ux.js';
 
+const AVATAR_URLS = {
+  pup_orange: 'assets/img/avatar_pup_orange.svg',
+  pup_red: 'assets/img/avatar_pup_red.svg'
+};
+
 const form = document.getElementById('signupForm');
 const errElm = document.getElementById('signupError');
 
@@ -23,6 +28,8 @@ async function handleSubmit(event) {
   const username = normUsername(rawUsername);
   const password = form?.password?.value || '';
   const displayName = rawUsername.trim() || username;
+  const avatarKey = form?.avatarKey?.value || '';
+  const avatarUrl = AVATAR_URLS[avatarKey] || '';
 
   if (!username) {
     showError(errElm, 'Choisissez un nom d’utilisateur.');
@@ -31,6 +38,11 @@ async function handleSubmit(event) {
 
   if (password.length < 6) {
     showError(errElm, 'Le mot de passe doit contenir au moins 6 caractères.');
+    return;
+  }
+
+  if (!avatarUrl) {
+    showError(errElm, 'Choisis un badge avant de continuer.');
     return;
   }
 
@@ -45,10 +57,11 @@ async function handleSubmit(event) {
     await setDoc(doc(db, 'users', credential.user.uid), {
       uid: credential.user.uid,
       username: displayName,
+      avatarKey,
       createdAt: serverTimestamp()
     });
 
-    localStorage.setItem('bb_user', JSON.stringify({ username: displayName }));
+    localStorage.setItem('bb_user', JSON.stringify({ username: displayName, avatarKey, avatar: avatarUrl }));
 
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;

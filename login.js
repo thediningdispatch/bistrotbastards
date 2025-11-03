@@ -3,6 +3,11 @@ import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } f
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onceBind, withSubmitLock, showError, normUsername } from './ux.js';
 
+const AVATAR_URLS = {
+  pup_orange: 'assets/img/avatar_pup_orange.svg',
+  pup_red: 'assets/img/avatar_pup_red.svg'
+};
+
 const form = document.getElementById('loginForm');
 const errElm = document.getElementById('loginError');
 
@@ -39,10 +44,11 @@ async function handleSubmit(event) {
 
     try {
       const snapshot = await getDoc(doc(db, 'users', credential.user.uid));
-      const finalName = snapshot.exists()
-        ? (snapshot.data().username || displayName || username)
-        : (displayName || username);
-      localStorage.setItem('bb_user', JSON.stringify({ username: finalName }));
+      const data = snapshot.exists() ? (snapshot.data() || {}) : {};
+      const finalName = data.username || displayName || username;
+      const avatarKey = data.avatarKey || null;
+      const avatarUrl = avatarKey && AVATAR_URLS[avatarKey] ? AVATAR_URLS[avatarKey] : (data.avatar || null);
+      localStorage.setItem('bb_user', JSON.stringify({ username: finalName, avatarKey, avatar: avatarUrl || undefined }));
     } catch (profileError) {
       console.debug('[login] profil non récupéré', profileError);
       localStorage.setItem('bb_user', JSON.stringify({ username: displayName || username }));
