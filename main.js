@@ -6,6 +6,7 @@ const defaultUser = {
 };
 
 const NAV_ITEMS = [
+  { key: 'home', label: 'Home', href: 'index.html', type: 'link' },
   { key: 'performances', label: 'Performances', href: '#', type: 'link' },
   { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
   { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
@@ -84,7 +85,7 @@ function ensureNav() {
         <a href="index.html" class="btn" data-nav="home">Home</a>
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          ${NAV_ITEMS.map(item => {
+          ${NAV_ITEMS.filter(item => item.key !== 'home').map(item => {
             if (item.key === 'logout') {
               return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
             }
@@ -147,6 +148,9 @@ function initNavigation(user, existingNav) {
         break;
       case 'profile':
         matches = currentPath === 'profile_waiter.html';
+        break;
+      case 'home':
+        matches = currentPath === '' || currentPath === 'index.html';
         break;
       default:
         matches = linkPath ? linkPath === currentPath : false;

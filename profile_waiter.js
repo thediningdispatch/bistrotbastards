@@ -101,12 +101,15 @@
     activeDays.forEach(day => {
       const input = tipsContainer.querySelector(`input[data-day="${day}"]`);
       if (!input) return;
-      const value = parseFloat(input.value.replace(",", "."));
-      if (Number.isFinite(value) && value >= 0) {
-        collected[day] = parseFloat(value.toFixed(2));
-      } else {
-        collected[day] = 0;
+      const raw = input.value ? input.value.toString().trim() : "";
+      if (raw === "") {
+        return;
       }
+      const value = Number(raw.replace(",", "."));
+      if (!Number.isFinite(value) || value < 0) {
+        throw new Error(`Montant invalide pour ${day}`);
+      }
+      collected[day] = parseFloat(value.toFixed(2));
     });
     return collected;
   }
@@ -116,11 +119,20 @@
       setStatus("Sélectionne au moins un jour avant d’enregistrer.", "error");
       return;
     }
-    const tips = collectTipValues();
-    localStorage.setItem("bb_active_days", JSON.stringify(activeDays));
-    localStorage.setItem("bb_tips_week", JSON.stringify(tips));
-    tipsWeek = tips;
-    setStatus("Données enregistrées avec succès.", "success");
+    try {
+      const tips = collectTipValues();
+      localStorage.setItem("bb_active_days", JSON.stringify(activeDays));
+      const hasTips = Object.keys(tips).length > 0;
+      if (hasTips) {
+        localStorage.setItem("bb_tips_week", JSON.stringify(tips));
+      } else {
+        localStorage.removeItem("bb_tips_week");
+      }
+      tipsWeek = tips;
+      setStatus("Données enregistrées avec succès.", "success");
+    } catch (error) {
+      setStatus(error.message || "Erreur lors de l’enregistrement.", "error");
+    }
   }
 
   function resetData() {

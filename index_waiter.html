@@ -120,6 +120,16 @@
         }
       }
 
+      const dayOrder = {
+        'Lundi': 1,
+        'Mardi': 2,
+        'Mercredi': 3,
+        'Jeudi': 4,
+        'Vendredi': 5,
+        'Samedi': 6,
+        'Dimanche': 7
+      };
+
       const parsedActiveDays = safeParse('bb_active_days', []);
       const activeDays = Array.isArray(parsedActiveDays) ? parsedActiveDays : [];
       const parsedTips = safeParse('bb_tips_week', {});
@@ -130,10 +140,18 @@
         const num = Number(val);
         return Number.isFinite(num) && num >= 0 ? acc + num : acc;
       }, 0);
+      const todayIndex = weekDay;
       const completedDays = totalDays
         ? activeDays.reduce((count, day) => {
-            const value = Number(tipsWeekObj ? tipsWeekObj[day] : undefined);
-            return Number.isFinite(value) && value > 0 ? count + 1 : count;
+            const order = dayOrder[day] || 7;
+            if (order > todayIndex) return count;
+            if (!Object.prototype.hasOwnProperty.call(tipsWeekObj, day)) {
+              return count;
+            }
+            const raw = tipsWeekObj[day];
+            if (raw === '' || raw === null || raw === undefined) return count;
+            const value = Number(raw);
+            return Number.isFinite(value) && value >= 0 ? count + 1 : count;
           }, 0)
         : 0;
 
@@ -160,10 +178,13 @@
       document.getElementById('bbContestDays').textContent = daysLeft;
 
       const hasIncompleteWeek = totalDays === 0 || activeDays.some(day => {
-        const raw = tipsWeekObj ? tipsWeekObj[day] : undefined;
-        if (raw === undefined || raw === null || raw === '') return true;
+        const order = dayOrder[day] || 7;
+        if (order > todayIndex) return false;
+        if (!Object.prototype.hasOwnProperty.call(tipsWeekObj, day)) return true;
+        const raw = tipsWeekObj[day];
+        if (raw === '' || raw === null || raw === undefined) return true;
         const value = Number(raw);
-        return !Number.isFinite(value);
+        return !Number.isFinite(value) || value < 0;
       });
       if (jsDay === 1 && hasIncompleteWeek) {
         alert('🔔 N’oublie pas de remplir ta semaine de travail et tes pourboires dans ton profil !');
