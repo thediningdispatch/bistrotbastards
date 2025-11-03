@@ -14,7 +14,7 @@
     }
 
     .review-body {
-      padding: 24px 28px 40px;
+      padding: calc(var(--bb-nav-height, 70px) + 24px) 28px 40px;
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -22,6 +22,12 @@
 
     #navHost {
       display: flex;
+    }
+
+    @media (max-width: 640px) {
+      .review-body {
+        padding: calc(var(--bb-nav-height, 60px) + 20px) 20px 32px;
+      }
     }
 
     .review-header {
