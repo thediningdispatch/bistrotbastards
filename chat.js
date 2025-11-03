@@ -197,6 +197,50 @@ function scrollToBottom(force = false) {
   }
 }
 
+// Keyboard-aware layout for iOS using visualViewport
+function initKeyboardAwareLayout() {
+  const chatLayout = document.querySelector('.chat-layout');
+  const inputBar = document.querySelector('.chat-input-bar');
+  const stream = document.getElementById('chatStream');
+
+  if (!chatLayout || !inputBar || !stream || !window.visualViewport) return;
+
+  const vv = window.visualViewport;
+
+  const updateLayoutForViewport = () => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    // hauteur du clavier ≈ différence entre la fenêtre complète et le viewport visible
+    const keyboardHeight = Math.max(
+      0,
+      window.innerHeight - viewport.height - viewport.offsetTop
+    );
+
+    // pousse la barre d'input au-dessus du clavier
+    inputBar.style.marginBottom = keyboardHeight > 0
+      ? `${keyboardHeight + 4}px`
+      : '0px';
+
+    // laisse un peu d'air pour le contenu aussi
+    chatLayout.style.paddingBottom = keyboardHeight > 0
+      ? '4px'
+      : '0px';
+
+    // si on est déjà proche du bas, on recolle le scroll au bas
+    const nearBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight < 120;
+    if (nearBottom) {
+      stream.scrollTop = stream.scrollHeight;
+    }
+  };
+
+  vv.addEventListener('resize', updateLayoutForViewport);
+  vv.addEventListener('scroll', updateLayoutForViewport);
+
+  // appel initial
+  updateLayoutForViewport();
+}
+
 // Listen to messages in real-time (last 50)
 function initMessageListener() {
   const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
@@ -345,6 +389,9 @@ function initDOM() {
       void updateTypingStatus(false);
     }, 1500);
   });
+
+  // Activer le layout "keyboard aware"
+  initKeyboardAwareLayout();
 
   return true;
 }

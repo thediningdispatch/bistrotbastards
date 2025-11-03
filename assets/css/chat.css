@@ -27,10 +27,10 @@ body {
 }
 
 .chat-body {
-  padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  padding: 16px 20px 20px;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -44,6 +44,15 @@ body {
 #navHost {
   display: flex;
   flex-shrink: 0;
+}
+
+/* Container qui tient stream + input */
+.chat-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0; /* essentiel pour que le scroll interne fonctionne */
+  gap: 0;
 }
 
 /* Typing indicator */
@@ -69,12 +78,14 @@ body {
 
 /* Message stream */
 .chat-stream {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   background: #fafafa;
   border: 1px solid #000;
   box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
-  padding: 8px;
+  padding: 12px 14px 8px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -153,24 +164,18 @@ body {
 /* Input bar */
 .chat-input-bar {
   display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 8px;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
+  padding: 8px 10px 10px;
   background: #fff;
-  border: 1px solid #000;
-  border-left: none;
-  border-right: none;
+  border-top: 1px solid rgba(0,0,0,0.15);
   box-shadow: 0 -1px 2px rgba(0,0,0,0.1);
-  margin-top: 8px;
   flex-shrink: 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  box-sizing: border-box;
+  position: relative;
 }
 
-#chatMessage {
+textarea#chatMessage {
   flex: 1;
   padding: 6px 8px;
   border: 1px solid #000;
@@ -288,13 +293,13 @@ body {
     margin-bottom: 6px;
   }
 
-  .chat-body {
-    padding: 12px;
+  .chat-body.bb-page {
+    padding: 12px 10px 18px;
     gap: 8px;
   }
 
   .chat-stream {
-    padding: 6px;
+    padding: 8px 8px 4px;
     gap: 4px;
   }
 
@@ -317,11 +322,11 @@ body {
   }
 
   .chat-input-bar {
-    padding: 6px;
+    padding: 6px 8px 8px;
     gap: 6px;
   }
 
-  #chatMessage {
+  textarea#chatMessage {
     font-size: 13px;
     padding: 5px 7px;
     min-height: 28px;
