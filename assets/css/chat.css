@@ -21,11 +21,6 @@ body {
   background: #f5f5f5;
 }
 
-.chat-compact {
-  max-width: 100%;
-  margin: 0 auto;
-}
-
 .chat-body {
   display: flex;
   flex-direction: column;

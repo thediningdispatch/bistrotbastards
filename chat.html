@@ -14,6 +14,27 @@
       visibility: hidden;
       opacity: 0;
     }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .app-container, .desktop, .window {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-bar {
+      flex-shrink: 0;
+    }
+
+    .window-body.chat-body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
   </style>
 </head>
 <body>
