@@ -91,7 +91,6 @@ if (generateBtn) {
 
       await QRCode.toCanvas(qrCanvas, uri, { width: 180, margin: 1 });
       if (qrStatus) qrStatus.textContent = '✅ QR prêt — montre-le à ton client !';
-      console.log('✅ QR généré pour', wallet);
     } catch (error) {
       console.error('❌ Erreur génération QR :', error);
       if (qrStatus) qrStatus.textContent = '❌ Impossible de générer le QR.';

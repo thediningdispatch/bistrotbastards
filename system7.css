@@ -635,50 +635,6 @@ footer a:hover {
   gap: 12px;
 }
 
-.toolbar .logo-text {
-  font-size: 2rem;
-  margin: 0 auto;
-}
-
-.window-body > .logo-text {
-  margin: 0 auto 12px;
-}
-
-.avatar-options {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.avatar-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 8px;
-  border: 1px solid #000000;
-  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-}
-
-.avatar-option input {
-  margin: 0;
-}
-
-.avatar-option img {
-  width: 72px;
-  height: 72px;
-  border: 1px solid #000000;
-  background: var(--panel-light);
-  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-  object-fit: cover;
-  image-rendering: pixelated;
-}
-
-.avatar-option input:checked + img {
-  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
-  background: var(--panel-mid);
-}
-
 #leaderboard {
   display: flex;
   flex-direction: column;

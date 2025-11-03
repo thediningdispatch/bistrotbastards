@@ -139,8 +139,8 @@ function markLastSeen() {
 
   update(userPresenceRef, {
     lastSeen: Date.now()
-  }).catch((error) => {
-    console.debug('[Presence] mark last seen skipped', error?.message || error);
+  }).catch(() => {
+    // Presence update skipped
   });
 }
 
@@ -481,8 +481,8 @@ function updatePresence(online = true) {
     return update(userPresenceRef, {
       typing: false,
       lastSeen: Date.now()
-    }).catch((error) => {
-      console.debug('[Presence] update skip on unload', error?.message || error);
+    }).catch(() => {
+      // Presence update skipped on unload
     });
   }
 
@@ -507,7 +507,7 @@ async function updateTypingStatus(isTyping) {
       lastSeen: Date.now()
     });
   } catch (error) {
-    console.debug('[Presence] typing update fallback', error?.message || error);
+    // Typing update fallback
     try {
       await set(userPresenceRef, {
         username: currentUser.username,

@@ -50,7 +50,6 @@ async function handleSubmit(event) {
       const avatarUrl = avatarKey && AVATAR_URLS[avatarKey] ? AVATAR_URLS[avatarKey] : (data.avatar || null);
       localStorage.setItem('bb_user', JSON.stringify({ username: finalName, avatarKey, avatar: avatarUrl || undefined }));
     } catch (profileError) {
-      console.debug('[login] profil non récupéré', profileError);
       localStorage.setItem('bb_user', JSON.stringify({ username: displayName || username }));
     }
 
