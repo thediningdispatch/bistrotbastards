@@ -172,11 +172,12 @@ function scrollToBottom(force = false) {
 }
 
 // Listen to messages in real-time (last 50)
-const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
+function initMessageListener() {
+  const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
 
-let isFirstLoad = true;
+  let isFirstLoad = true;
 
-onSnapshot(q, (snapshot) => {
+  onSnapshot(q, (snapshot) => {
   // Store last visible for pagination
   if (!snapshot.empty) {
     lastVisible = snapshot.docs[snapshot.docs.length - 1];
@@ -221,10 +222,11 @@ onSnapshot(q, (snapshot) => {
   } else {
     scrollToBottom();
   }
-}, (error) => {
-  console.error('[Chat Load Error]', error.code, error.message);
-  chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
-});
+  }, (error) => {
+    console.error('[Chat Load Error]', error.code, error.message);
+    chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
+  });
+}
 
 // Load older messages
 async function loadOlderMessages() {
@@ -424,9 +426,10 @@ chatMessage.addEventListener('input', () => {
 });
 
 // Listen to all presence data
-const presenceRef = ref(rtdb, 'presence');
+function initPresenceListener() {
+  const presenceRef = ref(rtdb, 'presence');
 
-onValue(presenceRef, (snapshot) => {
+  onValue(presenceRef, (snapshot) => {
   if (!presenceList || !typingIndicator) return;
 
   const currentUser = getCurrentUser();
@@ -473,10 +476,19 @@ onValue(presenceRef, (snapshot) => {
       typingTextEl.textContent = typingText;
     }
   }
-});
+  });
+}
+
+// Initialize chat only when authenticated
+let chatInitialized = false;
 
 onAuthStateChanged(auth, (firebaseUser) => {
   if (firebaseUser) {
+    if (!chatInitialized) {
+      initMessageListener();
+      initPresenceListener();
+      chatInitialized = true;
+    }
     presenceInitialized = false;
     ensurePresenceOnline();
   } else {
@@ -485,7 +497,11 @@ onAuthStateChanged(auth, (firebaseUser) => {
   }
 });
 
+// Only initialize if already authenticated (fast reload case)
 if (auth.currentUser) {
+  initMessageListener();
+  initPresenceListener();
+  chatInitialized = true;
   ensurePresenceOnline();
 }
 
