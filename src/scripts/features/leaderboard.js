@@ -1,4 +1,4 @@
-import { db } from './firebase.js';
+import { db } from '../core/firebase.js';
 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import QRCode from 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/es/index.js';
 

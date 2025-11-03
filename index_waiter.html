@@ -256,7 +256,7 @@
   </script>
 
   <script type="module">
-    import { db } from './firebase.js';
+    import { db } from './src/scripts/core/firebase.js';
     import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const list = document.getElementById('bbTop3List');
@@ -302,7 +302,7 @@
     }
   </script>
 
-  <script type="module" src="main.js"></script>
+  <script type="module" src="src/scripts/core/navigation.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const nav = document.querySelector('.top-nav .bb-nav');
@@ -327,6 +327,6 @@
       }
     });
   </script>
-  <script type="module" src="auth-guard.js"></script>
+  <script type="module" src="src/scripts/core/auth-guard.js"></script>
 </body>
 </html>

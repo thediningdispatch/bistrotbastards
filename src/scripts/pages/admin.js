@@ -1,4 +1,4 @@
-import { db } from './firebase.js';
+import { db } from '../core/firebase.js';
 import { collection, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const loadingEl = document.getElementById('adminLoading');

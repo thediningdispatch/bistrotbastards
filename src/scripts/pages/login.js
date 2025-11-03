@@ -1,12 +1,8 @@
-import { auth, db } from './firebase.js';
+import { auth, db } from '../core/firebase.js';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername } from './ux.js';
-
-const AVATAR_URLS = {
-  pup_orange: 'assets/img/avatar_pup_orange.svg',
-  pup_red: 'assets/img/avatar_pup_red.svg'
-};
+import { onceBind, withSubmitLock, showError, normUsername } from '../core/utils.js';
+import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const form = document.getElementById('loginForm');
 const errElm = document.getElementById('loginError');
@@ -56,7 +52,7 @@ async function handleSubmit(event) {
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;
       shouldUnlock = false;
-      location.href = 'index_waiter.html';
+      location.href = ROUTES.WAITER_HOME;
     }
   } catch (error) {
     console.error('[login]', error?.code, error?.message);
