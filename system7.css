@@ -8,6 +8,7 @@
   --muted: #333333;
   --highlight: #ffffff;
   --shadow: #7d7d7d;
+  --bb-nav-height: 0px;
 }
 
 * {
@@ -21,8 +22,8 @@ body {
     repeating-linear-gradient(90deg, var(--bg-light), var(--bg-light) 4px, var(--bg-dark) 4px, var(--bg-dark) 8px);
   color: var(--text);
   display: block;
-  min-height: 100vh;
-  padding-top: 112px;
+  min-height: 100dvh;
+  padding-top: calc(var(--bb-nav-height) + 16px);
 }
 
 body.no-nav {
@@ -775,7 +776,7 @@ hr {
   }
 
   body {
-    padding-top: 120px;
+    padding-top: calc(var(--bb-nav-height) + 16px);
   }
 
   .menu-bar {

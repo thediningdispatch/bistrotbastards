@@ -45,6 +45,29 @@ function saveUser(user) {
   }
 }
 
+let bbNavOffsetBound = false;
+
+function updateNavOffset(nav) {
+  const header = nav || document.querySelector('.top-nav');
+  if (!header) return;
+
+  const safeTop = (header.offsetHeight || 0) + 8;
+  document.documentElement.style.setProperty('--bb-nav-height', `${safeTop}px`);
+}
+
+function bindNavOffsetUpdates(nav) {
+  updateNavOffset(nav);
+
+  if (bbNavOffsetBound) return;
+  bbNavOffsetBound = true;
+
+  const handler = () => updateNavOffset(nav);
+
+  window.addEventListener('resize', handler);
+  window.addEventListener('orientationchange', handler);
+  window.addEventListener('load', handler);
+}
+
 function ensureNavStyles() {
   const existing = document.querySelector('link[href$="assets/css/nav.css"]');
   if (existing) return;
@@ -167,6 +190,7 @@ function initNavigation(user, existingNav) {
 
   mountNavIntoHost(nav);
   bindNavInteractions(nav);
+  bindNavOffsetUpdates(nav);
 }
 
 function ensureDefaultRestaurant(user) {
