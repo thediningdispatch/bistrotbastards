@@ -10,74 +10,32 @@
   <link rel="stylesheet" href="assets/css/nav.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <style>
-    html {
-      height: 100%;
-      height: -webkit-fill-available;
-    }
-
     body {
       visibility: hidden;
       opacity: 0;
-      height: 100%;
-      height: -webkit-fill-available;
-    }
-
-    .app-container {
-      height: 100%;
-      height: -webkit-fill-available;
-    }
-
-    .desktop {
-      height: 100%;
-      height: -webkit-fill-available;
-    }
-
-    .window {
-      height: 100%;
-      height: -webkit-fill-available;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .window-body {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
     }
 
     .chat-compact {
-      max-width: 600px;
+      width: 80%;
+      max-width: 1200px;
       margin: 0 auto;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
     }
 
     .chat-stream {
-      max-height: 400px;
-      min-height: 400px;
-      flex-shrink: 0;
+      height: 20vh;
+      min-height: 20vh;
+      max-height: 20vh;
     }
 
     @media (max-width: 640px) {
       .chat-compact {
-        max-width: 100%;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
+        width: 95%;
       }
 
       .chat-stream {
-        max-height: none;
-        min-height: 0;
-        flex: 1;
-      }
-
-      .chat-input-bar {
-        flex-shrink: 0;
+        height: 30vh;
+        min-height: 30vh;
+        max-height: 30vh;
       }
     }
   </style>
@@ -126,50 +84,6 @@
     document.addEventListener('DOMContentLoaded', function () {
       document.body.style.visibility = 'visible';
       document.body.style.opacity = '1';
-
-      const textarea = document.getElementById('chatMessage');
-      const chatStream = document.getElementById('chatStream');
-
-      // iOS keyboard handling
-      if (window.visualViewport) {
-        const viewport = window.visualViewport;
-        let lastHeight = viewport.height;
-
-        function handleViewportResize() {
-          const currentHeight = viewport.height;
-          const heightDiff = lastHeight - currentHeight;
-
-          // Keyboard opened (viewport shrunk)
-          if (heightDiff > 150) {
-            setTimeout(() => {
-              if (chatStream) {
-                chatStream.scrollTop = chatStream.scrollHeight;
-              }
-              if (textarea) {
-                textarea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-              }
-            }, 100);
-          }
-
-          lastHeight = currentHeight;
-        }
-
-        viewport.addEventListener('resize', handleViewportResize);
-        viewport.addEventListener('scroll', () => {
-          window.scrollTo(0, 0);
-        });
-      }
-
-      // Focus handling
-      if (textarea) {
-        textarea.addEventListener('focus', () => {
-          setTimeout(() => {
-            if (chatStream) {
-              chatStream.scrollTop = chatStream.scrollHeight;
-            }
-          }, 300);
-        });
-      }
     });
   </script>
 </body>
