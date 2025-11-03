@@ -40,6 +40,35 @@
     .bb-welcome { display:flex; flex-direction:column; gap:12px; }
     .bb-welcome-title { margin:0 0 8px; }
     .bb-welcome-metrics { list-style:disc; margin:0 0 0 18px; padding:0; display:flex; flex-direction:column; gap:6px; }
+
+    /* tips boxes */
+    .bb-tips-boxes { display:flex; gap:10px; flex-wrap:wrap; }
+    .bb-tip-box {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:8px 16px;
+      border:1px solid #000;
+      box-shadow:2px 2px 0 #000;
+      min-width:120px;
+      flex:1;
+    }
+    .bb-tip-week { background:#b8e0ff; }
+    .bb-tip-month { background:#c8ffb8; }
+    .bb-tip-label {
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    .bb-tip-amount {
+      font-size:20px;
+      font-weight:800;
+      line-height:1;
+    }
+
     .bb-cta { margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
     .bb-btn-reviews { font-weight:700; font-size:18px; padding:10px 18px; background:#ffe89a; border:1px solid #000; box-shadow:2px 2px 0 #000; color:#000; }
     .bb-eth-link { display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#d1c8ff; }
@@ -91,10 +120,18 @@
               <ul class="bb-welcome-metrics">
                 <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
                 <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
-                <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
-                <li>Tips ce mois : <strong><span id="bbTipsMonth">—</span>€</strong></li>
                 <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
               </ul>
+              <div class="bb-tips-boxes">
+                <div class="bb-tip-box bb-tip-week">
+                  <span class="bb-tip-label">Semaine</span>
+                  <span class="bb-tip-amount"><span id="bbTipsWeek">—</span>€</span>
+                </div>
+                <div class="bb-tip-box bb-tip-month">
+                  <span class="bb-tip-label">Mois</span>
+                  <span class="bb-tip-amount"><span id="bbTipsMonth">—</span>€</span>
+                </div>
+              </div>
               <div class="bb-cta">
                 <a href="googlereview.html" class="btn bb-btn-reviews">REVIEWS</a>
                 <a href="blockchain_tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
