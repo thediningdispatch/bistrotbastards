@@ -283,7 +283,8 @@ function initDOM() {
   // Auto-resize textarea
   chatMessage.addEventListener('input', () => {
     chatMessage.style.height = 'auto';
-    chatMessage.style.height = Math.min(chatMessage.scrollHeight, 120) + 'px';
+    const maxHeight = window.innerWidth <= 640 ? 60 : 80;
+    chatMessage.style.height = Math.min(chatMessage.scrollHeight, maxHeight) + 'px';
   });
 
   // Send message on form submit
