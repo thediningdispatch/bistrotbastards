@@ -2,18 +2,63 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Accueil serveur — Bistrot Bastards</title>
   <meta name="description" content="Retourne sur ta console serveur Bistrot Bastards." />
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body {
+      padding-top: 0 !important;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .desktop {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     .waiter-home {
       display: flex;
       flex-direction: column;
       gap: 20px;
       padding: 32px 28px 40px;
+      flex: 1;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
     }
 
     #navHost {
@@ -57,15 +102,16 @@
   </style>
 </head>
 <body>
-  <div class="desktop">
-    <div class="window">
+  <div class="app-container">
+    <div class="desktop">
+      <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
         <span class="title-text">Console d’accueil</span>
       </div>
 
-      <div class="window-body waiter-home" id="app">
-        <div id="navHost"></div>
+        <div class="window-body waiter-home" id="app">
+          <div id="navHost"></div>
 
         <div class="bb-welcome">
           <h2 class="bb-welcome-title">
@@ -95,6 +141,7 @@
             <!-- Filled dynamically -->
           </ol>
         </section>
+        </div>
       </div>
     </div>
   </div>

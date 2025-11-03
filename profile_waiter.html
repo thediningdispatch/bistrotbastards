@@ -2,16 +2,62 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Profil serveur — Bistrot Bastards</title>
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body {
+      padding-top: 0 !important;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .desktop {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .window-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     .pw-body {
       display: flex;
       flex-direction: column;
       gap: 24px;
+      flex: 1;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0));
+      touch-action: pan-y;
     }
     .pw-day-grid {
       display: grid;
@@ -78,19 +124,20 @@
   </style>
 </head>
 <body>
-  <div class="desktop">
-    <div class="menu-bar">
-      <span class="menu-item">Profil serveur</span>
-    </div>
-
-    <div class="window">
-      <div class="title-bar">
-        <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Planification &amp; pourboires</span>
+  <div class="app-container">
+    <div class="desktop">
+      <div class="menu-bar">
+        <span class="menu-item">Profil serveur</span>
       </div>
 
-      <div class="window-body pw-body">
-        <div id="navHost"></div>
+      <div class="window">
+        <div class="title-bar">
+          <div class="window-controls"><span></span><span></span><span></span></div>
+          <span class="title-text">Planification &amp; pourboires</span>
+        </div>
+
+        <div class="window-body pw-body">
+          <div id="navHost"></div>
 
         <section>
           <h2>Jours travaillés</h2>
@@ -119,7 +166,8 @@
           <button type="button" id="pwReset" class="btn">🔄 Réinitialiser la semaine</button>
         </div>
 
-        <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
+          <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
+        </div>
       </div>
     </div>
   </div>

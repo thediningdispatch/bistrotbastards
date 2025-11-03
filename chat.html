@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Team Chat — Bistrot Bastards</title>
   <meta name="description" content="Chat d'équipe en temps réel" />
@@ -10,42 +10,57 @@
   <link rel="stylesheet" href="assets/css/nav.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <style>
-    /* Prevent flash during auth check */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      touch-action: none;
+    }
     body {
       visibility: hidden;
       opacity: 0;
     }
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-  <div class="desktop">
-    <div class="window">
-      <div class="title-bar">
-        <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Team Chat</span>
-      </div>
-
-      <div class="window-body chat-body" id="app">
-        <div id="navHost"></div>
-
-        <div id="typingIndicator" class="typing-indicator" hidden aria-live="polite">
-          <span class="typing-text">—</span>
+  <div class="app-container">
+    <div class="desktop">
+      <div class="window">
+        <div class="title-bar">
+          <div class="window-controls"><span></span><span></span><span></span></div>
+          <span class="title-text">Team Chat</span>
         </div>
 
-        <div class="chat-stream" id="chatStream">
-          <div class="chat-loading">⏳ Connexion au chat...</div>
-        </div>
+        <div class="window-body chat-body" id="app">
+          <div id="navHost"></div>
 
-        <form id="chatForm" class="chat-input-bar">
-          <textarea
-            id="chatMessage"
-            rows="1"
-            placeholder="Message..."
-            maxlength="400"
-            required
-          ></textarea>
-          <button type="submit" class="btn-send" id="sendBtn" title="Envoyer (Entrée)">→</button>
-        </form>
+          <div id="typingIndicator" class="typing-indicator" hidden aria-live="polite">
+            <span class="typing-text">—</span>
+          </div>
+
+          <div class="chat-stream" id="chatStream">
+            <div class="chat-loading">⏳ Connexion au chat...</div>
+          </div>
+
+          <form id="chatForm" class="chat-input-bar">
+            <textarea
+              id="chatMessage"
+              rows="1"
+              placeholder="Message..."
+              maxlength="400"
+              required
+            ></textarea>
+            <button type="submit" class="btn-send" id="sendBtn" title="Envoyer (Entrée)">→</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -53,5 +68,19 @@
   <script type="module" src="auth-guard.js"></script>
   <script type="module" src="main.js"></script>
   <script type="module" src="chat.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.style.visibility = 'visible';
+      document.body.style.opacity = '1';
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', function () {
+          const input = document.querySelector('.chat-input-bar');
+          if (input) {
+            input.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
