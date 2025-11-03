@@ -10,55 +10,44 @@
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
     html, body {
-      height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      touch-action: none;
     }
 
     body {
       padding-top: 0 !important;
+      min-height: 100vh;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       width: 100%;
     }
 
     .desktop {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      flex: 1;
     }
 
     .window {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      flex: 1;
     }
 
     .window-body {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     .waiter-home {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      padding: 32px 28px 40px;
-      flex: 1;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      touch-action: pan-y;
+      gap: 16px;
+      padding: 24px 20px 32px;
     }
 
     #navHost {
@@ -89,21 +78,19 @@
     .bb-eth-icon polygon:last-of-type { fill:#4432c8; }
 
     /* top3 */
-    .bb-top3 { margin-top:16px; }
+    .bb-top3 { margin-top:8px; }
     .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; padding:8px 12px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
     .bb-top3-card {
       border:1px solid #000;
       box-shadow:2px 2px 0 #000;
       background:#fff;
-      padding:16px;
-      max-height:260px;
+      padding:8px;
       display:flex;
       flex-direction:column;
-      gap:8px;
-      overflow:hidden;
+      gap:6px;
     }
-    .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; }
-    .bb-top3-list li { display:flex; align-items:center; gap:10px; padding:8px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#fff; }
+    .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:6px; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; }
+    .bb-top3-list li { display:flex; align-items:center; gap:8px; padding:6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#fff; }
     .bb-rank { display:inline-block; min-width:28px; text-align:center; font-weight:800; padding:2px 6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#eee; }
     .bb-rank-1 { background:#ffe89a; }
     .bb-rank-2 { background:#e3ecff; }
