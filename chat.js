@@ -24,7 +24,6 @@ let chatForm;
 let chatStream;
 let chatMessage;
 let sendBtn;
-let presenceList;
 let typingIndicator;
 
 // State
@@ -274,7 +273,6 @@ function initDOM() {
   chatStream = document.getElementById('chatStream');
   chatMessage = document.getElementById('chatMessage');
   sendBtn = document.getElementById('sendBtn');
-  presenceList = document.getElementById('presenceList');
   typingIndicator = document.getElementById('typingIndicator');
 
   if (!chatForm || !chatStream || !chatMessage || !sendBtn) {
@@ -450,12 +448,11 @@ function initPresenceListener() {
   const presenceRef = ref(rtdb, 'presence');
 
   onValue(presenceRef, (snapshot) => {
-    if (!presenceList || !typingIndicator) return;
+    if (!typingIndicator) return;
 
     const currentUser = getCurrentUser();
     const presences = snapshot.val() || {};
 
-    const onlineUsers = [];
     const typingUsers = [];
 
     Object.keys(presences).forEach((uid) => {
@@ -467,21 +464,10 @@ function initPresenceListener() {
         ? entry.username
         : 'Anonyme';
 
-      onlineUsers.push(username);
-
       if (entry.typing) {
         typingUsers.push(username);
       }
     });
-
-    // Update online list (limit 10)
-    if (onlineUsers.length === 0) {
-      presenceList.textContent = 'Personne';
-    } else if (onlineUsers.length <= 10) {
-      presenceList.textContent = onlineUsers.join(', ');
-    } else {
-      presenceList.textContent = `${onlineUsers.slice(0, 10).join(', ')} +${onlineUsers.length - 10}`;
-    }
 
     // Update typing indicator
     if (typingUsers.length === 0) {

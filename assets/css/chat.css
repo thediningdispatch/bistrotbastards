@@ -67,45 +67,25 @@ body {
   flex-shrink: 0;
 }
 
-/* Presence bar */
-.chat-presence {
-  flex-shrink: 0;
-  padding: 8px 12px;
-  background: linear-gradient(135deg, #e3ecff 0%, #d4e3ff 100%);
-  border: 1px solid #000;
-  box-shadow: 2px 2px 0 #000;
-  border-radius: 3px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.presence-online {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.presence-label {
-  font-weight: 700;
-  color: #22c55e;
-}
-
-.presence-users {
-  color: #333;
-  font-weight: 500;
-}
-
+/* Typing indicator */
 .typing-indicator {
-  color: #6d5bff;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #e8d5ff 0%, #d4bbff 100%);
+  border: 1px solid #a78bcc;
+  border-radius: 16px;
   font-size: 11px;
   font-style: italic;
+  color: #6d4a9e;
+  font-weight: 500;
   animation: pulse 1.5s ease-in-out infinite;
+  margin-bottom: 8px;
+  width: fit-content;
+  box-shadow: 0 1px 3px rgba(109, 74, 158, 0.1);
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.7; }
+  0%, 100% { opacity: 0.8; }
   50% { opacity: 1; }
 }
 
@@ -133,25 +113,27 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   animation: slideIn 0.15s ease;
-  max-width: 100%;
+  max-width: 85%;
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 .chat-message.is-current-user {
-  background: #d6e8ff;
-  border-color: #a8c8ff;
+  background: linear-gradient(135deg, #d4f1f4 0%, #c5e9ed 100%);
+  border-color: #9dd4da;
+  align-self: flex-end;
 }
 
 .chat-message.is-other-user {
-  background: #f2f2f2;
-  border-color: #e0e0e0;
+  background: linear-gradient(135deg, #ffefd5 0%, #ffe4c4 100%);
+  border-color: #f5d9b0;
+  align-self: flex-start;
 }
 
 @keyframes slideIn {
@@ -236,26 +218,27 @@ body {
   padding: 8px 16px;
   font-weight: 700;
   font-size: 18px;
-  background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
-  border: 1px solid #000;
-  box-shadow: 2px 2px 0 #000;
+  background: linear-gradient(135deg, #b8e4c9 0%, #a2d9bb 100%);
+  border: 1px solid #7cb892;
+  box-shadow: 0 2px 4px rgba(124, 184, 146, 0.2);
   cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.1s ease;
+  border-radius: 8px;
+  transition: all 0.15s ease;
   white-space: nowrap;
   align-self: flex-end;
   line-height: 1;
+  color: #2d5f3f;
 }
 
 .btn-send:hover {
-  background: linear-gradient(135deg, #ffd966 0%, #ffc933 100%);
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #000;
+  background: linear-gradient(135deg, #a2d9bb 0%, #8dcca8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(124, 184, 146, 0.3);
 }
 
 .btn-send:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #000;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(124, 184, 146, 0.2);
 }
 
 .btn-send:disabled {
