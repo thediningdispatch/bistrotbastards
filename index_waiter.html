@@ -75,6 +75,7 @@
             <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
             <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
             <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
+            <li>Tips ce mois : <strong><span id="bbTipsMonth">—</span>€</strong></li>
             <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
           </ul>
           <div class="bb-cta">
@@ -167,6 +168,22 @@
       const tipsEl = document.getElementById('bbTipsWeek');
       if (tipsEl) {
         tipsEl.textContent = sumTips.toFixed(2);
+      }
+
+      const tipsHistoryRaw = safeParse('bb_tips_history', {});
+      const tipsHistory = tipsHistoryRaw && typeof tipsHistoryRaw === 'object' ? tipsHistoryRaw : {};
+      const currentMonthKey = new Date().toISOString().slice(0, 7);
+      const monthTips = Object.entries(tipsHistory).reduce((acc, entry) => {
+        const [date, value] = entry;
+        if (typeof date === 'string' && date.startsWith(currentMonthKey)) {
+          const num = Number(value);
+          return Number.isFinite(num) ? acc + num : acc;
+        }
+        return acc;
+      }, 0);
+      const tipsMonthEl = document.getElementById('bbTipsMonth');
+      if (tipsMonthEl) {
+        tipsMonthEl.textContent = monthTips.toFixed(2);
       }
 
       // default contest ends Sunday of current week

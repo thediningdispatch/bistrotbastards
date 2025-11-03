@@ -96,6 +96,47 @@
     activeDays.forEach(day => tipsContainer.appendChild(createTipField(day)));
   }
 
+  function getStartOfWeek() {
+    const now = new Date();
+    const day = now.getDay(); // 0 (Sun) -> 6
+    const diff = day === 0 ? -6 : 1 - day;
+    const monday = new Date(now);
+    monday.setHours(0, 0, 0, 0);
+    monday.setDate(now.getDate() + diff);
+    return monday;
+  }
+
+  function getIsoDateForDay(day) {
+    const index = DAYS.indexOf(day);
+    if (index === -1) return null;
+    const monday = getStartOfWeek();
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function updateTipsHistory(tips, days = activeDays) {
+    const history = safeParse(localStorage.getItem("bb_tips_history"), {});
+    const isObject = history && typeof history === "object";
+    const currentHistory = isObject ? history : {};
+    DAYS.forEach(day => {
+      const iso = getIsoDateForDay(day);
+      if (!iso) return;
+      const isActive = Array.isArray(days) && days.includes(day);
+      if (isActive && Object.prototype.hasOwnProperty.call(tips, day)) {
+        currentHistory[iso] = tips[day];
+      } else {
+        delete currentHistory[iso];
+      }
+    });
+    const keys = Object.keys(currentHistory);
+    if (keys.length) {
+      localStorage.setItem("bb_tips_history", JSON.stringify(currentHistory));
+    } else {
+      localStorage.removeItem("bb_tips_history");
+    }
+  }
+
   function collectTipValues() {
     const collected = {};
     activeDays.forEach(day => {
@@ -129,6 +170,7 @@
         localStorage.removeItem("bb_tips_week");
       }
       tipsWeek = tips;
+       updateTipsHistory(tips);
       setStatus("Données enregistrées avec succès.", "success");
     } catch (error) {
       setStatus(error.message || "Erreur lors de l’enregistrement.", "error");
@@ -136,6 +178,9 @@
   }
 
   function resetData() {
+    if (activeDays.length) {
+      updateTipsHistory({}, activeDays.slice());
+    }
     localStorage.removeItem("bb_active_days");
     localStorage.removeItem("bb_tips_week");
     activeDays = [];
