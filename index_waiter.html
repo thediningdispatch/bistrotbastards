@@ -16,13 +16,15 @@
 
     body {
       padding-top: 0 !important;
-      min-height: 100vh;
+      min-height: 100dvh;
+      min-height: -webkit-fill-available;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      min-height: 100dvh;
+      min-height: -webkit-fill-available;
       width: 100%;
     }
 
@@ -41,6 +43,8 @@
     .window-body {
       display: flex;
       flex-direction: column;
+      flex: 1;
+      overflow: hidden;
     }
 
     .waiter-home {
@@ -48,6 +52,8 @@
       flex-direction: column;
       gap: 16px;
       padding: 24px 20px 12px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     #navHost {
