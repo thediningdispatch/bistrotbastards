@@ -4,29 +4,32 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Team Chat — Bistrot Bastards</title>
+  <title>Chat — Bistrot Bastards</title>
   <meta name="description" content="Chat d'équipe en temps réel" />
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      touch-action: none;
-    }
     body {
       visibility: hidden;
       opacity: 0;
     }
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      width: 100%;
+
+    .chat-compact {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .chat-stream {
+      max-height: 400px;
+      min-height: 400px;
+    }
+
+    @media (max-width: 640px) {
+      .chat-stream {
+        max-height: 350px;
+        min-height: 350px;
+      }
     }
   </style>
 </head>
@@ -36,30 +39,32 @@
       <div class="window">
         <div class="title-bar">
           <div class="window-controls"><span></span><span></span><span></span></div>
-          <span class="title-text">Team Chat</span>
+          <span class="title-text">Chat</span>
         </div>
 
         <div class="window-body chat-body" id="app">
           <div id="navHost"></div>
 
-          <div id="typingIndicator" class="typing-indicator" hidden aria-live="polite">
-            <span class="typing-text">—</span>
-          </div>
+          <div class="chat-compact">
+            <div id="typingIndicator" class="typing-indicator" hidden aria-live="polite">
+              <span class="typing-text">—</span>
+            </div>
 
-          <div class="chat-stream" id="chatStream">
-            <div class="chat-loading">⏳ Connexion au chat...</div>
-          </div>
+            <div class="chat-stream" id="chatStream">
+              <div class="chat-loading">⏳ Connexion au chat...</div>
+            </div>
 
-          <form id="chatForm" class="chat-input-bar">
-            <textarea
-              id="chatMessage"
-              rows="1"
-              placeholder="Message..."
-              maxlength="400"
-              required
-            ></textarea>
-            <button type="submit" class="btn-send" id="sendBtn" title="Envoyer (Entrée)">→</button>
-          </form>
+            <form id="chatForm" class="chat-input-bar">
+              <textarea
+                id="chatMessage"
+                rows="1"
+                placeholder="Message..."
+                maxlength="400"
+                required
+              ></textarea>
+              <button type="submit" class="btn-send" id="sendBtn" title="Envoyer (Entrée)">→</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
