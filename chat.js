@@ -1,3 +1,4 @@
+console.log('[Chat] Starting to load...');
 import { db, auth, rtdb } from './firebase.js';
 import {
   collection,
@@ -172,50 +173,50 @@ function initMessageListener() {
   let isFirstLoad = true;
 
   onSnapshot(q, (snapshot) => {
-  // Store last visible for pagination
-  if (!snapshot.empty) {
-    lastVisible = snapshot.docs[snapshot.docs.length - 1];
-  }
+    // Store last visible for pagination
+    if (!snapshot.empty) {
+      lastVisible = snapshot.docs[snapshot.docs.length - 1];
+    }
 
-  const messages = [];
-  snapshot.forEach((doc) => {
-    messages.push({ id: doc.id, ...doc.data() });
-  });
+    const messages = [];
+    snapshot.forEach((doc) => {
+      messages.push({ id: doc.id, ...doc.data() });
+    });
 
-  // Reverse to show oldest first
-  messages.reverse();
+    // Reverse to show oldest first
+    messages.reverse();
 
-  chatStream.innerHTML = '';
+    chatStream.innerHTML = '';
 
-  if (messages.length === 0) {
-    const emptyDiv = document.createElement('div');
-    emptyDiv.className = 'chat-empty';
-    emptyDiv.textContent = 'Aucun message. Sois le premier à écrire ! 💬';
-    chatStream.appendChild(emptyDiv);
-    return;
-  }
+    if (messages.length === 0) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'chat-empty';
+      emptyDiv.textContent = 'Aucun message. Sois le premier à écrire ! 💬';
+      chatStream.appendChild(emptyDiv);
+      return;
+    }
 
-  // Add "Load More" button if we have 50 messages
-  if (messages.length === 50) {
-    const loadMoreBtn = document.createElement('button');
-    loadMoreBtn.className = 'load-more-btn';
-    loadMoreBtn.textContent = '↑ Charger plus de messages';
-    loadMoreBtn.addEventListener('click', loadOlderMessages);
-    chatStream.appendChild(loadMoreBtn);
-  }
+    // Add "Load More" button if we have 50 messages
+    if (messages.length === 50) {
+      const loadMoreBtn = document.createElement('button');
+      loadMoreBtn.className = 'load-more-btn';
+      loadMoreBtn.textContent = '↑ Charger plus de messages';
+      loadMoreBtn.addEventListener('click', loadOlderMessages);
+      chatStream.appendChild(loadMoreBtn);
+    }
 
-  messages.forEach((data) => {
-    const messageElement = createMessageElement(data);
-    chatStream.appendChild(messageElement);
-  });
+    messages.forEach((data) => {
+      const messageElement = createMessageElement(data);
+      chatStream.appendChild(messageElement);
+    });
 
-  // Scroll to bottom on first load or new message
-  if (isFirstLoad) {
-    setTimeout(() => scrollToBottom(true), 100);
-    isFirstLoad = false;
-  } else {
-    scrollToBottom();
-  }
+    // Scroll to bottom on first load or new message
+    if (isFirstLoad) {
+      setTimeout(() => scrollToBottom(true), 100);
+      isFirstLoad = false;
+    } else {
+      scrollToBottom();
+    }
   }, (error) => {
     console.error('[Chat Load Error]', error.code, error.message);
     chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
@@ -450,52 +451,52 @@ function initPresenceListener() {
   const presenceRef = ref(rtdb, 'presence');
 
   onValue(presenceRef, (snapshot) => {
-  if (!presenceList || !typingIndicator) return;
+    if (!presenceList || !typingIndicator) return;
 
-  const currentUser = getCurrentUser();
-  const presences = snapshot.val() || {};
+    const currentUser = getCurrentUser();
+    const presences = snapshot.val() || {};
 
-  const onlineUsers = [];
-  const typingUsers = [];
+    const onlineUsers = [];
+    const typingUsers = [];
 
-  Object.keys(presences).forEach((uid) => {
-    const entry = presences[uid];
-    if (!entry || typeof entry !== 'object') return;
-    if (uid === currentUser?.uid) return;
+    Object.keys(presences).forEach((uid) => {
+      const entry = presences[uid];
+      if (!entry || typeof entry !== 'object') return;
+      if (uid === currentUser?.uid) return;
 
-    const username = typeof entry.username === 'string' && entry.username.trim()
-      ? entry.username
-      : 'Anonyme';
+      const username = typeof entry.username === 'string' && entry.username.trim()
+        ? entry.username
+        : 'Anonyme';
 
-    onlineUsers.push(username);
+      onlineUsers.push(username);
 
-    if (entry.typing) {
-      typingUsers.push(username);
+      if (entry.typing) {
+        typingUsers.push(username);
+      }
+    });
+
+    // Update online list (limit 10)
+    if (onlineUsers.length === 0) {
+      presenceList.textContent = 'Personne';
+    } else if (onlineUsers.length <= 10) {
+      presenceList.textContent = onlineUsers.join(', ');
+    } else {
+      presenceList.textContent = `${onlineUsers.slice(0, 10).join(', ')} +${onlineUsers.length - 10}`;
     }
-  });
 
-  // Update online list (limit 10)
-  if (onlineUsers.length === 0) {
-    presenceList.textContent = 'Personne';
-  } else if (onlineUsers.length <= 10) {
-    presenceList.textContent = onlineUsers.join(', ');
-  } else {
-    presenceList.textContent = `${onlineUsers.slice(0, 10).join(', ')} +${onlineUsers.length - 10}`;
-  }
-
-  // Update typing indicator
-  if (typingUsers.length === 0) {
-    typingIndicator.hidden = true;
-  } else {
-    typingIndicator.hidden = false;
-    const typingText = typingUsers.length === 1
-      ? `${typingUsers[0]} tape...`
-      : `${typingUsers.join(', ')} tapent...`;
-    const typingTextEl = typingIndicator.querySelector('.typing-text');
-    if (typingTextEl) {
-      typingTextEl.textContent = typingText;
+    // Update typing indicator
+    if (typingUsers.length === 0) {
+      typingIndicator.hidden = true;
+    } else {
+      typingIndicator.hidden = false;
+      const typingText = typingUsers.length === 1
+        ? `${typingUsers[0]} tape...`
+        : `${typingUsers.join(', ')} tapent...`;
+      const typingTextEl = typingIndicator.querySelector('.typing-text');
+      if (typingTextEl) {
+        typingTextEl.textContent = typingText;
+      }
     }
-  }
   });
 }
 
