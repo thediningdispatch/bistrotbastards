@@ -19,13 +19,13 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-// DOM Elements
-const chatForm = document.getElementById('chatForm');
-const chatStream = document.getElementById('chatStream');
-const chatMessage = document.getElementById('chatMessage');
-const sendBtn = document.getElementById('sendBtn');
-const presenceList = document.getElementById('presenceList');
-const typingIndicator = document.getElementById('typingIndicator');
+// DOM Elements (initialized after DOM loads)
+let chatForm;
+let chatStream;
+let chatMessage;
+let sendBtn;
+let presenceList;
+let typingIndicator;
 
 // State
 let lastVisible = null;
@@ -34,12 +34,6 @@ let lastMessageTime = 0;
 let presenceInitialized = false;
 let presenceRefCache = null;
 const MESSAGE_COOLDOWN = 2000; // 2 seconds
-
-// Auto-resize textarea
-chatMessage.addEventListener('input', () => {
-  chatMessage.style.height = 'auto';
-  chatMessage.style.height = Math.min(chatMessage.scrollHeight, 120) + 'px';
-});
 
 // Message collection reference
 const messagesRef = collection(db, 'rooms', 'global', 'messages');
@@ -274,8 +268,57 @@ async function loadOlderMessages() {
   }
 }
 
-// Send message
-chatForm.addEventListener('submit', async (e) => {
+// Initialize DOM and event listeners
+function initDOM() {
+  chatForm = document.getElementById('chatForm');
+  chatStream = document.getElementById('chatStream');
+  chatMessage = document.getElementById('chatMessage');
+  sendBtn = document.getElementById('sendBtn');
+  presenceList = document.getElementById('presenceList');
+  typingIndicator = document.getElementById('typingIndicator');
+
+  if (!chatForm || !chatStream || !chatMessage || !sendBtn) {
+    console.error('[Chat] Required DOM elements not found');
+    return false;
+  }
+
+  // Auto-resize textarea
+  chatMessage.addEventListener('input', () => {
+    chatMessage.style.height = 'auto';
+    chatMessage.style.height = Math.min(chatMessage.scrollHeight, 120) + 'px';
+  });
+
+  // Send message on form submit
+  chatForm.addEventListener('submit', handleSubmit);
+
+  // Enter to send (Shift+Enter for new line)
+  chatMessage.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.dispatchEvent(new Event('submit'));
+    }
+  });
+
+  // Listen to typing input
+  chatMessage.addEventListener('input', () => {
+    void updateTypingStatus(true);
+
+    // Clear previous timeout
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    // Set typing to false after 1.5s of inactivity
+    typingTimeout = setTimeout(() => {
+      void updateTypingStatus(false);
+    }, 1500);
+  });
+
+  return true;
+}
+
+// Handle form submit
+async function handleSubmit(e) {
   e.preventDefault();
 
   const currentUser = getCurrentUser();
@@ -343,15 +386,7 @@ chatForm.addEventListener('submit', async (e) => {
     sendBtn.disabled = false;
     chatMessage.focus();
   }
-});
-
-// Enter to send (Shift+Enter for new line)
-chatMessage.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    chatForm.dispatchEvent(new Event('submit'));
-  }
-});
+}
 
 // ========== PRESENCE & TYPING ==========
 
@@ -410,21 +445,6 @@ async function updateTypingStatus(isTyping) {
   }
 }
 
-// Listen to typing input
-chatMessage.addEventListener('input', () => {
-  void updateTypingStatus(true);
-
-  // Clear previous timeout
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-  }
-
-  // Set typing to false after 1.5s of inactivity
-  typingTimeout = setTimeout(() => {
-    void updateTypingStatus(false);
-  }, 1500);
-});
-
 // Listen to all presence data
 function initPresenceListener() {
   const presenceRef = ref(rtdb, 'presence');
@@ -482,39 +502,47 @@ function initPresenceListener() {
 // Initialize chat only when authenticated
 let chatInitialized = false;
 
-onAuthStateChanged(auth, (firebaseUser) => {
-  if (firebaseUser) {
-    if (!chatInitialized) {
-      initMessageListener();
-      initPresenceListener();
-      chatInitialized = true;
+function initChat() {
+  onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      if (!chatInitialized) {
+        initMessageListener();
+        initPresenceListener();
+        chatInitialized = true;
+      }
+      presenceInitialized = false;
+      ensurePresenceOnline();
+    } else {
+      presenceInitialized = false;
+      presenceRefCache = null;
     }
-    presenceInitialized = false;
-    ensurePresenceOnline();
-  } else {
-    presenceInitialized = false;
-    presenceRefCache = null;
-  }
-});
+  });
 
-// Only initialize if already authenticated (fast reload case)
-if (auth.currentUser) {
-  initMessageListener();
-  initPresenceListener();
-  chatInitialized = true;
-  ensurePresenceOnline();
+  window.addEventListener('focus', ensurePresenceOnline);
+  window.addEventListener('blur', markLastSeen);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      ensurePresenceOnline();
+    } else {
+      markLastSeen();
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    updatePresence(false);
+  });
 }
 
-window.addEventListener('focus', ensurePresenceOnline);
-window.addEventListener('blur', markLastSeen);
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    ensurePresenceOnline();
-  } else {
-    markLastSeen();
+// Main initialization - wait for DOM then start
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (initDOM()) {
+      initChat();
+    }
+  });
+} else {
+  // DOM already loaded
+  if (initDOM()) {
+    initChat();
   }
-});
-
-window.addEventListener('beforeunload', () => {
-  updatePresence(false);
-});
+}
