@@ -582,6 +582,9 @@ footer a:hover {
   justify-content: center;
   font-weight: bold;
   background: var(--panel-light);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 .nav-username {
