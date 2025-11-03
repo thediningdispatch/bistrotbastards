@@ -81,6 +81,7 @@ function ensureNav() {
         }).join('')}
       </div>
       <div class="bb-nav-menu">
+        <a href="index.html" class="btn" data-nav="home">Home</a>
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
           ${NAV_ITEMS.map(item => {
