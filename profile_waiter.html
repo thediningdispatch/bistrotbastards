@@ -8,61 +8,28 @@
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    body {
-      padding-top: 0 !important;
-    }
-
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .desktop {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .window {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
+    /* Override window-body pour permettre le scroll comme dans index_waiter.html */
     .window-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
+      padding: 0 !important;
     }
 
     .pw-body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      height: 100%;
+      padding: 20px 24px calc(32px + env(safe-area-inset-bottom, 0));
       display: flex;
       flex-direction: column;
       gap: 24px;
-      flex: 1;
-      overflow-y: auto;
       overscroll-behavior: contain;
-      padding: 100px 24px calc(24px + env(safe-area-inset-bottom, 0));
       touch-action: pan-y;
     }
 
     @media (max-width: 640px) {
       .pw-body {
-        padding: 90px 20px calc(20px + env(safe-area-inset-bottom, 0));
+        padding: 16px 16px calc(28px + env(safe-area-inset-bottom, 0));
+        gap: 18px;
       }
     }
     .pw-day-grid {
@@ -72,25 +39,28 @@
     }
     .pw-day {
       border: 1px solid #000;
-      border-radius: 10px;
       padding: 10px 12px;
-      background: #ecf0f1;
-      color: #2c3e50;
+      background: var(--panel-light);
+      color: var(--text);
       font-weight: 600;
       font-size: 14px;
+      font-family: inherit;
       cursor: pointer;
-      box-shadow: 2px 2px 0 #000;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+      box-shadow:
+        inset 1px 1px var(--highlight),
+        inset -1px -1px var(--shadow),
+        2px 2px 0 #000;
+      transition: none;
     }
     .pw-day:hover {
-      transform: translateY(-1px);
+      box-shadow:
+        inset -1px -1px var(--highlight),
+        inset 1px 1px var(--shadow),
+        2px 2px 0 #000;
     }
     .pw-day.pw-day-active {
-      background: #27ae60;
-      color: #ffffff;
-    }
-    .pw-day.pw-day-active:hover {
-      background: #1e8a4b;
+      background: var(--panel-mid);
+      font-weight: bold;
     }
     .pw-tips-container {
       display: grid;
@@ -102,11 +72,17 @@
       gap: 6px;
     }
     .pw-field input {
-      padding: 10px 12px;
-      border-radius: 10px;
+      padding: 9px 10px;
       border: 1px solid #000;
-      box-shadow: inset 1px 1px #fff, inset -1px -1px #999;
-      font-size: 16px;
+      background: var(--panel-light);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+    }
+    .pw-field input:focus {
+      outline: none;
+      box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
     }
     .pw-actions {
       display: flex;
@@ -119,31 +95,33 @@
     }
     .pw-status-success {
       color: #1e8449;
+      font-weight: 600;
     }
     .pw-status-error {
       color: #b03a2e;
+      font-weight: 600;
     }
     .pw-empty {
       font-style: italic;
-      color: #7f8c8d;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    #navHost {
+      display: flex;
     }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <div class="desktop">
-      <div class="menu-bar">
-        <span class="menu-item">Profil serveur</span>
+  <div class="desktop">
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Planification &amp; pourboires</span>
       </div>
 
-      <div class="window">
-        <div class="title-bar">
-          <div class="window-controls"><span></span><span></span><span></span></div>
-          <span class="title-text">Planification &amp; pourboires</span>
-        </div>
-
-        <div class="window-body pw-body">
-          <div id="navHost"></div>
+      <div class="window-body pw-body" id="app">
+        <div id="navHost"></div>
 
         <section>
           <h2>Jours travaillés</h2>
@@ -172,8 +150,7 @@
           <button type="button" id="pwReset" class="btn">🔄 Réinitialiser la semaine</button>
         </div>
 
-          <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
-        </div>
+        <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
       </div>
     </div>
   </div>
