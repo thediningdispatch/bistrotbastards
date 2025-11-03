@@ -8,6 +8,16 @@ html, body {
   height: 100%;
 }
 
+/* Override fixed nav positioning when inside chat */
+#navHost .top-nav {
+  position: relative;
+  top: 0;
+  left: 0;
+  transform: none;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
 body {
   background: #f5f5f5;
   display: flex;
