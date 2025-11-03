@@ -51,7 +51,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding: 68px 20px 12px;
+      padding: var(--nav-height, 68px) 20px 12px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -311,6 +311,18 @@
 
   <script type="module" src="main.js"></script>
   <script>
+    // Dynamic nav height adjustment for proper spacing
+    function setNavHeight() {
+      const nav = document.querySelector('.top-nav');
+      if (nav) {
+        const navHeight = nav.offsetHeight + 16; // nav height + 16px spacing
+        document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', setNavHeight);
+    window.addEventListener('resize', setNavHeight);
+
     document.addEventListener('DOMContentLoaded', function () {
       const nav = document.querySelector('.top-nav .bb-nav');
       if (!nav) return;
