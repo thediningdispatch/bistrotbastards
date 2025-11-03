@@ -24,7 +24,15 @@ function loadUser() {
   try {
     const stored = localStorage.getItem('bb_user');
     if (stored) {
-      return { ...defaultUser, ...JSON.parse(stored) };
+      const parsed = JSON.parse(stored);
+      if (parsed && !parsed.avatar && parsed.avatarKey && AVATAR_URLS[parsed.avatarKey]) {
+        parsed.avatar = AVATAR_URLS[parsed.avatarKey];
+      }
+      if (parsed && !parsed.avatar) {
+        const storedAvatar = localStorage.getItem('avatarURL');
+        if (storedAvatar) parsed.avatar = storedAvatar;
+      }
+      return { ...defaultUser, ...parsed };
     }
   } catch (error) {
     console.warn('User state error:', error);
