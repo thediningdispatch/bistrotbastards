@@ -107,6 +107,29 @@ body.no-nav {
   gap: 12px;
 }
 
+/* Waiter home layout */
+.waiter-home {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 16px 24px;
+  box-sizing: border-box;
+}
+
+.waiter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.waiter-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .hero-logo {
   width: min(280px, 80vw);
   max-width: 280px;
@@ -787,6 +810,11 @@ hr {
   .window-body {
     padding: 14px;
     gap: 10px;
+  }
+
+  .waiter-home {
+    padding: 12px 12px 24px;
+    gap: 14px;
   }
 
   .toolbar {

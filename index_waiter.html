@@ -9,21 +9,12 @@
   <link rel="stylesheet" href="system7.css" />
   <link rel="stylesheet" href="assets/css/nav.css" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-    }
-
     .window-body {
       overflow: hidden;
       padding: 0 !important;
     }
 
     .waiter-home {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 0 20px 12px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       height: 100%;
@@ -88,38 +79,42 @@
       </div>
 
         <div class="window-body waiter-home" id="app">
-          <div id="navHost"></div>
-
-        <div class="bb-welcome">
-          <h2 class="bb-welcome-title">
-            Content de te revoir, <span id="bbUserName">—</span> 👋
-          </h2>
-          <ul class="bb-welcome-metrics">
-            <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
-            <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
-            <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
-            <li>Tips ce mois : <strong><span id="bbTipsMonth">—</span>€</strong></li>
-            <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
-          </ul>
-          <div class="bb-cta">
-            <a href="googlereview.html" class="btn bb-btn-reviews">REVIEWS</a>
-            <a href="blockchain_tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
-              <svg viewBox="0 0 32 48" class="bb-eth-icon" focusable="false">
-                <polygon points="16,0 0,24 16,32 32,24"></polygon>
-                <polygon points="16,48 0,28 16,36 32,28"></polygon>
-              </svg>
-            </a>
+          <div class="waiter-header">
+            <div id="navHost"></div>
           </div>
-        </div>
 
-        <section class="bb-top3" aria-label="Top 3">
-          <div class="bb-top3-title">Top 3</div>
-          <div class="bb-top3-card">
-            <ol id="bbTop3List" class="bb-top3-list">
-              <!-- Filled dynamically -->
-            </ol>
+          <div class="waiter-main">
+            <div class="bb-welcome">
+              <h2 class="bb-welcome-title">
+                Content de te revoir, <span id="bbUserName">—</span> 👋
+              </h2>
+              <ul class="bb-welcome-metrics">
+                <li>Jour <strong><span id="bbWeekDay">—</span>/7</strong> de ta semaine</li>
+                <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
+                <li>Tips cette semaine : <strong><span id="bbTipsWeek">—</span>€</strong></li>
+                <li>Tips ce mois : <strong><span id="bbTipsMonth">—</span>€</strong></li>
+                <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
+              </ul>
+              <div class="bb-cta">
+                <a href="googlereview.html" class="btn bb-btn-reviews">REVIEWS</a>
+                <a href="blockchain_tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
+                  <svg viewBox="0 0 32 48" class="bb-eth-icon" focusable="false">
+                    <polygon points="16,0 0,24 16,32 32,24"></polygon>
+                    <polygon points="16,48 0,28 16,36 32,28"></polygon>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <section class="bb-top3" aria-label="Top 3">
+              <div class="bb-top3-title">Top 3</div>
+              <div class="bb-top3-card">
+                <ol id="bbTop3List" class="bb-top3-list">
+                  <!-- Filled dynamically -->
+                </ol>
+              </div>
+            </section>
           </div>
-        </section>
         </div>
       </div>
     </div>
