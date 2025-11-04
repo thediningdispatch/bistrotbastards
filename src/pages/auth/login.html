@@ -7,8 +7,10 @@
   <title>Connexion — Bistrot Bastards</title>
   <meta name="description" content="Accédez à votre tableau de bord Bistrot Bastards." />
   <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/auth.css" />
 </head>
-<body class="no-nav">
+<body class="auth-login-page no-nav">
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -21,32 +23,39 @@
         <span class="title-text">Bon retour</span>
       </div>
 
-      <div class="window-body" id="app">
-        <p>Entrez votre nom d’utilisateur et votre mot de passe pour accéder à la plateforme Bistrot Bastards.</p>
+      <div class="window-body login-body" id="app">
+        <div class="login-hero">
+          <h2 class="login-title">Content de te revoir 👋</h2>
+          <p class="login-subtitle">Connecte-toi pour retrouver ta console serveur Bistrot Bastards.</p>
+        </div>
 
-        <form id="loginForm">
-          <div class="two-column">
-            <div>
-              <label for="loginUsername">Nom d'utilisateur</label>
-              <input id="loginUsername" name="username" placeholder="Sans espaces" required />
+        <div class="login-card">
+          <form id="loginForm" class="login-form">
+            <div class="login-fields">
+              <label for="loginUsername" class="login-label">
+                Nom d'utilisateur
+                <input id="loginUsername" name="username" placeholder="Sans espaces" required />
+              </label>
+
+              <label for="loginPassword" class="login-label">
+                Mot de passe
+                <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" required />
+              </label>
             </div>
-            <div>
-              <label for="loginPassword">Mot de passe</label>
-              <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" required />
+
+            <p id="loginError" class="login-error" role="alert" aria-live="polite"></p>
+
+            <div class="login-actions">
+              <button type="submit" class="login-submit">Se connecter</button>
+              <a class="login-secondary" href="signup.html">Créer un compte</a>
             </div>
-          </div>
-
-          <div class="actions">
-            <button type="submit" class="btn">Se connecter</button>
-            <a class="btn" href="signup.html">Créer un compte</a>
-          </div>
-
-          <p id="loginError" class="help-text" style="display:none;"></p>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
   <script type="module" src="../../scripts/pages/login.js"></script>
 </body>
 </html>

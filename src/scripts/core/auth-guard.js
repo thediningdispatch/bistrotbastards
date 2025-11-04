@@ -70,28 +70,40 @@ async function hydrateUser(firebaseUser) {
 
 function guard() {
   const currentPath = normalizePath(window.location.pathname);
-
-  if (PUBLIC_PATHS.has(currentPath)) {
-    showPage();
-    authReadyResolve(true);
-    return;
-  }
+  const isPublicPath = PUBLIC_PATHS.has(currentPath);
+  const loginPath = normalizePath(ROUTES.LOGIN);
+  const signupPath = normalizePath(ROUTES.SIGNUP);
 
   onAuthStateChanged(auth, async (firebaseUser) => {
     if (!authReadyLogged) {
       authReadyLogged = true;
       console.log('[Perf] Firebase/auth ready');
     }
-    if (!firebaseUser) {
-      localStorage.removeItem(USER_KEY);
-      authReadyResolve(false);
-      redirectToLogin();
+
+    if (firebaseUser) {
+      await hydrateUser(firebaseUser);
+
+      if (normalizePath(window.location.pathname) === loginPath || normalizePath(window.location.pathname) === signupPath) {
+        authReadyResolve(firebaseUser);
+        window.location.replace(ROUTES.WAITER_HOME);
+        return;
+      }
+
+      showPage();
+      authReadyResolve(firebaseUser);
       return;
     }
 
-    await hydrateUser(firebaseUser);
-    showPage();
-    authReadyResolve(firebaseUser);
+    localStorage.removeItem(USER_KEY);
+
+    if (isPublicPath) {
+      showPage();
+      authReadyResolve(false);
+      return;
+    }
+
+    authReadyResolve(false);
+    redirectToLogin();
   });
 }
 

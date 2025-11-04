@@ -1,5 +1,5 @@
-import { auth, db } from '../core/firebase.js';
-import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth, db, authPersistenceReady } from '../core/firebase.js';
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
@@ -38,7 +38,7 @@ async function handleSubmit(event) {
   let shouldUnlock = true;
 
   try {
-    await setPersistence(auth, browserLocalPersistence);
+    await authPersistenceReady;
     const pseudoEmail = `${username}@bistrotbastards.local`;
     const credential = await signInWithEmailAndPassword(auth, pseudoEmail, password);
 
@@ -65,7 +65,7 @@ async function handleSubmit(event) {
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;
       shouldUnlock = false;
-      location.href = ROUTES.WAITER_HOME;
+      window.location.replace(ROUTES.WAITER_HOME);
     }
   } catch (error) {
     console.error('[login]', error?.code, error?.message);

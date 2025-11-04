@@ -24,6 +24,9 @@ export const firebaseConfig = {
 // ---- Initialize core services
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.warn('[firebase] Failed to set local persistence:', error);
+});
 export const db = getFirestore(app);
 
 // ---- Realtime Database (explicit regional URL)
