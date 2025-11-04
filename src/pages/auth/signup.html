@@ -22,44 +22,44 @@
         <span class="title-text"></span>
       </div>
 
-      <div class="window-body window-body--scroll auth-body" id="app">
-        <div class="auth-shell">
-          <div class="auth-card auth-card--signup">
-            <p class="auth-card__subtitle">Rejoins l’équipe et configure ton profil serveur en quelques secondes.</p>
+      <div class="window-body window-body--scroll auth-window" id="app">
+        <div class="auth-card auth-card--intro">
+          <p class="auth-intro-text">Rejoins l’équipe et configure ton profil serveur en quelques secondes.</p>
+        </div>
 
-            <form id="signupForm" class="auth-form">
-              <div class="auth-form__group">
-                <label for="signupUsername">Nom d’utilisateur</label>
-                <input id="signupUsername" name="username" placeholder="Alex" required />
+        <div class="auth-card auth-card--form">
+          <form id="signupForm" class="auth-form">
+            <div class="auth-form__group">
+              <label for="signupUsername">Nom d’utilisateur</label>
+              <input id="signupUsername" name="username" placeholder="Alex" required />
+            </div>
+
+            <div class="auth-form__group">
+              <label for="signupPassword">Mot de passe</label>
+              <input id="signupPassword" name="password" type="password" placeholder="Mot de passe (6 caractères mini)" required minlength="6" />
+            </div>
+
+            <fieldset class="auth-fieldset">
+              <legend>Choisis ton badge</legend>
+              <div class="auth-avatars">
+                <label class="auth-avatar">
+                  <input type="radio" name="avatarKey" value="pup_orange" required />
+                  <img src="../../../assets/images/avatar-pup-orange.svg" alt="Chien cuisinier orange" />
+                </label>
+                <label class="auth-avatar">
+                  <input type="radio" name="avatarKey" value="pup_red" required />
+                  <img src="../../../assets/images/avatar-pup-red.svg" alt="Chien chef rouge" />
+                </label>
               </div>
+            </fieldset>
 
-              <div class="auth-form__group">
-                <label for="signupPassword">Mot de passe</label>
-                <input id="signupPassword" name="password" type="password" placeholder="Mot de passe (6 caractères mini)" required minlength="6" />
-              </div>
+            <p id="signupError" class="auth-error" role="alert" aria-live="polite"></p>
 
-              <fieldset class="auth-fieldset">
-                <legend>Choisis ton badge</legend>
-                <div class="auth-avatars">
-                  <label class="auth-avatar">
-                    <input type="radio" name="avatarKey" value="pup_orange" required />
-                    <img src="../../../assets/images/avatar-pup-orange.svg" alt="Chien cuisinier orange" />
-                  </label>
-                  <label class="auth-avatar">
-                    <input type="radio" name="avatarKey" value="pup_red" required />
-                    <img src="../../../assets/images/avatar-pup-red.svg" alt="Chien chef rouge" />
-                  </label>
-                </div>
-              </fieldset>
-
-              <p id="signupError" class="auth-error" role="alert" aria-live="polite"></p>
-
-              <div class="auth-actions">
-                <button type="submit" class="auth-submit">Créer le compte</button>
-                <a class="auth-link" href="login.html">Déjà inscrit ? Connexion</a>
-              </div>
-            </form>
-          </div>
+            <div class="auth-actions">
+              <button type="submit" class="auth-submit">Créer le compte</button>
+              <a class="auth-link" href="login.html">Déjà inscrit ? Connexion</a>
+            </div>
+          </form>
         </div>
       </div>
     </div>

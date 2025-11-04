@@ -22,30 +22,30 @@
         <span class="title-text"></span>
       </div>
 
-      <div class="window-body window-body--scroll auth-body" id="app">
-        <div class="auth-shell">
-          <div class="auth-card auth-card--login">
-            <p class="auth-card__subtitle">Connecte-toi pour accéder à ton espace serveur Bistrot Bastards.</p>
+      <div class="window-body window-body--scroll auth-window" id="app">
+        <div class="auth-card auth-card--intro">
+          <p class="auth-intro-text">Connecte-toi pour accéder à ton espace serveur Bistrot Bastards.</p>
+        </div>
 
-            <form id="loginForm" class="auth-form">
-              <div class="auth-form__group">
-                <label for="loginUsername">Nom d'utilisateur</label>
-                <input id="loginUsername" name="username" placeholder="Sans espaces" required />
-              </div>
+        <div class="auth-card auth-card--form">
+          <form id="loginForm" class="auth-form">
+            <div class="auth-form__group">
+              <label for="loginUsername">Nom d'utilisateur</label>
+              <input id="loginUsername" name="username" placeholder="Sans espaces" required />
+            </div>
 
-              <div class="auth-form__group">
-                <label for="loginPassword">Mot de passe</label>
-                <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" required />
-              </div>
+            <div class="auth-form__group">
+              <label for="loginPassword">Mot de passe</label>
+              <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" required />
+            </div>
 
-              <p id="loginError" class="auth-error" role="alert" aria-live="polite"></p>
+            <p id="loginError" class="auth-error" role="alert" aria-live="polite"></p>
 
-              <div class="auth-actions">
-                <button type="submit" class="auth-submit">Se connecter</button>
-                <a class="auth-link" href="signup.html">Créer un compte</a>
-              </div>
-            </form>
-          </div>
+            <div class="auth-actions">
+              <button type="submit" class="auth-submit">Se connecter</button>
+              <a class="auth-link" href="signup.html">Créer un compte</a>
+            </div>
+          </form>
         </div>
       </div>
     </div>
