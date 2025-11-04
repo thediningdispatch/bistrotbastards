@@ -1,7 +1,7 @@
 import { auth, db } from '../core/firebase.js';
 import { createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername } from '../core/utils.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const form = document.getElementById('signupForm');
@@ -57,7 +57,12 @@ async function handleSubmit(event) {
       createdAt: serverTimestamp()
     });
 
-    localStorage.setItem('bb_user', JSON.stringify({ username: displayName, avatarKey, avatar: avatarUrl }));
+    // Store user data with proper avatar resolution
+    await setStoredUser({
+      username: displayName,
+      avatarKey,
+      avatar: avatarUrl
+    });
 
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;

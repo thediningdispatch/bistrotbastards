@@ -77,3 +77,69 @@ export function calculateAverageTipsPerDay(tipsHistory) {
 
   return totalTips / validDays;
 }
+
+/**
+ * Store user data to localStorage with proper avatar resolution
+ * @param {Object} user - User object with username, avatarKey, avatar, etc.
+ */
+export async function setStoredUser(user = {}) {
+  // Lazy import to avoid circular dependencies
+  const { AVATAR_URLS, STORAGE_KEYS } = await import('./config.js');
+
+  const payload = {};
+
+  if (user.username) {
+    payload.username = user.username;
+    localStorage.setItem(STORAGE_KEYS.USERNAME, user.username);
+  }
+
+  if (user.avatarKey) {
+    payload.avatarKey = user.avatarKey;
+  }
+
+  // Resolve avatar URL from avatarKey if needed
+  const resolvedAvatar = user.avatar || (user.avatarKey && AVATAR_URLS[user.avatarKey]) || null;
+  if (resolvedAvatar) {
+    payload.avatar = resolvedAvatar;
+    localStorage.setItem(STORAGE_KEYS.AVATAR_URL, resolvedAvatar);
+  }
+
+  // Store complete user object
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(payload));
+
+  console.log('[setStoredUser] Stored user:', payload);
+  console.log('[setStoredUser]   - avatarKey:', payload.avatarKey);
+  console.log('[setStoredUser]   - resolved avatar:', resolvedAvatar);
+}
+
+/**
+ * Retrieve user data from localStorage
+ * @returns {Object} User object or empty object if parsing fails
+ */
+export async function getStoredUser() {
+  // Lazy import to avoid circular dependencies
+  const { STORAGE_KEYS, AVATAR_URLS } = await import('./config.js');
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.USER);
+    const parsed = raw ? JSON.parse(raw) : {};
+
+    // Ensure avatar is resolved from avatarKey if not present
+    if (parsed && typeof parsed === 'object') {
+      if (!parsed.avatar && parsed.avatarKey && AVATAR_URLS[parsed.avatarKey]) {
+        parsed.avatar = AVATAR_URLS[parsed.avatarKey];
+      }
+
+      console.log('[getStoredUser] Retrieved user:', parsed);
+      console.log('[getStoredUser]   - avatarKey:', parsed.avatarKey);
+      console.log('[getStoredUser]   - avatar:', parsed.avatar);
+
+      return parsed;
+    }
+
+    return {};
+  } catch (error) {
+    console.error('[getStoredUser] Parse error:', error);
+    return {};
+  }
+}

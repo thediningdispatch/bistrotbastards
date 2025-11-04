@@ -1,4 +1,5 @@
-import { AVATAR_URLS, NAV_ITEMS, ROUTES } from './config.js';
+import { AVATAR_URLS, NAV_ITEMS, ROUTES, STORAGE_KEYS } from './config.js';
+import { getStoredUser, setStoredUser } from './utils.js';
 
 const defaultUser = {
   username: 'Serveur Bistrot',
@@ -8,19 +9,11 @@ const defaultUser = {
   restaurant: ''
 };
 
-function loadUser() {
+async function loadUser() {
   try {
-    const stored = localStorage.getItem('bb_user');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed && !parsed.avatar && parsed.avatarKey && AVATAR_URLS[parsed.avatarKey]) {
-        parsed.avatar = AVATAR_URLS[parsed.avatarKey];
-      }
-      if (parsed && !parsed.avatar) {
-        const storedAvatar = localStorage.getItem('avatarURL');
-        if (storedAvatar) parsed.avatar = storedAvatar;
-      }
-      return { ...defaultUser, ...parsed };
+    const stored = await getStoredUser();
+    if (stored && Object.keys(stored).length > 0) {
+      return { ...defaultUser, ...stored };
     }
   } catch (error) {
     console.warn('User state error:', error);
@@ -28,23 +21,12 @@ function loadUser() {
   return { ...defaultUser };
 }
 
-function saveUser(user) {
+async function saveUser(user) {
   try {
-    if (user && !user.avatar && user.avatarKey && AVATAR_URLS[user.avatarKey]) {
-      user.avatar = AVATAR_URLS[user.avatarKey];
-    }
-    localStorage.setItem('bb_user', JSON.stringify(user));
+    await setStoredUser(user);
+    // Store additional legacy keys for compatibility
     if (user.restaurant) {
       localStorage.setItem('restaurant', user.restaurant);
-    }
-    if (user.username) {
-      localStorage.setItem('username', user.username);
-    }
-    const resolvedAvatar = getAvatarUrl(user);
-    if (resolvedAvatar) {
-      localStorage.setItem('avatarURL', resolvedAvatar);
-    } else {
-      localStorage.removeItem('avatarURL');
     }
   } catch (error) {
     console.warn('Could not persist user:', error);
@@ -105,32 +87,33 @@ function ensureNav() {
   nav.className = 'top-nav window';
   nav.innerHTML = `
     <nav class="bb-nav">
-      <div class="bb-nav-left nav-left">
-        <div class="nav-avatar" id="navAvatar"></div>
-        <div class="nav-username">
-          <span id="navUsername"></span>
-          <small id="navRole"></small>
+      <div class="bb-nav-main-profile">
+        <div class="nav-profile-box">
+          <img class="nav-profile-avatar" id="navAvatar" alt="Avatar" />
+          <span class="nav-profile-username" id="navUsername"></span>
         </div>
       </div>
-      <div class="bb-nav-inline" role="menubar" aria-label="Main">
-        ${NAV_ITEMS.map(item => {
-          if (item.key === 'logout') {
-            return `<button class="btn" type="button" data-nav="${item.key}" id="bbLogoutBtn">${item.label}</button>`;
-          }
-          return `<a href="${item.href}" class="btn" data-nav="${item.key}">${item.label}</a>`;
-        }).join('')}
-      </div>
-      <div class="bb-nav-menu">
-        <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
-        <a href="${ROUTES.CHAT}" class="btn" data-nav="chat">Chat</a>
-        <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
-        <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat').map(item => {
+      <div class="bb-nav-main-actions">
+        <div class="bb-nav-inline" role="menubar" aria-label="Main">
+          ${NAV_ITEMS.map(item => {
             if (item.key === 'logout') {
-              return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
+              return `<button class="btn" type="button" data-nav="${item.key}" id="bbLogoutBtn">${item.label}</button>`;
             }
-            return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
+            return `<a href="${item.href}" class="btn" data-nav="${item.key}">${item.label}</a>`;
           }).join('')}
+        </div>
+        <div class="bb-nav-menu">
+          <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
+          <a href="${ROUTES.CHAT}" class="btn" data-nav="chat">Chat</a>
+          <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
+          <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
+            ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat').map(item => {
+              if (item.key === 'logout') {
+                return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
+              }
+              return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
+            }).join('')}
+          </div>
         </div>
       </div>
     </nav>
@@ -146,29 +129,80 @@ function mountNavIntoHost(nav) {
   }
 }
 
-function initNavigation(user, existingNav) {
+async function initNavigation(user, existingNav) {
   const nav = existingNav || ensureNav();
   if (!nav) return;
 
+  // ============= COMPREHENSIVE DEBUG LOGGING =============
+  console.group('[Nav] === Navigation Initialization ===');
+
+  // 1. User object from loadUser()
+  console.log('[Nav] User from loadUser():', user);
+  console.log('[Nav]   - username:', user?.username);
+  console.log('[Nav]   - avatarKey:', user?.avatarKey);
+  console.log('[Nav]   - avatar:', user?.avatar);
+  console.log('[Nav]   - role:', user?.role);
+
+  // 2. Raw localStorage values
+  console.log('[Nav] Raw localStorage values:');
+  console.log('[Nav]   - STORAGE_KEYS.USER:', localStorage.getItem(STORAGE_KEYS.USER));
+  console.log('[Nav]   - STORAGE_KEYS.AVATAR_URL:', localStorage.getItem(STORAGE_KEYS.AVATAR_URL));
+  console.log('[Nav]   - STORAGE_KEYS.USERNAME:', localStorage.getItem(STORAGE_KEYS.USERNAME));
+
+  // 3. AVATAR_URLS mapping
+  console.log('[Nav] AVATAR_URLS map:', AVATAR_URLS);
+  console.log('[Nav] Available avatar keys:', Object.keys(AVATAR_URLS));
+
   const avatarEl = nav.querySelector('#navAvatar');
   const usernameEl = nav.querySelector('#navUsername');
-  const roleEl = nav.querySelector('#navRole');
+
+  // 4. DOM elements
+  console.log('[Nav] DOM elements:');
+  console.log('[Nav]   - avatarEl found:', !!avatarEl);
+  console.log('[Nav]   - usernameEl found:', !!usernameEl);
 
   if (avatarEl) {
     const avatarUrl = getAvatarUrl(user);
+
+    // 5. Avatar resolution
+    console.log('[Nav] Avatar resolution:');
+    console.log('[Nav]   - getAvatarUrl() returned:', avatarUrl);
+    console.log('[Nav]   - user.avatar exists:', !!user?.avatar);
+    console.log('[Nav]   - user.avatarKey exists:', !!user?.avatarKey);
+    console.log('[Nav]   - AVATAR_URLS[user.avatarKey]:', user?.avatarKey ? AVATAR_URLS[user.avatarKey] : 'N/A');
+
     if (avatarUrl) {
-      avatarEl.style.backgroundImage = `url(${avatarUrl})`;
-      avatarEl.style.backgroundSize = 'cover';
-      avatarEl.style.backgroundPosition = 'center';
-      avatarEl.textContent = '';
+      avatarEl.src = avatarUrl;
+      avatarEl.style.display = 'block';
+
+      // 6. Final img element state
+      console.log('[Nav] ✅ Avatar set successfully:');
+      console.log('[Nav]   - avatarEl.src:', avatarEl.src);
+      console.log('[Nav]   - avatarEl.style.display:', avatarEl.style.display);
+      console.log('[Nav]   - computed width:', window.getComputedStyle(avatarEl).width);
+      console.log('[Nav]   - computed height:', window.getComputedStyle(avatarEl).height);
     } else {
-      avatarEl.style.backgroundImage = 'none';
-      avatarEl.textContent = (user.username || 'B')[0].toUpperCase();
+      // Fallback: hide img
+      avatarEl.style.display = 'none';
+      console.warn('[Nav] ⚠️ No avatar URL found - hiding avatar image');
+      console.warn('[Nav] Possible causes:');
+      console.warn('[Nav]   - user.avatarKey does not match any key in AVATAR_URLS');
+      console.warn('[Nav]   - user.avatar is null/undefined');
+      console.warn('[Nav]   - localStorage does not have avatar data');
     }
+  } else {
+    console.error('[Nav] ❌ Avatar element #navAvatar not found in DOM!');
   }
 
-  if (usernameEl) usernameEl.textContent = user.username || 'Guest';
-  if (roleEl) roleEl.textContent = user.role || 'équipe';
+  if (usernameEl) {
+    const displayUsername = user.username || 'Guest';
+    usernameEl.textContent = displayUsername;
+    console.log('[Nav] ✅ Username set to:', displayUsername);
+  } else {
+    console.error('[Nav] ❌ Username element #navUsername not found in DOM!');
+  }
+
+  console.groupEnd();
 
   const normalizePath = (path) => path.replace(/\/+$/, '');
   const currentPath = normalizePath(new URL(window.location.href).pathname);
@@ -202,11 +236,11 @@ function ensureDefaultRestaurant(user) {
   }
 }
 
-function bootstrap() {
-  const user = loadUser();
+async function bootstrap() {
+  const user = await loadUser();
   const nav = ensureNav();
   if (nav) {
-    initNavigation(user, nav);
+    await initNavigation(user, nav);
   }
   ensureDefaultRestaurant(user);
 }
@@ -214,12 +248,13 @@ function bootstrap() {
 document.addEventListener('DOMContentLoaded', bootstrap);
 
 window.appState = {
-  get user() {
-    return loadUser();
+  async getUser() {
+    return await loadUser();
   },
-  setUser(user) {
-    saveUser(user);
-    initNavigation(loadUser());
+  async setUser(user) {
+    await saveUser(user);
+    const updatedUser = await loadUser();
+    await initNavigation(updatedUser);
   }
 };
 

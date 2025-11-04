@@ -1,7 +1,7 @@
 import { auth, db } from '../core/firebase.js';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername } from '../core/utils.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const form = document.getElementById('loginForm');
@@ -44,9 +44,18 @@ async function handleSubmit(event) {
       const finalName = data.username || displayName || username;
       const avatarKey = data.avatarKey || null;
       const avatarUrl = avatarKey && AVATAR_URLS[avatarKey] ? AVATAR_URLS[avatarKey] : (data.avatar || null);
-      localStorage.setItem('bb_user', JSON.stringify({ username: finalName, avatarKey, avatar: avatarUrl || undefined }));
+
+      // Store user data with proper avatar resolution
+      await setStoredUser({
+        username: finalName,
+        avatarKey,
+        avatar: avatarUrl || undefined
+      });
     } catch (profileError) {
-      localStorage.setItem('bb_user', JSON.stringify({ username: displayName || username }));
+      // Store minimal user data on profile fetch error
+      await setStoredUser({
+        username: displayName || username
+      });
     }
 
     if (!window.__bb_redirecting) {

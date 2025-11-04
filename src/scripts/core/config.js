@@ -5,18 +5,19 @@
 
 // ========== ASSETS ==========
 
-const resolvePath = (relativePath) => new URL(relativePath, import.meta.url).pathname;
-
 /**
  * URLs des avatars disponibles
+ * Using root-relative paths that work from any page depth
  * @constant {Object.<string, string>}
  */
 export const AVATAR_URLS = {
-  pup_orange: resolvePath('../../../assets/images/avatar-pup-orange.svg'),
-  pup_red: resolvePath('../../../assets/images/avatar-pup-red.svg')
+  pup_orange: '/assets/images/avatar-pup-orange.svg',
+  pup_red: '/assets/images/avatar-pup-red.svg'
 };
 
 // ========== ROUTES ==========
+
+const resolvePath = (relativePath) => new URL(relativePath, import.meta.url).pathname;
 
 /**
  * Chemins des pages de l'application
