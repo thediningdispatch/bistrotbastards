@@ -1,9 +1,21 @@
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { ROUTES } from './config.js';
 
-const PUBLIC_PAGES = new Set(['', 'index.html', 'login.html', 'signup.html']);
 const USER_KEY = 'bb_user';
+const normalizePath = (path) => {
+  if (!path) return '/';
+  const normalized = path.replace(/\/+$/, '');
+  return normalized === '' ? '/' : normalized;
+};
+
+const PUBLIC_PATHS = new Set([
+  '/',
+  normalizePath(ROUTES.INDEX),
+  normalizePath(ROUTES.LOGIN),
+  normalizePath(ROUTES.SIGNUP)
+]);
 
 // Export auth ready promise for other modules to await
 let authReadyResolve;
@@ -11,13 +23,10 @@ export const authReady = new Promise((resolve) => {
   authReadyResolve = resolve;
 });
 
-function currentPage() {
-  return window.location.pathname.split('/').pop() || '';
-}
-
 function redirectToLogin() {
-  if (currentPage() !== 'login.html') {
-    window.location.href = 'login.html';
+  const loginPath = ROUTES.LOGIN;
+  if (normalizePath(window.location.pathname) !== normalizePath(loginPath)) {
+    window.location.replace(loginPath);
   }
 }
 
@@ -52,9 +61,9 @@ async function hydrateUser(firebaseUser) {
 }
 
 function guard() {
-  const page = currentPage();
+  const currentPath = normalizePath(window.location.pathname);
 
-  if (PUBLIC_PAGES.has(page)) {
+  if (PUBLIC_PATHS.has(currentPath)) {
     showPage();
     authReadyResolve(true);
     return;

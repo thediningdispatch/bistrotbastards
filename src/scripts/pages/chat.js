@@ -17,6 +17,7 @@ import {
   onDisconnect,
   onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+import { ROUTES } from '../core/config.js';
 import { authReady } from '../core/auth-guard.js';
 
 // DOM Elements (initialized after DOM loads)
@@ -405,7 +406,7 @@ async function handleSubmit(e) {
   if (!currentUser) {
     console.error('[Chat] Not authenticated');
     alert('⚠️ Session expirée\n\nReconnectez-vous pour envoyer des messages.');
-    window.location.href = 'login.html';
+    window.location.replace(ROUTES.LOGIN);
     return;
   }
 
