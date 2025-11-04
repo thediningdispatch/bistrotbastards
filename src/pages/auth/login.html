@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../../styles/navigation.css" />
   <link rel="stylesheet" href="../../styles/auth.css" />
 </head>
-<body class="auth-login-page no-nav">
+<body class="auth-page auth-page--login no-nav">
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -23,33 +23,31 @@
         <span class="title-text">Bon retour</span>
       </div>
 
-      <div class="window-body login-body" id="app">
-        <div class="login-hero">
-          <h2 class="login-title">Content de te revoir 👋</h2>
-          <p class="login-subtitle">Connecte-toi pour retrouver ta console serveur Bistrot Bastards.</p>
-        </div>
+      <div class="window-body window-body--scroll auth-body" id="app">
+        <div class="auth-shell">
+          <div class="auth-card auth-card--login">
+            <h2 class="auth-card__title">Connexion</h2>
+            <p class="auth-card__subtitle">Connecte-toi pour accéder à ton espace serveur Bistrot Bastards.</p>
 
-        <div class="login-card">
-          <form id="loginForm" class="login-form">
-            <div class="login-fields">
-              <label for="loginUsername" class="login-label">
-                Nom d'utilisateur
+            <form id="loginForm" class="auth-form">
+              <div class="auth-form__group">
+                <label for="loginUsername">Nom d'utilisateur</label>
                 <input id="loginUsername" name="username" placeholder="Sans espaces" required />
-              </label>
+              </div>
 
-              <label for="loginPassword" class="login-label">
-                Mot de passe
+              <div class="auth-form__group">
+                <label for="loginPassword">Mot de passe</label>
                 <input id="loginPassword" name="password" type="password" placeholder="Mot de passe" required />
-              </label>
-            </div>
+              </div>
 
-            <p id="loginError" class="login-error" role="alert" aria-live="polite"></p>
+              <p id="loginError" class="auth-error" role="alert" aria-live="polite"></p>
 
-            <div class="login-actions">
-              <button type="submit" class="login-submit">Se connecter</button>
-              <a class="login-secondary" href="signup.html">Créer un compte</a>
-            </div>
-          </form>
+              <div class="auth-actions">
+                <button type="submit" class="auth-submit">Se connecter</button>
+                <a class="auth-link" href="signup.html">Créer un compte</a>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

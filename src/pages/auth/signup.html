@@ -7,8 +7,10 @@
   <title>Inscription — Bistrot Bastards</title>
   <meta name="description" content="Créez votre compte serveur pour la plateforme Bistrot Bastards." />
   <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/auth.css" />
 </head>
-<body class="no-nav">
+<body class="auth-page auth-page--signup no-nav">
   <div class="desktop">
     <div class="menu-bar">
       <span class="menu-item menu-apple"></span>
@@ -21,47 +23,51 @@
         <span class="title-text">Créez votre compte</span>
       </div>
 
-      <div class="window-body" id="app">
-        <p>Créez votre compte pour accéder aux outils Bistrot Bastards. Seuls un nom d’utilisateur et un mot de passe sont nécessaires.</p>
+      <div class="window-body window-body--scroll auth-body" id="app">
+        <div class="auth-shell">
+          <div class="auth-card auth-card--signup">
+            <h2 class="auth-card__title">Créer un compte</h2>
+            <p class="auth-card__subtitle">Rejoins l’équipe et configure ton profil serveur en quelques secondes.</p>
 
-        <form id="signupForm">
-          <div class="two-column">
-            <div>
-              <label for="signupUsername">Nom d’utilisateur</label>
-              <input id="signupUsername" name="username" placeholder="Alex" required />
-            </div>
-            <div>
-              <label for="signupPassword">Mot de passe</label>
-              <input id="signupPassword" name="password" type="password" placeholder="Créez un mot de passe" required minlength="6" />
-              <p class="hint">6 caractères minimum.</p>
-            </div>
+            <form id="signupForm" class="auth-form">
+              <div class="auth-form__group">
+                <label for="signupUsername">Nom d’utilisateur</label>
+                <input id="signupUsername" name="username" placeholder="Alex" required />
+              </div>
+
+              <div class="auth-form__group">
+                <label for="signupPassword">Mot de passe</label>
+                <input id="signupPassword" name="password" type="password" placeholder="Mot de passe (6 caractères mini)" required minlength="6" />
+              </div>
+
+              <fieldset class="auth-fieldset">
+                <legend>Choisis ton badge</legend>
+                <div class="auth-avatars">
+                  <label class="auth-avatar">
+                    <input type="radio" name="avatarKey" value="pup_orange" required />
+                    <img src="../../../assets/images/avatar-pup-orange.svg" alt="Chien cuisinier orange" />
+                  </label>
+                  <label class="auth-avatar">
+                    <input type="radio" name="avatarKey" value="pup_red" required />
+                    <img src="../../../assets/images/avatar-pup-red.svg" alt="Chien chef rouge" />
+                  </label>
+                </div>
+              </fieldset>
+
+              <p id="signupError" class="auth-error" role="alert" aria-live="polite"></p>
+
+              <div class="auth-actions">
+                <button type="submit" class="auth-submit">Créer le compte</button>
+                <a class="auth-link" href="login.html">Déjà inscrit ? Connexion</a>
+              </div>
+            </form>
           </div>
-
-          <fieldset class="fieldset">
-            <legend>Choisis ton badge</legend>
-            <div class="avatar-options">
-              <label class="avatar-option">
-                <input type="radio" name="avatarKey" value="pup_orange" required />
-                <img src="../../../assets/images/avatar-pup-orange.svg" alt="Chien cuisinier orange" />
-              </label>
-              <label class="avatar-option">
-                <input type="radio" name="avatarKey" value="pup_red" required />
-                <img src="../../../assets/images/avatar-pup-red.svg" alt="Chien chef rouge" />
-              </label>
-            </div>
-          </fieldset>
-
-          <div class="actions">
-            <button type="submit" class="btn">Créer le compte</button>
-            <a class="btn" href="login.html">Déjà inscrit ? Se connecter</a>
-          </div>
-
-          <p id="signupError" class="help-text" style="display:none;"></p>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
   <script type="module" src="../../scripts/pages/signup.js"></script>
 </body>
 </html>
