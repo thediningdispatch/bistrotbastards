@@ -1,6 +1,6 @@
 /* Waiter Profile - Specific Styles */
 
-/* Override window-body pour permettre le scroll comme dans index_waiter.html */
+/* Override window-body pour permettre le scroll interne de la page profil */
 .window-body {
   overflow: hidden;
   padding: 0 !important;

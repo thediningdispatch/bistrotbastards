@@ -5,13 +5,15 @@
 
 // ========== ASSETS ==========
 
+const resolvePath = (relativePath) => new URL(relativePath, import.meta.url).pathname;
+
 /**
  * URLs des avatars disponibles
  * @constant {Object.<string, string>}
  */
 export const AVATAR_URLS = {
-  pup_orange: '../../assets/images/avatar-pup-orange.svg',
-  pup_red: '../../assets/images/avatar-pup-red.svg'
+  pup_orange: resolvePath('../../../assets/images/avatar-pup-orange.svg'),
+  pup_red: resolvePath('../../../assets/images/avatar-pup-red.svg')
 };
 
 // ========== ROUTES ==========
@@ -21,15 +23,15 @@ export const AVATAR_URLS = {
  * @constant {Object.<string, string>}
  */
 export const ROUTES = {
-  INDEX: 'index.html',
-  LOGIN: 'src/pages/auth/login.html',
-  SIGNUP: 'src/pages/auth/signup.html',
-  WAITER_HOME: 'src/pages/waiter/home.html',
-  WAITER_PROFILE: 'src/pages/waiter/profile.html',
-  WAITER_REVIEWS: 'src/pages/waiter/reviews.html',
-  WAITER_CRYPTO_TIPS: 'src/pages/waiter/crypto-tips.html',
-  CHAT: 'src/pages/shared/chat.html',
-  ADMIN_DASHBOARD: 'src/pages/admin/dashboard.html'
+  INDEX: resolvePath('../../../index.html'),
+  LOGIN: resolvePath('../../pages/auth/login.html'),
+  SIGNUP: resolvePath('../../pages/auth/signup.html'),
+  WAITER_HOME: resolvePath('../../pages/waiter/home.html'),
+  WAITER_PROFILE: resolvePath('../../pages/waiter/profile.html'),
+  WAITER_REVIEWS: resolvePath('../../pages/waiter/reviews.html'),
+  WAITER_CRYPTO_TIPS: resolvePath('../../pages/waiter/crypto-tips.html'),
+  CHAT: resolvePath('../../pages/shared/chat.html'),
+  ADMIN_DASHBOARD: resolvePath('../../pages/admin/dashboard.html')
 };
 
 // ========== NAVIGATION ==========

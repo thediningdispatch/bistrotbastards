@@ -6,15 +6,15 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>🍾 Défi Podium — Avis Google</title>
   <meta name="description" content="Rédige ton avis Google en un clic, copie-colle et publie." />
-  <link rel="stylesheet" href="src/styles/system7.css" />
-  <link rel="stylesheet" href="src/styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
   <style>
     body {
       background: repeating-linear-gradient(90deg, #d9d9d9, #d9d9d9 4px, #c3c3c3 4px, #c3c3c3 8px);
     }
 
     .review-body {
-      padding: 100px 28px 40px;
+      padding: calc(var(--bb-nav-height) + 32px) clamp(20px, 4vw, 28px) clamp(28px, 5vw, 40px);
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -26,7 +26,7 @@
 
     @media (max-width: 640px) {
       .review-body {
-        padding: 90px 20px 32px;
+        padding: calc(var(--bb-nav-height) + 24px) clamp(16px, 4vw, 22px) clamp(24px, 5vw, 32px);
       }
     }
 
@@ -312,7 +312,7 @@
     </div>
   </div>
 
-  <script type="module" src="src/scripts/core/navigation.js"></script>
+  <script type="module" src="../../scripts/core/navigation.js"></script>
   <script>
     document.querySelectorAll('.emoji').forEach(emoji => {
       emoji.addEventListener('click', () => {
@@ -349,6 +349,6 @@
       window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
     });
   </script>
-  <script type="module" src="src/scripts/core/auth-guard.js"></script>
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
 </body>
 </html>

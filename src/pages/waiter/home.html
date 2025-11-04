@@ -6,8 +6,8 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Accueil serveur — Bistrot Bastards</title>
   <meta name="description" content="Retourne sur ta console serveur Bistrot Bastards." />
-  <link rel="stylesheet" href="src/styles/system7.css" />
-  <link rel="stylesheet" href="src/styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
   <style>
     .window-body {
       overflow: hidden;
@@ -132,8 +132,8 @@
                 </div>
               </div>
               <div class="bb-cta">
-                <a href="googlereview.html" class="btn bb-btn-reviews">REVIEWS</a>
-                <a href="blockchain_tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
+                <a href="reviews.html" class="btn bb-btn-reviews">REVIEWS</a>
+                <a href="crypto-tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
                   <svg viewBox="0 0 32 48" class="bb-eth-icon" focusable="false">
                     <polygon points="16,0 0,24 16,32 32,24"></polygon>
                     <polygon points="16,48 0,28 16,36 32,28"></polygon>
@@ -256,7 +256,7 @@
   </script>
 
   <script type="module">
-    import { db } from './src/scripts/core/firebase.js';
+    import { db } from '../../scripts/core/firebase.js';
     import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const list = document.getElementById('bbTop3List');
@@ -302,7 +302,7 @@
     }
   </script>
 
-  <script type="module" src="src/scripts/core/navigation.js"></script>
+  <script type="module" src="../../scripts/core/navigation.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const nav = document.querySelector('.top-nav .bb-nav');
@@ -327,6 +327,6 @@
       }
     });
   </script>
-  <script type="module" src="src/scripts/core/auth-guard.js"></script>
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
 </body>
 </html>

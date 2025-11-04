@@ -21,7 +21,7 @@
           <span class="title-text">Activez JavaScript</span>
         </div>
         <div class="window-body">
-          <p>JavaScript est nécessaire. <a class="btn" href="login.html">Aller à la connexion</a></p>
+          <p>JavaScript est nécessaire. <a class="btn" href="src/pages/auth/login.html">Aller à la connexion</a></p>
         </div>
       </div>
     </div>
@@ -45,8 +45,8 @@
         <h1 class="logo-text">Bistrot Bastards</h1>
         <p>Choisissez une option pour continuer.</p>
         <div class="btns">
-          <a class="btn" href="login.html">Se connecter</a>
-          <a class="btn" href="signup.html">Créer un compte</a>
+          <a class="btn" href="src/pages/auth/login.html">Se connecter</a>
+          <a class="btn" href="src/pages/auth/signup.html">Créer un compte</a>
         </div>
       </div>
     </div>
@@ -67,7 +67,7 @@
       if (user) {
         if (!window.__bb_redirecting) {
           window.__bb_redirecting = true;
-          location.replace('index_waiter.html');
+          location.replace('src/pages/waiter/home.html');
         }
       } else {
         if (landing) landing.style.display = 'block';
