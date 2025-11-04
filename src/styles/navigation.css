@@ -119,6 +119,10 @@
   letter-spacing: 0.3px;
 }
 
+.review-page .nav-profile-box {
+  display: none;
+}
+
 @media (max-width: 639px) {
   .bb-nav {
     flex-wrap: nowrap;

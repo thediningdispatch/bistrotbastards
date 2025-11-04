@@ -14,10 +14,10 @@
     }
 
     .review-body {
-      padding: calc(var(--bb-nav-height) + 32px) clamp(20px, 4vw, 28px) clamp(28px, 5vw, 40px);
+      padding: calc(var(--bb-nav-height) + 16px) clamp(16px, 4vw, 24px) clamp(20px, 5vw, 32px);
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     #navHost {
@@ -26,7 +26,7 @@
 
     @media (max-width: 640px) {
       .review-body {
-        padding: calc(var(--bb-nav-height) + 24px) clamp(16px, 4vw, 22px) clamp(24px, 5vw, 32px);
+        padding: calc(var(--bb-nav-height) + 12px) clamp(14px, 5vw, 20px) clamp(18px, 6vw, 28px);
       }
     }
 
@@ -51,43 +51,6 @@
       margin: 0;
       font-size: 15px;
       opacity: 0.9;
-    }
-
-    .instruction-box {
-      padding: 18px 20px;
-      border: 1px solid #000;
-      box-shadow: 3px 3px 0 #000;
-      background: linear-gradient(135deg, #e3ecff 0%, #d4e3ff 100%);
-      border-radius: 4px;
-      margin-bottom: 4px;
-    }
-
-    .instruction-box h3 {
-      margin: 0 0 14px;
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .instruction-box h3:before {
-      content: "👉";
-      font-size: 18px;
-    }
-
-    .instruction-box ol {
-      margin: 0;
-      padding-left: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .instruction-box li {
-      font-size: 14px;
-      line-height: 1.5;
-      padding-left: 6px;
     }
 
     .section-label {
@@ -248,7 +211,7 @@
     }
   </style>
 </head>
-<body>
+<body class="review-page">
   <div class="desktop">
     <div class="window">
       <div class="title-bar">
@@ -262,15 +225,6 @@
         <div class="review-header">
           <h2>🍾 Défi Podium</h2>
           <p>Votre avis compte pour les classements</p>
-        </div>
-
-        <div class="instruction-box">
-          <h3>Pour le serveur :</h3>
-          <ol>
-            <li>Tends ton téléphone au client</li>
-            <li>Le client remplit le formulaire et clique sur "Publier l'avis"</li>
-            <li>Le client est redirigé vers Google pour finaliser</li>
-          </ol>
         </div>
 
         <div class="section-label">Formulaire client</div>
