@@ -106,3 +106,9 @@
   font-size: 18px;
   font-weight: 700;
 }
+
+/* Hide window title text only on waiter home and profile pages */
+.waiter-home-page .title-text,
+.waiter-profile-page .title-text {
+  display: none;
+}
