@@ -83,15 +83,22 @@
 
             <div class="bt-stage bt-stage--client">
               <h3>Choisis ton pourboire</h3>
-              <p>Sélectionne un pourcentage ou saisis une valeur personnalisée.</p>
-              <div class="bt-tip-list" role="group" aria-label="Choisir un pourcentage de pourboire">
+              <p>Sélectionne un pourcentage ou entre un montant précis.</p>
+              <div class="bt-tip-list" role="group" aria-label="Choisir un pourboire">
                 <button type="button" class="btn bt-tip" data-tip="5">5 %</button>
                 <button type="button" class="btn bt-tip" data-tip="10">10 %</button>
                 <button type="button" class="btn bt-tip" data-tip="15">15 %</button>
                 <button type="button" class="btn bt-tip" data-tip="20">20 %</button>
-                <div class="bt-tip-custom" role="group" aria-label="Pourcentage personnalisé">
-                  <input id="btCustomTip" type="number" min="1" max="100" placeholder="Autre %" aria-label="Pourcentage personnalisé">
-                  <button type="button" class="btn" id="btApplyCustom">OK</button>
+                <div class="bt-tip-custom" role="group" aria-label="Montant personnalisé">
+                  <label for="btCustomAmount">Montant personnalisé (€)</label>
+                  <input
+                    id="btCustomAmount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    inputmode="decimal"
+                    placeholder="3,50"
+                    aria-label="Montant personnalisé en euros" />
                 </div>
               </div>
             </div>

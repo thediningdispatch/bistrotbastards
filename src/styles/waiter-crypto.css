@@ -185,33 +185,45 @@
 
 .bt-tip-custom {
   border: 2px dashed var(--text);
-  background: var(--accent-lilac);
+  background: var(--accent-blush);
   box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
   border-radius: var(--radius-sm);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   padding: 12px;
+  text-align: center;
 }
 
 .bt-tip-custom.bt-active {
-  background: #ddc9f5;
+  background: var(--accent-rose);
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), var(--card-shadow-strong);
+}
+
+.bt-tip-custom label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text);
 }
 
 .bt-tip-custom input {
-  width: 80px;
-  text-align: right;
-  padding: 8px;
+  width: 100%;
+  padding: 10px;
   border: var(--border-strong);
   background: var(--panel-light);
-  font-size: 14px;
+  font: inherit;
+  font-size: 16px;
   border-radius: var(--radius-sm);
+  text-align: center;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
 }
 
-.bt-tip-custom button {
-  padding: 8px 14px;
-  font-weight: 700;
+.bt-tip-custom input::placeholder {
+  color: rgba(0, 0, 0, 0.45);
 }
 
 /* QR code display */

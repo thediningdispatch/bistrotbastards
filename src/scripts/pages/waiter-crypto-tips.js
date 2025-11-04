@@ -1,5 +1,5 @@
-(function() {
-  // DOM Elements
+(function () {
+  // DOM elements – waiter step
   const stepServer = document.getElementById("btStepServer");
   const stepClient = document.getElementById("btStepClient");
   const form = document.getElementById("btServerForm");
@@ -8,14 +8,15 @@
   const walletInput = document.getElementById("btWallet");
   const errorLabel = document.getElementById("btServerError");
   const serverSummary = document.getElementById("btServerSummary");
+
+  // DOM elements – client step
   const clientBillValue = document.getElementById("btClientBill");
   const summaryBill = document.getElementById("btSummaryBill");
   const summaryCrypto = document.getElementById("btSummaryCrypto");
   const summaryWallet = document.getElementById("btSummaryWallet");
   const tips = Array.prototype.slice.call(document.querySelectorAll(".bt-tip[data-tip]"));
   const customTile = document.querySelector(".bt-tip-custom");
-  const customField = document.getElementById("btCustomTip");
-  const customApply = document.getElementById("btApplyCustom");
+  const customAmountField = document.getElementById("btCustomAmount");
   const qrWrapper = document.getElementById("btQRWrapper");
   const qrCodeEl = document.getElementById("btQRCode");
   const tipAmountDisplay = document.getElementById("btTipAmount");
@@ -33,6 +34,7 @@
     crypto: "",
     wallet: "",
     tipPercent: null,
+    tipAmount: null,
     rateEUR: null,
     rateUpdatedAt: null,
     rateLoading: false,
@@ -40,7 +42,7 @@
     lastFallbackUri: ""
   };
 
-  // User profile helpers
+  // User profile helpers -----------------------------------------------------
   function getUserProfile() {
     if (window.appState && window.appState.user) {
       return window.appState.user;
@@ -101,9 +103,12 @@
     return wallets && typeof wallets[chain] === "string" ? wallets[chain] : "";
   }
 
-  // Formatting helpers
+  // Formatting helpers -------------------------------------------------------
   function formatAmount(value) {
-    return value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return value.toLocaleString("fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
 
   function formatCrypto(amount, decimals) {
@@ -125,7 +130,7 @@
     return combined;
   }
 
-  // Rate status
+  // Rate status --------------------------------------------------------------
   function setRateStatus(message, isError) {
     rateStatus.textContent = message;
     if (isError) {
@@ -144,13 +149,13 @@
     state.rateEUR = null;
     state.rateUpdatedAt = null;
     state.rateLoading = fetch("https://api.coinbase.com/v2/exchange-rates?currency=" + encodeURIComponent(crypto))
-      .then(function(response) {
+      .then(function (response) {
         if (!response.ok) {
           throw new Error("HTTP " + response.status);
         }
         return response.json();
       })
-      .then(function(payload) {
+      .then(function (payload) {
         const eur = payload && payload.data && payload.data.rates && payload.data.rates.EUR;
         const value = parseFloat(eur);
         if (!isFinite(value) || value <= 0) {
@@ -161,69 +166,68 @@
         const formatted = value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         setRateStatus("Taux Coinbase : 1 " + crypto + " = " + formatted + " €", false);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error("Coinbase rate error:", error);
         state.rateEUR = null;
         state.rateUpdatedAt = null;
         setRateStatus("Impossible de récupérer le taux. Vérifie la connexion et réessaie.", true);
       })
-      .finally(function() {
+      .finally(function () {
         state.rateLoading = false;
       });
     return state.rateLoading;
   }
 
-  // Reset tips
-  function resetTips() {
-    tips.forEach(function(btn) { btn.classList.remove("bt-active"); });
-    if (customTile) { customTile.classList.remove("bt-active"); }
-    customField.value = "";
+  // Helpers ------------------------------------------------------------------
+  function clearTipSummary() {
     qrWrapper.classList.add("bt-hidden");
     tipAmountDisplay.textContent = "—";
     tipCryptoDisplay.textContent = "—";
     qrCodeEl.innerHTML = "";
-    state.tipPercent = null;
-    state.lastUri = "";
-    state.lastFallbackUri = "";
-    primaryUriEl.textContent = "—";
     primaryLabel.textContent = "URI portefeuille :";
+    primaryUriEl.textContent = "—";
     fallbackLabel.classList.add("bt-hidden");
     fallbackUriEl.classList.add("bt-hidden");
     fallbackUriEl.textContent = "—";
+    state.lastUri = "";
+    state.lastFallbackUri = "";
   }
 
-  // Validation
-  function validateWallet(type, value) {
-    if (type === "ETH") {
-      return value.startsWith("0x") && value.length >= 6;
-    }
-    if (type === "BTC") {
-      return value.length > 26;
-    }
-    return false;
+  function resetTips() {
+    tips.forEach(function (btn) { btn.classList.remove("bt-active"); });
+    if (customTile) { customTile.classList.remove("bt-active"); }
+    if (customAmountField) { customAmountField.value = ""; }
+    clearTipSummary();
+    state.tipPercent = null;
+    state.tipAmount = null;
   }
 
-  // Handle tip selection
-  function handleTip(percent) {
-    if (!state.bill) { return; }
+  function ensureTipReady() {
+    if (!state.bill) {
+      return false;
+    }
     if (!state.rateEUR) {
       if (!state.rateLoading) {
         fetchRate(state.crypto);
       }
       setRateStatus("Taux absent : patiente un instant puis réessaie.", true);
+      return false;
+    }
+    return true;
+  }
+
+  function updateTipSummary(tipAmount) {
+    if (!tipAmount || tipAmount <= 0) {
+      clearTipSummary();
       return;
     }
-    state.tipPercent = percent;
-    tips.forEach(function(btn) {
-      const matches = parseFloat(btn.dataset.tip);
-      btn.classList.toggle("bt-active", matches === percent);
-    });
-    const tipAmount = state.bill * percent / 100;
+
     const eurosFormatted = formatAmount(tipAmount);
     tipAmountDisplay.textContent = eurosFormatted;
 
     const cryptoAmount = tipAmount / state.rateEUR;
     let uriInfo;
+
     if (state.crypto === "BTC") {
       const btcAmountStr = formatCrypto(cryptoAmount, 8);
       uriInfo = {
@@ -269,8 +273,18 @@
     });
   }
 
-  // Form submit - transition to step 2
-  form.addEventListener("submit", function(event) {
+  function ensureWallet(type, value) {
+    if (type === "ETH") {
+      return value.startsWith("0x") && value.length >= 6;
+    }
+    if (type === "BTC") {
+      return value.length > 26;
+    }
+    return false;
+  }
+
+  // Form submit --------------------------------------------------------------
+  form.addEventListener("submit", function (event) {
     event.preventDefault();
     const billValue = parseFloat(billInput.value);
     const cryptoValue = cryptoSelect.value;
@@ -289,7 +303,7 @@
       errorLabel.textContent = "Ajoute une adresse de portefeuille.";
       return;
     }
-    if (!validateWallet(cryptoValue, walletValue)) {
+    if (!ensureWallet(cryptoValue, walletValue)) {
       errorLabel.textContent = cryptoValue === "ETH"
         ? "Adresse ETH invalide (doit commencer par 0x)."
         : "Adresse BTC invalide (trop courte).";
@@ -300,6 +314,7 @@
     state.crypto = cryptoValue;
     state.wallet = walletValue;
     state.tipPercent = null;
+    state.tipAmount = null;
 
     persistWalletAddress(state.crypto, state.wallet);
 
@@ -311,7 +326,6 @@
     serverSummary.classList.remove("bt-hidden");
     form.classList.add("bt-hidden");
 
-    // STEP TOGGLE: Hide server step, show client step
     stepServer.classList.add("bt-hidden");
     stepClient.classList.remove("bt-hidden");
 
@@ -319,50 +333,83 @@
     resetTips();
   });
 
-  // Tip button clicks
-  tips.forEach(function(btn) {
-    btn.addEventListener("click", function() {
+  // Percentage tip cards -----------------------------------------------------
+  function activatePercentage(percent) {
+    tips.forEach(function (btn) {
+      const matches = parseFloat(btn.dataset.tip);
+      btn.classList.toggle("bt-active", matches === percent);
+    });
+    if (customTile) { customTile.classList.remove("bt-active"); }
+    if (customAmountField) { customAmountField.value = ""; }
+  }
+
+  function applyPercentageTip(percent) {
+    if (!ensureTipReady()) { return; }
+    state.tipPercent = percent;
+    state.tipAmount = state.bill * percent / 100;
+    activatePercentage(percent);
+    updateTipSummary(state.tipAmount);
+  }
+
+  tips.forEach(function (btn) {
+    btn.addEventListener("click", function () {
       const percent = parseFloat(btn.dataset.tip);
-      if (customTile) { customTile.classList.remove("bt-active"); }
-      customField.value = "";
-      handleTip(percent);
+      applyPercentageTip(percent);
     });
   });
 
-  // Custom tip
-  customApply.addEventListener("click", function() {
-    const customValue = parseFloat(customField.value);
-    if (!state.bill) { return; }
-    if (!customValue || customValue <= 0) {
-      customField.focus();
+  // Custom amount ------------------------------------------------------------
+  function focusCustomTile() {
+    tips.forEach(function (btn) { btn.classList.remove("bt-active"); });
+    if (customTile) { customTile.classList.add("bt-active"); }
+  }
+
+  function applyCustomAmount(value) {
+    if (!value || value <= 0) {
+      state.tipAmount = null;
+      updateTipSummary(0);
       return;
     }
-    tips.forEach(function(btn) { btn.classList.remove("bt-active"); });
-    if (customTile) { customTile.classList.add("bt-active"); }
-    handleTip(customValue);
-  });
+    if (!ensureTipReady()) { return; }
+    state.tipPercent = null;
+    state.tipAmount = value;
+    updateTipSummary(value);
+  }
 
-  customField.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      customApply.click();
-    }
-  });
+  if (customTile) {
+    customTile.addEventListener("click", function () {
+      focusCustomTile();
+      if (customAmountField) {
+        customAmountField.focus();
+        const existing = parseFloat(customAmountField.value);
+        applyCustomAmount(existing);
+      }
+    });
+  }
 
-  // Edit button - go back to step 1
-  editButton.addEventListener("click", function() {
+  if (customAmountField) {
+    customAmountField.addEventListener("focus", function () {
+      focusCustomTile();
+    });
+
+    customAmountField.addEventListener("input", function () {
+      focusCustomTile();
+      const customValue = parseFloat(customAmountField.value);
+      applyCustomAmount(customValue);
+    });
+  }
+
+  // Edit button --------------------------------------------------------------
+  editButton.addEventListener("click", function () {
     form.classList.remove("bt-hidden");
     serverSummary.classList.add("bt-hidden");
-
-    // STEP TOGGLE: Show server step, hide client step
     stepServer.classList.remove("bt-hidden");
     stepClient.classList.add("bt-hidden");
-
     resetTips();
     setRateStatus("Taux Coinbase chargé après validation.", false);
   });
 
-  // Load stored wallet on crypto change
+  // Stored wallet ------------------------------------------------------------
   function applyStoredWallet(chain) {
     const stored = getStoredWalletAddress(chain);
     if (!stored) return;
@@ -370,7 +417,7 @@
   }
 
   applyStoredWallet(cryptoSelect.value);
-  cryptoSelect.addEventListener("change", function() {
+  cryptoSelect.addEventListener("change", function () {
     applyStoredWallet(cryptoSelect.value);
   });
 })();

@@ -29,24 +29,26 @@
               <h2 class="bb-welcome-title">
                 Content de te revoir, <span id="bbUserName">—</span> 👋
               </h2>
-              <div class="bb-tips-boxes">
-                <div class="bb-tip-box bb-tip-week">
-                  <span class="bb-tip-label">Tips Semaine</span>
-                  <span class="bb-tip-amount"><span id="bbTipsWeek">—</span>€</span>
+              <section class="bb-tips" aria-label="Statistiques principales">
+                <div class="bb-tips-boxes">
+                  <div class="bb-tip-box bb-tip-week">
+                    <span class="bb-tip-label">Tips semaine</span>
+                    <span class="bb-tip-amount"><span id="bbTipsWeekAmount">—</span>€</span>
+                  </div>
+                  <div class="bb-tip-box bb-tip-month">
+                    <span class="bb-tip-label">Tips mois</span>
+                    <span class="bb-tip-amount"><span id="bbTipsMonthAmount">—</span>€</span>
+                  </div>
+                  <div class="bb-tip-box bb-tip-date">
+                    <span class="bb-tip-label">Aujourd’hui</span>
+                    <span class="bb-tip-amount" aria-live="polite"><span id="bbContestDate">—</span></span>
+                  </div>
+                  <div class="bb-tip-box bb-tip-contest">
+                    <span class="bb-tip-label">Fin du concours</span>
+                    <span class="bb-tip-amount" aria-live="polite"><span id="bbContestDaysLeft">—</span>&nbsp;jours</span>
+                  </div>
                 </div>
-                <div class="bb-tip-box bb-tip-month">
-                  <span class="bb-tip-label">Tips Mois</span>
-                  <span class="bb-tip-amount"><span id="bbTipsMonth">—</span>€</span>
-                </div>
-                <div class="bb-tip-box bb-tip-avg">
-                  <span class="bb-tip-label">Tips moyen / jour</span>
-                  <span class="bb-tip-amount" aria-live="polite"><span id="bbAvgTips">—</span>€</span>
-                </div>
-                <div class="bb-tip-box bb-tip-contest">
-                  <span class="bb-tip-label">Jours avant fin concours</span>
-                  <span class="bb-tip-amount" aria-live="polite"><span id="bbContestDays">—</span></span>
-                </div>
-              </div>
+              </section>
               <div class="bb-cta">
                 <a href="reviews.html" class="btn bb-btn-reviews">REVIEWS</a>
                 <a href="crypto-tips.html" class="bb-eth-link" aria-label="Pourboires crypto" title="Pourboires crypto">
@@ -82,9 +84,13 @@
       }
 
       const today = new Date();
+      const dateEl = document.getElementById('bbContestDate');
+      if (dateEl) {
+        dateEl.textContent = today.toLocaleDateString('fr-FR');
+      }
 
       const CONTEST_END = new Date('2025-12-31T23:59:59');
-      const contestEl = document.getElementById('bbContestDays');
+      const contestEl = document.getElementById('bbContestDaysLeft');
       if (contestEl) {
         const diffMs = CONTEST_END.getTime() - today.getTime();
         const daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
@@ -107,7 +113,7 @@
         const num = Number(val);
         return Number.isFinite(num) && num >= 0 ? acc + num : acc;
       }, 0);
-      const tipsWeekEl = document.getElementById('bbTipsWeek');
+      const tipsWeekEl = document.getElementById('bbTipsWeekAmount');
       if (tipsWeekEl) {
         tipsWeekEl.textContent = sumTips.toFixed(2);
       }
@@ -123,39 +129,9 @@
         }
         return acc;
       }, 0);
-      const tipsMonthEl = document.getElementById('bbTipsMonth');
+      const tipsMonthEl = document.getElementById('bbTipsMonthAmount');
       if (tipsMonthEl) {
         tipsMonthEl.textContent = monthTips.toFixed(2);
-      }
-
-      // Calculate average tips per day
-      function calculateAverageTipsPerDay(history) {
-        if (!history || typeof history !== 'object') {
-          return 0;
-        }
-        const entries = Object.entries(history);
-        if (entries.length === 0) {
-          return 0;
-        }
-        let totalTips = 0;
-        let validDays = 0;
-        for (const [date, amount] of entries) {
-          const num = Number(amount);
-          if (Number.isFinite(num) && num >= 0) {
-            totalTips += num;
-            validDays++;
-          }
-        }
-        if (validDays === 0) {
-          return 0;
-        }
-        return totalTips / validDays;
-      }
-
-      const avgTips = calculateAverageTipsPerDay(tipsHistory);
-      const avgTipsEl = document.getElementById('bbAvgTips');
-      if (avgTipsEl) {
-        avgTipsEl.textContent = avgTips > 0 ? avgTips.toFixed(2) : '—';
       }
     })();
   </script>
