@@ -1,7 +1,7 @@
 import { auth, db, authPersistenceReady } from '../core/firebase.js';
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const tPageStart = performance.now();
@@ -58,6 +58,7 @@ async function handleSubmit(event) {
       uid: credential.user.uid,
       username: displayName,
       avatarKey,
+      avatar: avatarUrl,
       createdAt: serverTimestamp()
     });
 
@@ -67,6 +68,7 @@ async function handleSubmit(event) {
       avatarKey,
       avatar: avatarUrl
     });
+    console.log('[Auth] Stored user after signup:', await getStoredUser());
 
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;

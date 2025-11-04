@@ -1,4 +1,4 @@
-import { AVATAR_URLS, NAV_ITEMS, ROUTES, STORAGE_KEYS } from './config.js';
+import { AVATAR_URLS, NAV_ITEMS, ROUTES } from './config.js';
 import { getStoredUser, setStoredUser } from './utils.js';
 
 const defaultUser = {
@@ -62,8 +62,7 @@ function getAvatarUrl(user) {
   if (user.avatarKey && AVATAR_URLS[user.avatarKey]) {
     return AVATAR_URLS[user.avatarKey];
   }
-  const stored = localStorage.getItem('avatarURL');
-  return stored || null;
+  return null;
 }
 
 function ensureNavStyles() {
@@ -136,63 +135,27 @@ async function initNavigation(user, existingNav) {
   const nav = existingNav || ensureNav();
   if (!nav) return;
 
-  // ============= COMPREHENSIVE DEBUG LOGGING =============
-  console.group('[Nav] === Navigation Initialization ===');
-
-  // 1. User object from loadUser()
-  console.log('[Nav] User from loadUser():', user);
-  console.log('[Nav]   - username:', user?.username);
-  console.log('[Nav]   - avatarKey:', user?.avatarKey);
-  console.log('[Nav]   - avatar:', user?.avatar);
-  console.log('[Nav]   - role:', user?.role);
-
-  // 2. Raw localStorage values
-  console.log('[Nav] Raw localStorage values:');
-  console.log('[Nav]   - STORAGE_KEYS.USER:', localStorage.getItem(STORAGE_KEYS.USER));
-  console.log('[Nav]   - STORAGE_KEYS.AVATAR_URL:', localStorage.getItem(STORAGE_KEYS.AVATAR_URL));
-  console.log('[Nav]   - STORAGE_KEYS.USERNAME:', localStorage.getItem(STORAGE_KEYS.USERNAME));
-
-  // 3. AVATAR_URLS mapping
-  console.log('[Nav] AVATAR_URLS map:', AVATAR_URLS);
-  console.log('[Nav] Available avatar keys:', Object.keys(AVATAR_URLS));
+  const storedSnapshot = await getStoredUser();
+  console.log('[Nav] User state on init:', {
+    storedUser: storedSnapshot,
+    avatarKey: user?.avatarKey || null,
+    avatarFromUser: user?.avatar || null,
+    resolvedFromMap: user?.avatarKey ? AVATAR_URLS[user.avatarKey] : null
+  });
 
   const avatarEl = nav.querySelector('#navAvatar');
   const usernameEl = nav.querySelector('#navUsername');
 
-  // 4. DOM elements
-  console.log('[Nav] DOM elements:');
-  console.log('[Nav]   - avatarEl found:', !!avatarEl);
-  console.log('[Nav]   - usernameEl found:', !!usernameEl);
-
   if (avatarEl) {
     const avatarUrl = getAvatarUrl(user);
-
-    // 5. Avatar resolution
-    console.log('[Nav] Avatar resolution:');
-    console.log('[Nav]   - getAvatarUrl() returned:', avatarUrl);
-    console.log('[Nav]   - user.avatar exists:', !!user?.avatar);
-    console.log('[Nav]   - user.avatarKey exists:', !!user?.avatarKey);
-    console.log('[Nav]   - AVATAR_URLS[user.avatarKey]:', user?.avatarKey ? AVATAR_URLS[user.avatarKey] : 'N/A');
-
     if (avatarUrl) {
       avatarEl.src = avatarUrl;
       avatarEl.style.display = 'block';
-
-      // 6. Final img element state
-      console.log('[Nav] ✅ Avatar set successfully:');
-      console.log('[Nav]   - avatarEl.src:', avatarEl.src);
-      console.log('[Nav]   - avatarEl.style.display:', avatarEl.style.display);
-      console.log('[Nav]   - computed width:', window.getComputedStyle(avatarEl).width);
-      console.log('[Nav]   - computed height:', window.getComputedStyle(avatarEl).height);
     } else {
-      // Fallback: hide img
       avatarEl.style.display = 'none';
-      console.warn('[Nav] ⚠️ No avatar URL found - hiding avatar image');
-      console.warn('[Nav] Possible causes:');
-      console.warn('[Nav]   - user.avatarKey does not match any key in AVATAR_URLS');
-      console.warn('[Nav]   - user.avatar is null/undefined');
-      console.warn('[Nav]   - localStorage does not have avatar data');
+      avatarEl.removeAttribute('src');
     }
+    console.log('[Nav] Final avatar src:', avatarEl?.src || '(none)');
   } else {
     console.error('[Nav] ❌ Avatar element #navAvatar not found in DOM!');
   }
@@ -200,12 +163,9 @@ async function initNavigation(user, existingNav) {
   if (usernameEl) {
     const displayUsername = user.username || 'Guest';
     usernameEl.textContent = displayUsername;
-    console.log('[Nav] ✅ Username set to:', displayUsername);
   } else {
     console.error('[Nav] ❌ Username element #navUsername not found in DOM!');
   }
-
-  console.groupEnd();
 
   const normalizePath = (path) => path.replace(/\/+$/, '');
   const currentPath = normalizePath(new URL(window.location.href).pathname);

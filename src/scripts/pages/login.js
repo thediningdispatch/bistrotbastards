@@ -1,7 +1,7 @@
 import { auth, db, authPersistenceReady } from '../core/firebase.js';
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const tPageStart = performance.now();
@@ -52,14 +52,16 @@ async function handleSubmit(event) {
       // Store user data with proper avatar resolution
       await setStoredUser({
         username: finalName,
-        avatarKey,
-        avatar: avatarUrl || undefined
+        ...(avatarKey ? { avatarKey } : {}),
+        ...(avatarUrl ? { avatar: avatarUrl } : {})
       });
+      console.log('[Auth] Stored user after login:', await getStoredUser());
     } catch (profileError) {
       // Store minimal user data on profile fetch error
       await setStoredUser({
         username: displayName || username
       });
+      console.log('[Auth] Stored user after login (fallback):', await getStoredUser());
     }
 
     if (!window.__bb_redirecting) {

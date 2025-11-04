@@ -83,33 +83,52 @@ export function calculateAverageTipsPerDay(tipsHistory) {
  * @param {Object} user - User object with username, avatarKey, avatar, etc.
  */
 export async function setStoredUser(user = {}) {
-  // Lazy import to avoid circular dependencies
   const { AVATAR_URLS, STORAGE_KEYS } = await import('./config.js');
 
-  const payload = {};
-
-  if (user.username) {
-    payload.username = user.username;
-    localStorage.setItem(STORAGE_KEYS.USERNAME, user.username);
+  let current = {};
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.USER);
+    current = raw ? JSON.parse(raw) || {} : {};
+  } catch (error) {
+    console.warn('[setStoredUser] Failed to parse existing user state:', error);
   }
 
-  if (user.avatarKey) {
-    payload.avatarKey = user.avatarKey;
+  const merged = { ...current };
+  const hasProp = (key) => Object.prototype.hasOwnProperty.call(user, key);
+
+  if (hasProp('username')) {
+    const usernameValue = user.username ?? '';
+    if (usernameValue) {
+      merged.username = usernameValue;
+      localStorage.setItem(STORAGE_KEYS.USERNAME, usernameValue);
+    } else {
+      delete merged.username;
+      localStorage.removeItem(STORAGE_KEYS.USERNAME);
+    }
   }
 
-  // Resolve avatar URL from avatarKey if needed
-  const resolvedAvatar = user.avatar || (user.avatarKey && AVATAR_URLS[user.avatarKey]) || null;
+  if (hasProp('avatarKey')) {
+    merged.avatarKey = user.avatarKey || null;
+  }
+
+  if (hasProp('avatar')) {
+    merged.avatar = user.avatar || null;
+  }
+
+  const finalAvatarKey = merged.avatarKey || null;
+  const resolvedAvatar = merged.avatar || (finalAvatarKey && AVATAR_URLS[finalAvatarKey]) || null;
+
   if (resolvedAvatar) {
-    payload.avatar = resolvedAvatar;
+    merged.avatar = resolvedAvatar;
     localStorage.setItem(STORAGE_KEYS.AVATAR_URL, resolvedAvatar);
+  } else {
+    delete merged.avatar;
+    localStorage.removeItem(STORAGE_KEYS.AVATAR_URL);
   }
 
-  // Store complete user object
-  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(payload));
-
-  console.log('[setStoredUser] Stored user:', payload);
-  console.log('[setStoredUser]   - avatarKey:', payload.avatarKey);
-  console.log('[setStoredUser]   - resolved avatar:', resolvedAvatar);
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
+  console.log('[setStoredUser] Persisted user state:', merged);
+  return merged;
 }
 
 /**
