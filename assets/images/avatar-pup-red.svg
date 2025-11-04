@@ -1,12 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="24" fill="#fff6f6"/>
-  <path d="M42 50c0-15.464 12.536-28 28-28 15.463 0 28 12.536 28 28v10c0 4.418 3.582 8 8 8" stroke="#ff3b30" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M34 92c0-15.464 12.536-28 28-28h30c15.464 0 28 12.536 28 28" stroke="#ff3b30" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M34 94h86" stroke="#ff3b30" stroke-width="6" stroke-linecap="round"/>
-  <path d="M66 64c0 3.866-3.134 7-7 7s-7-3.134-7-7" stroke="#ff3b30" stroke-width="6" stroke-linecap="round"/>
-  <path d="M90 24h11" stroke="#ff3b30" stroke-width="6" stroke-linecap="round"/>
-  <path d="M86 14h19" stroke="#ff3b30" stroke-width="6" stroke-linecap="round"/>
-  <circle cx="55" cy="52" r="5" fill="#ff3b30"/>
-  <circle cx="79" cy="52" r="5" fill="#ff3b30"/>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond -->
+  <circle cx="80" cy="80" r="78" fill="#E9E4FF" stroke="#6D5BFF" stroke-width="4" />
+
+  <!-- Tête -->
+  <circle cx="80" cy="78" r="38" fill="#FFFFFF" stroke="#6D5BFF" stroke-width="3" />
+
+  <!-- Oreille gauche -->
+  <path d="M50 64 C44 46 52 36 64 40 C70 42 73 50 70 58 Z"
+        fill="#D8D0FF" stroke="#6D5BFF" stroke-width="3" />
+
+  <!-- Oreille droite -->
+  <path d="M110 64 C116 46 108 36 96 40 C90 42 87 50 90 58 Z"
+        fill="#D8D0FF" stroke="#6D5BFF" stroke-width="3" />
+
+  <!-- Tâche sur l’œil -->
+  <circle cx="92" cy="78" r="10" fill="#E1DBFF" stroke="none" />
+
+  <!-- Yeux -->
+  <circle cx="68" cy="78" r="4" fill="#000000" />
+  <circle cx="92" cy="78" r="4" fill="#000000" />
+
+  <!-- Truffe -->
+  <ellipse cx="80" cy="92" rx="7" ry="5" fill="#6D5BFF" />
+
+  <!-- Museau -->
+  <path d="M80 97 L76 103 M80 97 L84 103"
+        stroke="#6D5BFF" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Collier -->
+  <rect x="55" y="110" width="50" height="10" rx="5" fill="#6D5BFF" />
+  <circle cx="80" cy="123" r="4" fill="#FFD966" stroke="#CCAA00" stroke-width="1.5" />
 </svg>
