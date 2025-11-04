@@ -95,8 +95,10 @@
 
 .pw-actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 16px;
 }
 
 .pw-btn-save {

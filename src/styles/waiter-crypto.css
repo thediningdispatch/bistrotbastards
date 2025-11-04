@@ -1,0 +1,362 @@
+/* Waiter Crypto Tips Page */
+
+.crypto-page .window-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: var(--window-padding-y) clamp(18px, 4vw, 28px) calc(var(--window-padding-y) + 12px);
+}
+
+.bt-flow {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vw, 28px);
+}
+
+/* Steps container */
+.bt-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bt-step-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bt-step-intro {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* Colorful card stages */
+.bt-stage {
+  border: var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--card-shadow-strong);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.1s ease;
+}
+
+.bt-stage--server {
+  background: var(--accent-sky);
+}
+
+.bt-stage--client {
+  background: var(--accent-mint);
+}
+
+.bt-stage h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.bt-stage p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Grid layout for form fields */
+.bt-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.bt-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bt-grid input,
+.bt-grid select {
+  padding: 10px 12px;
+  border: var(--border-strong);
+  background: var(--panel-light);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+}
+
+.bt-grid input:focus,
+.bt-grid select:focus {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+}
+
+/* Error display */
+.bt-error {
+  color: #b1003f;
+  font-weight: 600;
+  font-size: 13px;
+  min-height: 20px;
+  margin: 0;
+}
+
+/* Hidden state */
+.bt-hidden {
+  display: none !important;
+}
+
+/* Summary box */
+.bt-summary {
+  padding: 14px;
+  border: 2px dashed var(--text);
+  border-radius: var(--radius-sm);
+  background: var(--accent-sun);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.bt-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.bt-summary-row strong {
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.bt-summary code {
+  font-family: "Fira Code", "SFMono-Regular", ui-monospace, monospace;
+  font-size: 12px;
+  padding: 3px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+/* Tip selection */
+.bt-tip-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.bt-tip {
+  padding: 14px;
+  background: var(--accent-sun);
+  border: var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--card-shadow-strong);
+  font-weight: 700;
+  font-size: 15px;
+  transition: transform 0.1s ease, background 0.1s ease;
+}
+
+.bt-tip:hover {
+  transform: translateY(-1px);
+  background: #f5df35;
+}
+
+.bt-tip.bt-active {
+  background: #ffe19a;
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), 2px 2px 0 var(--text);
+  transform: translateY(1px);
+}
+
+.bt-tip-custom {
+  border: 2px dashed var(--text);
+  background: var(--accent-lilac);
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+.bt-tip-custom.bt-active {
+  background: #ddc9f5;
+}
+
+.bt-tip-custom input {
+  width: 80px;
+  text-align: right;
+  padding: 8px;
+  border: var(--border-strong);
+  background: var(--panel-light);
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.bt-tip-custom button {
+  padding: 8px 14px;
+  font-weight: 700;
+}
+
+/* QR code display */
+.bt-qr {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  border: var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--card-shadow-strong);
+  background: #ffffff;
+}
+
+.bt-qr h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bt-qr-amount {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-sun);
+  border: var(--border-strong);
+}
+
+#btQRCode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#btQRCode canvas {
+  border: 3px solid var(--text);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--card-shadow-strong);
+}
+
+.bt-qr-helper {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+  margin: 4px 0 0;
+  max-width: 400px;
+}
+
+.bt-qr-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.bt-qr-links p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: left;
+}
+
+.bt-qr-links code {
+  display: block;
+  word-break: break-all;
+  text-align: left;
+  padding: 8px 10px;
+  background: rgba(240, 240, 240, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: "Fira Code", "SFMono-Regular", ui-monospace, monospace;
+}
+
+/* Rate status */
+.bt-rate-status {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Helper text */
+.bt-tip-note {
+  font-size: 13px;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Client section header */
+.bt-client-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .crypto-page .window-body {
+    padding: var(--window-padding-y) clamp(14px, 5vw, 20px) calc(var(--window-padding-y) + 8px);
+  }
+
+  .bt-flow {
+    gap: 18px;
+  }
+
+  .bt-stage {
+    padding: 14px;
+  }
+
+  .bt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bt-tip-list {
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  }
+
+  .bt-step-title {
+    font-size: 16px;
+  }
+
+  .bt-qr {
+    padding: 16px;
+  }
+}
+
+#navHost {
+  display: flex;
+  margin-bottom: 16px;
+}

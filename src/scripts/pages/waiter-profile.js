@@ -1,3 +1,5 @@
+import { ROUTES } from '../core/config.js';
+
 (() => {
   const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   const dayButtons = Array.from(document.querySelectorAll(".pw-day[data-day]"));
@@ -157,7 +159,7 @@
 
   function saveData() {
     if (!activeDays.length) {
-      setStatus("Sélectionne au moins un jour avant d’enregistrer.", "error");
+      setStatus("Sélectionne au moins un jour avant d'enregistrer.", "error");
       return;
     }
     try {
@@ -170,10 +172,15 @@
         localStorage.removeItem("bb_tips_week");
       }
       tipsWeek = tips;
-       updateTipsHistory(tips);
+      updateTipsHistory(tips);
       setStatus("Données enregistrées avec succès.", "success");
+
+      // Redirect to home after successful save
+      setTimeout(() => {
+        window.location.href = ROUTES.WAITER_HOME;
+      }, 500);
     } catch (error) {
-      setStatus(error.message || "Erreur lors de l’enregistrement.", "error");
+      setStatus(error.message || "Erreur lors de l'enregistrement.", "error");
     }
   }
 
