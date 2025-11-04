@@ -129,7 +129,10 @@ function mountNavIntoHost(nav) {
   }
 }
 
+let navPerfLogged = false;
+
 async function initNavigation(user, existingNav) {
+  const tNavStart = performance.now();
   const nav = existingNav || ensureNav();
   if (!nav) return;
 
@@ -228,6 +231,11 @@ async function initNavigation(user, existingNav) {
   mountNavIntoHost(nav);
   bindNavInteractions(nav);
   bindNavOffsetUpdates(nav);
+
+  if (!navPerfLogged) {
+    navPerfLogged = true;
+    console.log('[Perf] navigation init in', (performance.now() - tNavStart).toFixed(1), 'ms');
+  }
 }
 
 function ensureDefaultRestaurant(user) {
@@ -245,7 +253,11 @@ async function bootstrap() {
   ensureDefaultRestaurant(user);
 }
 
-document.addEventListener('DOMContentLoaded', bootstrap);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrap);
+} else {
+  bootstrap();
+}
 
 window.appState = {
   async getUser() {

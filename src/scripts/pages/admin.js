@@ -1,5 +1,8 @@
-import { db } from '../core/firebase.js';
+import { db, auth } from '../core/firebase.js';
 import { collection, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { authReady } from '../core/auth-guard.js';
+
+const tPageStart = performance.now();
 
 const loadingEl = document.getElementById('adminLoading');
 const contentEl = document.getElementById('adminContent');
@@ -185,5 +188,19 @@ if (refreshBtn) {
   refreshBtn.addEventListener('click', loadUsers);
 }
 
-// Initial load
-loadUsers();
+console.log('[Perf] admin init in', (performance.now() - tPageStart).toFixed(1), 'ms');
+
+const scheduleInitialLoad = () => {
+  const start = () => loadUsers();
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(start);
+  } else {
+    setTimeout(start, 0);
+  }
+};
+
+(async () => {
+  await authReady;
+  if (!auth.currentUser) return;
+  scheduleInitialLoad();
+})();

@@ -4,6 +4,8 @@ import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs
 import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
+const tPageStart = performance.now();
+
 const form = document.getElementById('signupForm');
 const errElm = document.getElementById('signupError');
 
@@ -14,6 +16,8 @@ if (typeof window.__bb_redirecting !== 'boolean') {
 if (onceBind(form, handleSubmit)) {
   showError(errElm, '');
 }
+
+console.log('[Perf] signup init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 
 async function handleSubmit(event) {
   event.preventDefault();

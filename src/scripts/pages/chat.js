@@ -20,6 +20,8 @@ import {
 import { ROUTES } from '../core/config.js';
 import { authReady } from '../core/auth-guard.js';
 
+const tPageStart = performance.now();
+
 // DOM Elements (initialized after DOM loads)
 let chatForm;
 let chatStream;
@@ -569,6 +571,7 @@ function initPresenceListener() {
 
 // Initialize chat only when authenticated
 let chatInitialized = false;
+let chatPerfLogged = false;
 
 async function initChat() {
   // Wait for auth-guard to confirm authentication
@@ -601,6 +604,11 @@ async function initChat() {
   window.addEventListener('beforeunload', () => {
     updatePresence(false);
   });
+
+  if (!chatPerfLogged) {
+    chatPerfLogged = true;
+    console.log('[Perf] chat init in', (performance.now() - tPageStart).toFixed(1), 'ms');
+  }
 }
 
 // Main initialization - wait for DOM then start

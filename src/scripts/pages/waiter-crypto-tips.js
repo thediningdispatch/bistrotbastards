@@ -1,4 +1,5 @@
 (function () {
+  const tPageStart = performance.now();
   // DOM elements – waiter step
   const stepServer = document.getElementById("btStepServer");
   const stepClient = document.getElementById("btStepClient");
@@ -420,4 +421,6 @@
   cryptoSelect.addEventListener("change", function () {
     applyStoredWallet(cryptoSelect.value);
   });
+
+  console.log('[Perf] waiter-crypto-tips init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 })();

@@ -75,7 +75,7 @@
   </div>
 
   <script>
-    (function(){
+    window.requestAnimationFrame(() => {
       const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
       const name = (user.username || '').toString().trim();
       if (name) {
@@ -133,7 +133,7 @@
       if (tipsMonthEl) {
         tipsMonthEl.textContent = monthTips.toFixed(2);
       }
-    })();
+    });
   </script>
 
   <script type="module">
@@ -142,6 +142,7 @@
 
     const list = document.getElementById('bbTop3List');
     function renderFallback(){
+      if (!list) return;
       list.innerHTML = `
         <li><span class="bb-rank bb-rank-1">#1</span><span class="bb-user">PLAYER_1</span><span class="bb-score">—</span></li>
         <li><span class="bb-rank bb-rank-2">#2</span><span class="bb-user">PLAYER_2</span><span class="bb-score">—</span></li>
@@ -149,11 +150,16 @@
       `;
     }
 
-    try {
-      const q = query(collection(db, 'users'), orderBy('score', 'desc'), limit(3));
-      const snap = await getDocs(q);
-      if (snap.empty) { renderFallback(); }
-      else {
+    async function loadLeaderboard() {
+      if (!list) return;
+      try {
+        const q = query(collection(db, 'users'), orderBy('score', 'desc'), limit(3));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          renderFallback();
+          return;
+        }
+
         const rows = [];
         let rank = 1;
         snap.forEach(docu => {
@@ -167,8 +173,7 @@
           rank++;
         });
         list.innerHTML = rows.join('');
-        // Fill missing ranks if fewer than 3
-        for (; rank<=3; rank++){
+        for (; rank <= 3; rank++) {
           list.insertAdjacentHTML('beforeend', `
             <li>
               <span class="bb-rank bb-rank-${rank}">#${rank}</span>
@@ -176,11 +181,21 @@
               <span class="bb-score">—</span>
             </li>`);
         }
+      } catch (e) {
+        console.error('[top3]', e);
+        renderFallback();
       }
-    } catch (e) {
-      console.error('[top3]', e);
-      renderFallback();
     }
+
+    renderFallback();
+    const scheduleLeaderboard = () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => loadLeaderboard());
+      } else {
+        setTimeout(() => loadLeaderboard(), 0);
+      }
+    };
+    scheduleLeaderboard();
   </script>
 
   <script type="module" src="../../scripts/core/navigation.js"></script>

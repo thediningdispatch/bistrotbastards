@@ -4,6 +4,8 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase
 import { onceBind, withSubmitLock, showError, normUsername, setStoredUser } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
+const tPageStart = performance.now();
+
 const form = document.getElementById('loginForm');
 const errElm = document.getElementById('loginError');
 
@@ -14,6 +16,8 @@ if (typeof window.__bb_redirecting !== 'boolean') {
 if (onceBind(form, handleSubmit)) {
   showError(errElm, '');
 }
+
+console.log('[Perf] login init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 
 async function handleSubmit(event) {
   event.preventDefault();

@@ -314,39 +314,44 @@
 
   <script type="module" src="../../scripts/core/navigation.js"></script>
   <script>
-    document.querySelectorAll('.emoji').forEach(emoji => {
-      emoji.addEventListener('click', () => {
-        document.querySelectorAll('.emoji').forEach(el => el.classList.remove('active'));
-        emoji.classList.add('active');
-        document.getElementById('moodInput').value = emoji.dataset.mood;
-      });
-    });
-
-    document.getElementById('reviewForm').addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      const data = Object.fromEntries(new FormData(ev.target).entries());
-      if (!data.server || !data.mood || !data.comment) {
-        alert('Merci de remplir tous les champs avant de continuer 😊');
-        return;
-      }
-
-      try { await navigator.clipboard.writeText(data.comment); }
-      catch (err) { console.warn('Clipboard error:', err); }
-
-      const webhookURL = 'https://hook.eu2.make.com/nhx6dn3egqsqx4sg8knx2ycrbhpv7nof';
-
-      try {
-        await fetch(webhookURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+    window.requestAnimationFrame(() => {
+      document.querySelectorAll('.emoji').forEach(emoji => {
+        emoji.addEventListener('click', () => {
+          document.querySelectorAll('.emoji').forEach(el => el.classList.remove('active'));
+          emoji.classList.add('active');
+          document.getElementById('moodInput').value = emoji.dataset.mood;
         });
-      } catch (err) {
-        console.error('❌ Erreur webhook :', err);
-      }
+      });
 
-      alert(`✅ Votre avis est prêt !\n\nVous allez être redirigé vers Google.\nCollez votre message (déjà copié) et cliquez sur "Publier" ⭐\n\nMerci d'aider ${data.server} ! 🍾`);
-      window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
+      const reviewForm = document.getElementById('reviewForm');
+      if (!reviewForm) return;
+
+      reviewForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const data = Object.fromEntries(new FormData(ev.target).entries());
+        if (!data.server || !data.mood || !data.comment) {
+          alert('Merci de remplir tous les champs avant de continuer 😊');
+          return;
+        }
+
+        try { await navigator.clipboard.writeText(data.comment); }
+        catch (err) { console.warn('Clipboard error:', err); }
+
+        const webhookURL = 'https://hook.eu2.make.com/nhx6dn3egqsqx4sg8knx2ycrbhpv7nof';
+
+        try {
+          await fetch(webhookURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        } catch (err) {
+          console.error('❌ Erreur webhook :', err);
+        }
+
+        alert(`✅ Votre avis est prêt !\n\nVous allez être redirigé vers Google.\nCollez votre message (déjà copié) et cliquez sur "Publier" ⭐\n\nMerci d'aider ${data.server} ! 🍾`);
+        window.location.href = 'https://search.google.com/local/writereview?placeid=ChIJSQ8zOV1x5kcRqKqGrh0MXk4';
+      });
     });
   </script>
   <script type="module" src="../../scripts/core/auth-guard.js"></script>

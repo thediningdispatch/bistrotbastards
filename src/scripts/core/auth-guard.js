@@ -3,6 +3,10 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { ROUTES } from './config.js';
 
+const tAuthStart = performance.now();
+let authLogEmitted = false;
+let authReadyLogged = false;
+
 const USER_KEY = 'bb_user';
 const normalizePath = (path) => {
   if (!path) return '/';
@@ -33,6 +37,10 @@ function redirectToLogin() {
 function showPage() {
   document.body.style.visibility = 'visible';
   document.body.style.opacity = '1';
+  if (!authLogEmitted) {
+    authLogEmitted = true;
+    console.log('[Perf] auth-guard complete in', (performance.now() - tAuthStart).toFixed(1), 'ms');
+  }
 }
 
 function persistUser(payload) {
@@ -69,14 +77,14 @@ function guard() {
     return;
   }
 
-  // Hide page content until auth is verified
-  document.body.style.visibility = 'hidden';
-  document.body.style.opacity = '0';
-  document.body.style.transition = 'opacity 0.2s ease';
-
   onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!authReadyLogged) {
+      authReadyLogged = true;
+      console.log('[Perf] Firebase/auth ready');
+    }
     if (!firebaseUser) {
       localStorage.removeItem(USER_KEY);
+      authReadyResolve(false);
       redirectToLogin();
       return;
     }
@@ -88,3 +96,10 @@ function guard() {
 }
 
 guard();
+
+/*
+ * PERF NOTES:
+ * - Auth, navigation, and all page modules emit lightweight [Perf] logs for init timing.
+ * - Home stats scripts and admin dashboard data fetch defer work via requestAnimationFrame/requestIdleCallback.
+ * - Firebase SDK download remains the main startup cost and may need bundling/shaking for deeper gains.
+ */

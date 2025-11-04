@@ -1,5 +1,7 @@
 import { ROUTES } from '../core/config.js';
 
+const tPageStart = performance.now();
+
 (() => {
   const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   const dayButtons = Array.from(document.querySelectorAll(".pw-day[data-day]"));
@@ -213,4 +215,6 @@ import { ROUTES } from '../core/config.js';
   activeDays = sortActiveDays(activeDays);
   syncDayButtons();
   renderTipInputs();
+
+  console.log('[Perf] waiter-profile init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 })();
