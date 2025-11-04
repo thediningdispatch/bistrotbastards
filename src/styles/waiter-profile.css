@@ -1,0 +1,117 @@
+/* Waiter Profile - Specific Styles */
+
+/* Override window-body pour permettre le scroll interne de la page profil */
+.window-body {
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.pw-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  padding: 20px 24px calc(32px + env(safe-area-inset-bottom, 0));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+@media (max-width: 640px) {
+  .pw-body {
+    padding: 16px 16px calc(28px + env(safe-area-inset-bottom, 0));
+    gap: 18px;
+  }
+}
+
+.pw-day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.pw-day {
+  border: 1px solid #000;
+  padding: 10px 12px;
+  background: var(--panel-light);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow:
+    inset 1px 1px var(--highlight),
+    inset -1px -1px var(--shadow),
+    2px 2px 0 #000;
+  transition: none;
+}
+
+.pw-day:hover {
+  box-shadow:
+    inset -1px -1px var(--highlight),
+    inset 1px 1px var(--shadow),
+    2px 2px 0 #000;
+}
+
+.pw-day.pw-day-active {
+  background: var(--panel-mid);
+  font-weight: bold;
+}
+
+.pw-tips-container {
+  display: grid;
+  gap: 12px;
+}
+
+.pw-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pw-field input {
+  padding: 9px 10px;
+  border: 1px solid #000;
+  background: var(--panel-light);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
+}
+
+.pw-field input:focus {
+  outline: none;
+  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+}
+
+.pw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pw-status {
+  min-height: 20px;
+  font-size: 14px;
+}
+
+.pw-status-success {
+  color: #1e8449;
+  font-weight: 600;
+}
+
+.pw-status-error {
+  color: #b03a2e;
+  font-weight: 600;
+}
+
+.pw-empty {
+  font-style: italic;
+  color: var(--muted);
+  margin: 0;
+}
+
+#navHost {
+  display: flex;
+}

@@ -1,7 +1,4 @@
-const AVATAR_URLS = {
-  pup_orange: 'assets/img/avatar_pup_orange.svg',
-  pup_red: 'assets/img/avatar_pup_red.svg'
-};
+import { AVATAR_URLS, NAV_ITEMS, ROUTES } from './config.js';
 
 const defaultUser = {
   username: 'Serveur Bistrot',
@@ -10,15 +7,6 @@ const defaultUser = {
   avatarKey: null,
   restaurant: ''
 };
-
-const NAV_ITEMS = [
-  { key: 'home', label: 'Home', href: 'index.html', type: 'link' },
-  { key: 'performances', label: 'Performances', href: '#', type: 'link' },
-  { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
-  { key: 'chat', label: 'Chat', href: 'chat.html', type: 'link' },
-  { key: 'profile', label: 'Profil', href: 'profile_waiter.html', type: 'link' },
-  { key: 'logout', label: 'Out', href: '#', type: 'action' }
-];
 
 function loadUser() {
   try {
@@ -97,11 +85,11 @@ function getAvatarUrl(user) {
 }
 
 function ensureNavStyles() {
-  const existing = document.querySelector('link[href$="assets/css/nav.css"]');
+  const existing = document.querySelector('link[href*="navigation.css"]');
   if (existing) return;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'assets/css/nav.css';
+  link.href = new URL('../../styles/navigation.css', import.meta.url).pathname;
   link.id = 'bb-nav-css';
   document.head.appendChild(link);
 }
@@ -133,7 +121,7 @@ function ensureNav() {
         }).join('')}
       </div>
       <div class="bb-nav-menu">
-        <a href="index.html" class="btn" data-nav="home">Home</a>
+        <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
           ${NAV_ITEMS.filter(item => item.key !== 'home').map(item => {
@@ -181,33 +169,18 @@ function initNavigation(user, existingNav) {
   if (usernameEl) usernameEl.textContent = user.username || 'Guest';
   if (roleEl) roleEl.textContent = user.role || 'équipe';
 
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const normalizePath = (path) => path.replace(/\/+$/, '');
+  const currentPath = normalizePath(new URL(window.location.href).pathname);
   const navLinks = nav.querySelectorAll('.bb-nav-inline a, #bbMenuDropdown a');
   navLinks.forEach(link => {
-    const key = link.dataset.nav;
     const href = link.getAttribute('href') || '';
-    const [linkPath] = href.split('#');
-    let matches = false;
-    switch (key) {
-      case 'performances':
-        matches = currentPath === 'performances.html';
-        break;
-      case 'leaderboard':
-        matches = currentPath === 'leaderboard.html';
-        break;
-      case 'chat':
-        matches = currentPath === 'chat.html';
-        break;
-      case 'profile':
-        matches = currentPath === 'profile_waiter.html';
-        break;
-      case 'home':
-        matches = currentPath === '' || currentPath === 'index.html';
-        break;
-      default:
-        matches = linkPath ? linkPath === currentPath : false;
-        break;
+    if (!href || href === '#') {
+      link.classList.remove('is-active');
+      link.removeAttribute('aria-current');
+      return;
     }
+    const linkPath = normalizePath(new URL(href, window.location.href).pathname);
+    const matches = linkPath === currentPath;
     if (matches) {
       link.classList.add('is-active');
       link.setAttribute('aria-current', 'page');
@@ -289,7 +262,7 @@ function bindNavInteractions(nav) {
       const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
       await signOut(auth);
       localStorage.clear();
-      location.href = 'login.html';
+      location.href = ROUTES.LOGIN;
     });
   }
   wireLogout(logoutDesktop);

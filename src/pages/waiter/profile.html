@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Profil serveur — Bistrot Bastards</title>
+  <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/waiter-profile.css" />
+</head>
+<body>
+  <div class="desktop">
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Planification &amp; pourboires</span>
+      </div>
+
+      <div class="window-body pw-body" id="app">
+        <div id="navHost"></div>
+
+        <section>
+          <h2>Jours travaillés</h2>
+          <p>Sélectionne les jours où tu es en service cette semaine.</p>
+          <div id="pwDayGrid" class="pw-day-grid" role="group" aria-label="Jours travaillés">
+            <button type="button" class="pw-day" data-day="Lundi" aria-pressed="false">Lundi</button>
+            <button type="button" class="pw-day" data-day="Mardi" aria-pressed="false">Mardi</button>
+            <button type="button" class="pw-day" data-day="Mercredi" aria-pressed="false">Mercredi</button>
+            <button type="button" class="pw-day" data-day="Jeudi" aria-pressed="false">Jeudi</button>
+            <button type="button" class="pw-day" data-day="Vendredi" aria-pressed="false">Vendredi</button>
+            <button type="button" class="pw-day" data-day="Samedi" aria-pressed="false">Samedi</button>
+            <button type="button" class="pw-day" data-day="Dimanche" aria-pressed="false">Dimanche</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Pourboires par jour</h2>
+          <p>Renseigne combien tu as encaissé en pourboires pour chaque journée travaillée.</p>
+          <div id="pwTipsContainer" class="pw-tips-container">
+            <p class="pw-empty">Sélectionne d’abord tes jours travaillés.</p>
+          </div>
+        </section>
+
+        <div class="pw-actions">
+          <button type="button" id="pwSave" class="btn">💾 Sauvegarder</button>
+          <button type="button" id="pwReset" class="btn">🔄 Réinitialiser la semaine</button>
+        </div>
+
+        <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../../scripts/core/navigation.js"></script>
+  <script src="../../scripts/pages/waiter-profile.js" defer></script>
+</body>
+</html>

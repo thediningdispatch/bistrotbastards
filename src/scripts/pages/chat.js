@@ -1,4 +1,4 @@
-import { db, auth, rtdb } from './firebase.js';
+import { db, auth, rtdb } from '../core/firebase.js';
 import {
   collection,
   addDoc,
@@ -17,7 +17,7 @@ import {
   onDisconnect,
   onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-import { authReady } from './auth-guard.js';
+import { authReady } from '../core/auth-guard.js';
 
 // DOM Elements (initialized after DOM loads)
 let chatForm;
