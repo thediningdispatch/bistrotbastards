@@ -44,3 +44,36 @@ export function showError(container, message) {
 export function normUsername(value) {
   return (value || '').trim().toLowerCase();
 }
+
+/**
+ * Calculate average tips per worked day based on tips history
+ * @param {Object} tipsHistory - Object mapping ISO dates to tip amounts (e.g., { "2025-01-15": 23.50 })
+ * @returns {number} Average tips per day, or 0 if no data
+ */
+export function calculateAverageTipsPerDay(tipsHistory) {
+  if (!tipsHistory || typeof tipsHistory !== 'object') {
+    return 0;
+  }
+
+  const entries = Object.entries(tipsHistory);
+  if (entries.length === 0) {
+    return 0;
+  }
+
+  let totalTips = 0;
+  let validDays = 0;
+
+  for (const [date, amount] of entries) {
+    const num = Number(amount);
+    if (Number.isFinite(num) && num >= 0) {
+      totalTips += num;
+      validDays++;
+    }
+  }
+
+  if (validDays === 0) {
+    return 0;
+  }
+
+  return totalTips / validDays;
+}

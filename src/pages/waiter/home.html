@@ -8,95 +8,7 @@
   <meta name="description" content="Retourne sur ta console serveur Bistrot Bastards." />
   <link rel="stylesheet" href="../../styles/system7.css" />
   <link rel="stylesheet" href="../../styles/navigation.css" />
-  <style>
-    .window-body {
-      overflow: hidden;
-      padding: 0 !important;
-    }
-
-    .waiter-home {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      height: 100%;
-    }
-
-    #navHost {
-      display: flex;
-    }
-
-    /* nav */
-    .bb-nav { display:flex; align-items:center; gap:8px; width:100%; }
-    .bb-nav-inline { display:flex; gap:8px; margin-left:auto; }
-    .bb-nav-menu { display:none; position:relative; margin-left:auto; }
-    .bb-dropdown { position:absolute; top:100%; right:0; background:#fff; border:1px solid #000; box-shadow:2px 2px 0 #000; padding:6px; display:flex; flex-direction:column; min-width:160px; z-index:10; }
-    .bb-dropdown a, .bb-dropdown button { text-align:left; padding:6px 8px; border:none; background:none; font:inherit; cursor:pointer; }
-    @media (max-width:640px){
-      .bb-nav-inline { display:none; }
-      .bb-nav-menu { display:block; }
-    }
-    .bb-nav-left { margin-right:0; }
-
-    /* welcome */
-    .bb-welcome { display:flex; flex-direction:column; gap:12px; }
-    .bb-welcome-title { margin:0 0 8px; }
-    .bb-welcome-metrics { list-style:disc; margin:0 0 0 18px; padding:0; display:flex; flex-direction:column; gap:6px; }
-
-    /* tips boxes */
-    .bb-tips-boxes { display:flex; gap:8px; flex-wrap:wrap; }
-    .bb-tip-box {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:2px;
-      padding:6px 12px;
-      border:1px solid #000;
-      box-shadow:2px 2px 0 #000;
-      min-width:90px;
-      flex:1;
-    }
-    .bb-tip-week { background:#b8e0ff; }
-    .bb-tip-month { background:#c8ffb8; }
-    .bb-tip-label {
-      font-size:9px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
-    }
-    .bb-tip-amount {
-      font-size:16px;
-      font-weight:800;
-      line-height:1;
-    }
-
-    .bb-cta { margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-    .bb-btn-reviews { font-weight:700; font-size:22px; padding:14px 24px; background:#ffe89a; border:1px solid #000; box-shadow:2px 2px 0 #000; color:#000; }
-    .bb-eth-link { display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#d1c8ff; }
-    .bb-eth-icon { width:20px; height:30px; display:block; }
-    .bb-eth-icon polygon:first-of-type { fill:#6d5bff; }
-    .bb-eth-icon polygon:last-of-type { fill:#4432c8; }
-
-    /* top3 */
-    .bb-top3 { margin-top:4px; }
-    .bb-top3-title { font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; padding:8px 12px; border:1px solid #000; box-shadow:2px 2px 0 #000; background:#fff; text-transform:uppercase; }
-    .bb-top3-card {
-      border:1px solid #000;
-      box-shadow:2px 2px 0 #000;
-      background:#fff;
-      padding:6px;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .bb-top3-list { list-style:none; margin:0; padding:0; display:grid; gap:6px; overflow-y:auto; overscroll-behavior:contain; touch-action:pan-y; }
-    .bb-top3-list li { display:flex; align-items:center; gap:8px; padding:6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#fff; }
-    .bb-rank { display:inline-block; min-width:28px; text-align:center; font-weight:800; padding:2px 6px; border:1px solid #000; box-shadow:1px 1px 0 #000; background:#eee; }
-    .bb-rank-1 { background:#ffe89a; }
-    .bb-rank-2 { background:#e3ecff; }
-    .bb-rank-3 { background:#e9ffe3; }
-    .bb-user { font-weight:700; }
-    .bb-score { margin-left:auto; font-variant-numeric:tabular-nums; }
-  </style>
+  <link rel="stylesheet" href="../../styles/waiter-home.css" />
 </head>
 <body>
   <div class="app-container">
@@ -104,7 +16,7 @@
       <div class="window">
       <div class="title-bar">
         <div class="window-controls"><span></span><span></span><span></span></div>
-        <span class="title-text">Console</span>
+        <span class="title-text">Bistrot Bastards</span>
       </div>
 
         <div class="window-body waiter-home" id="app">
@@ -117,10 +29,6 @@
               <h2 class="bb-welcome-title">
                 Content de te revoir, <span id="bbUserName">—</span> 👋
               </h2>
-              <ul class="bb-welcome-metrics">
-                <li id="bbWeekSummary">Semaine : planifie tes jours dans ton profil.</li>
-                <li>Fin du concours dans <strong><span id="bbContestDays">—</span></strong> jours</li>
-              </ul>
               <div class="bb-tips-boxes">
                 <div class="bb-tip-box bb-tip-week">
                   <span class="bb-tip-label">Tips Semaine</span>
@@ -129,6 +37,14 @@
                 <div class="bb-tip-box bb-tip-month">
                   <span class="bb-tip-label">Tips Mois</span>
                   <span class="bb-tip-amount"><span id="bbTipsMonth">—</span>€</span>
+                </div>
+                <div class="bb-tip-box bb-tip-avg">
+                  <span class="bb-tip-label">Tips moyen / jour</span>
+                  <span class="bb-tip-amount" aria-live="polite"><span id="bbAvgTips">—</span>€</span>
+                </div>
+                <div class="bb-tip-box bb-tip-contest">
+                  <span class="bb-tip-label">Jours avant fin concours</span>
+                  <span class="bb-tip-amount" aria-live="polite"><span id="bbContestDays">—</span></span>
                 </div>
               </div>
               <div class="bb-cta">
@@ -145,9 +61,9 @@
             <section class="bb-top3" aria-label="Top 3">
               <div class="bb-top3-title">Top 3</div>
               <div class="bb-top3-card">
-                <ol id="bbTop3List" class="bb-top3-list">
+                <ul id="bbTop3List" class="bb-top3-list">
                   <!-- Filled dynamically -->
-                </ol>
+                </ul>
               </div>
             </section>
           </div>
@@ -158,14 +74,22 @@
 
   <script>
     (function(){
-      const u = JSON.parse(localStorage.getItem('bb_user') || '{}');
-      const name = (u.username || '').toString().trim();
-      if (name) document.getElementById('bbUserName').textContent = name.toUpperCase();
+      const user = JSON.parse(localStorage.getItem('bb_user') || '{}');
+      const name = (user.username || '').toString().trim();
+      if (name) {
+        const nameEl = document.getElementById('bbUserName');
+        if (nameEl) nameEl.textContent = name.toUpperCase();
+      }
 
-      const d = new Date();
-      const jsDay = d.getDay(); // 0=Sun..6=Sat
-      const weekDay = jsDay === 0 ? 7 : jsDay; // Monday=1..Sunday=7
-      document.getElementById('bbWeekDay').textContent = weekDay;
+      const today = new Date();
+
+      const CONTEST_END = new Date('2025-12-31T23:59:59');
+      const contestEl = document.getElementById('bbContestDays');
+      if (contestEl) {
+        const diffMs = CONTEST_END.getTime() - today.getTime();
+        const daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        contestEl.textContent = daysLeft > 0 ? daysLeft : 'Terminé';
+      }
 
       function safeParse(key, fallback) {
         try {
@@ -178,58 +102,19 @@
         }
       }
 
-      const dayOrder = {
-        'Lundi': 1,
-        'Mardi': 2,
-        'Mercredi': 3,
-        'Jeudi': 4,
-        'Vendredi': 5,
-        'Samedi': 6,
-        'Dimanche': 7
-      };
-
-      const parsedActiveDays = safeParse('bb_active_days', []);
-      const activeDays = Array.isArray(parsedActiveDays) ? parsedActiveDays : [];
-      const parsedTips = safeParse('bb_tips_week', {});
-      const tipsWeekObj = parsedTips && typeof parsedTips === 'object' ? parsedTips : {};
-
-      const totalDays = Array.isArray(activeDays) ? activeDays.length : 0;
+      const tipsWeekObj = safeParse('bb_tips_week', {});
       const sumTips = Object.values(tipsWeekObj || {}).reduce((acc, val) => {
         const num = Number(val);
         return Number.isFinite(num) && num >= 0 ? acc + num : acc;
       }, 0);
-      const todayIndex = weekDay;
-      const completedDays = totalDays
-        ? activeDays.reduce((count, day) => {
-            const order = dayOrder[day] || 7;
-            if (order > todayIndex) return count;
-            if (!Object.prototype.hasOwnProperty.call(tipsWeekObj, day)) {
-              return count;
-            }
-            const raw = tipsWeekObj[day];
-            if (raw === '' || raw === null || raw === undefined) return count;
-            const value = Number(raw);
-            return Number.isFinite(value) && value >= 0 ? count + 1 : count;
-          }, 0)
-        : 0;
-
-      const weekSummaryEl = document.getElementById('bbWeekSummary');
-      if (weekSummaryEl) {
-        if (totalDays) {
-          weekSummaryEl.textContent = `Semaine : Jour ${completedDays}/${totalDays} — Total pourboires : ${sumTips.toFixed(2)} €`;
-        } else {
-          weekSummaryEl.textContent = 'Semaine : planifie tes jours dans ton profil.';
-        }
-      }
-
-      const tipsEl = document.getElementById('bbTipsWeek');
-      if (tipsEl) {
-        tipsEl.textContent = sumTips.toFixed(2);
+      const tipsWeekEl = document.getElementById('bbTipsWeek');
+      if (tipsWeekEl) {
+        tipsWeekEl.textContent = sumTips.toFixed(2);
       }
 
       const tipsHistoryRaw = safeParse('bb_tips_history', {});
       const tipsHistory = tipsHistoryRaw && typeof tipsHistoryRaw === 'object' ? tipsHistoryRaw : {};
-      const currentMonthKey = new Date().toISOString().slice(0, 7);
+      const currentMonthKey = today.toISOString().slice(0, 7);
       const monthTips = Object.entries(tipsHistory).reduce((acc, entry) => {
         const [date, value] = entry;
         if (typeof date === 'string' && date.startsWith(currentMonthKey)) {
@@ -243,15 +128,35 @@
         tipsMonthEl.textContent = monthTips.toFixed(2);
       }
 
-      // default contest ends Sunday of current week
-      const tmp = new Date(d);
-      const delta = (7 - (jsDay === 0 ? 7 : jsDay)) % 7;
-      tmp.setDate(d.getDate() + delta);
-      const msLeft = tmp.setHours(23,59,59,999) - Date.now();
-      const daysLeft = Math.max(0, Math.ceil(msLeft / (1000*60*60*24)));
-      document.getElementById('bbContestDays').textContent = daysLeft;
+      // Calculate average tips per day
+      function calculateAverageTipsPerDay(history) {
+        if (!history || typeof history !== 'object') {
+          return 0;
+        }
+        const entries = Object.entries(history);
+        if (entries.length === 0) {
+          return 0;
+        }
+        let totalTips = 0;
+        let validDays = 0;
+        for (const [date, amount] of entries) {
+          const num = Number(amount);
+          if (Number.isFinite(num) && num >= 0) {
+            totalTips += num;
+            validDays++;
+          }
+        }
+        if (validDays === 0) {
+          return 0;
+        }
+        return totalTips / validDays;
+      }
 
-      // Reminder logic removed - no more popup alerts
+      const avgTips = calculateAverageTipsPerDay(tipsHistory);
+      const avgTipsEl = document.getElementById('bbAvgTips');
+      if (avgTipsEl) {
+        avgTipsEl.textContent = avgTips > 0 ? avgTips.toFixed(2) : '—';
+      }
     })();
   </script>
 
@@ -303,30 +208,6 @@
   </script>
 
   <script type="module" src="../../scripts/core/navigation.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const nav = document.querySelector('.top-nav .bb-nav');
-      if (!nav) return;
-
-      const homeLink = nav.querySelector('.bb-nav-menu [data-nav="home"]');
-      if (homeLink) {
-        const chatBtn = document.createElement('a');
-        chatBtn.className = homeLink.className;
-        chatBtn.dataset.nav = 'chat';
-        chatBtn.href = 'chat.html';
-        chatBtn.textContent = 'Chat';
-        homeLink.replaceWith(chatBtn);
-      }
-
-      const dropdown = nav.querySelector('#bbMenuDropdown');
-      if (dropdown) {
-        const chatEntry = dropdown.querySelector('[data-nav="chat"]');
-        if (chatEntry) {
-          chatEntry.remove();
-        }
-      }
-    });
-  </script>
   <script type="module" src="../../scripts/core/auth-guard.js"></script>
 </body>
 </html>

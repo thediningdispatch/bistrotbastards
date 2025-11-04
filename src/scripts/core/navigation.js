@@ -122,9 +122,10 @@ function ensureNav() {
       </div>
       <div class="bb-nav-menu">
         <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
+        <a href="${ROUTES.CHAT}" class="btn" data-nav="chat">Chat</a>
         <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
         <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-          ${NAV_ITEMS.filter(item => item.key !== 'home').map(item => {
+          ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat').map(item => {
             if (item.key === 'logout') {
               return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
             }
@@ -171,7 +172,7 @@ function initNavigation(user, existingNav) {
 
   const normalizePath = (path) => path.replace(/\/+$/, '');
   const currentPath = normalizePath(new URL(window.location.href).pathname);
-  const navLinks = nav.querySelectorAll('.bb-nav-inline a, #bbMenuDropdown a');
+  const navLinks = nav.querySelectorAll('.bb-nav-inline a, .bb-nav-menu > a, #bbMenuDropdown a');
   navLinks.forEach(link => {
     const href = link.getAttribute('href') || '';
     if (!href || href === '#') {

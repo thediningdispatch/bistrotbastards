@@ -9,6 +9,24 @@
   --highlight: #ffffff;
   --shadow: #7d7d7d;
   --bb-nav-height: 0px;
+
+  /* Design tokens for cards and accents */
+  --border-strong: 1px solid #000000;
+  --radius-sm: 4px;
+  --card-shadow-strong: 2px 2px 0 #000000;
+  --card-shadow-medium: 1px 1px 0 #000000;
+  --window-padding-y: 16px;
+
+  /* Accent colors for dashboard cards */
+  --accent-info: #d4e8ff;
+  --accent-success: #d4ffd4;
+  --accent-cream: #fffacd;
+  --accent-rose: #ffe4e8;
+  --accent-blush: #ffd4f4;
+  --accent-sun: #ffeb3b;
+  --accent-lilac: #e8d4ff;
+  --accent-sky: #b3d9ff;
+  --accent-mint: #b3ffcc;
 }
 
 * {

@@ -28,6 +28,8 @@
 .bb-nav-menu {
   position: relative;
   display: none;
+  align-items: center;
+  gap: 8px;
   margin-left: auto;
 }
 
@@ -79,7 +81,7 @@
   }
 
   .bb-nav-menu {
-    display: block;
+    display: flex;
   }
 }
 
