@@ -27,7 +27,12 @@
           <div class="waiter-main">
             <div class="bb-welcome">
               <h2 class="bb-welcome-title">
-                Content de te revoir, <span id="bbUserName">—</span> 👋
+                Content de te revoir,
+                <span class="bb-user-identity">
+                  <img id="bbUserBadge" class="bb-user-avatar" alt="Badge serveur" hidden />
+                  <span id="bbUserName">—</span>
+                </span>
+                👋
               </h2>
               <section class="bb-tips" aria-label="Statistiques principales">
                 <div class="bb-tips-boxes">
@@ -39,9 +44,9 @@
                     <span class="bb-tip-label">Tips mois</span>
                     <span class="bb-tip-amount"><span id="bbTipsMonthAmount">—</span>€</span>
                   </div>
-                  <div class="bb-tip-box bb-tip-date">
-                    <span class="bb-tip-label">Aujourd’hui</span>
-                    <span class="bb-tip-amount" aria-live="polite"><span id="bbContestDate">—</span></span>
+                  <div class="bb-tip-box bb-tip-average">
+                    <span class="bb-tip-label">Tips moyen</span>
+                    <span class="bb-tip-amount" aria-live="polite"><span id="bbTipsAverageAmount">—</span>€</span>
                   </div>
                   <div class="bb-tip-box bb-tip-contest">
                     <span class="bb-tip-label">Fin du concours</span>
@@ -82,13 +87,22 @@
         const nameEl = document.getElementById('bbUserName');
         if (nameEl) nameEl.textContent = name.toUpperCase();
       }
-
-      const today = new Date();
-      const dateEl = document.getElementById('bbContestDate');
-      if (dateEl) {
-        dateEl.textContent = today.toLocaleDateString('fr-FR');
+      const avatarEl = document.getElementById('bbUserBadge');
+      if (avatarEl) {
+        const avatarMap = {
+          pup_orange: '/assets/images/avatar-pup-orange.svg',
+          pup_red: '/assets/images/avatar-pup-red.svg'
+        };
+        const inferredAvatar = user.avatar || (user.avatarKey && avatarMap[user.avatarKey]) || localStorage.getItem('avatarURL');
+        if (inferredAvatar) {
+          avatarEl.src = inferredAvatar;
+          avatarEl.hidden = false;
+        } else {
+          avatarEl.hidden = true;
+        }
       }
 
+      const today = new Date();
       const CONTEST_END = new Date('2025-12-31T23:59:59');
       const contestEl = document.getElementById('bbContestDaysLeft');
       if (contestEl) {
@@ -132,6 +146,22 @@
       const tipsMonthEl = document.getElementById('bbTipsMonthAmount');
       if (tipsMonthEl) {
         tipsMonthEl.textContent = monthTips.toFixed(2);
+      }
+
+      const allTipsHistory = safeParse('bb_tips_history', {});
+      const allEntries = allTipsHistory && typeof allTipsHistory === 'object' ? Object.values(allTipsHistory) : [];
+      const stats = allEntries.reduce((acc, value) => {
+        const num = Number(value);
+        if (Number.isFinite(num) && num >= 0) {
+          acc.total += num;
+          acc.count += 1;
+        }
+        return acc;
+      }, { total: 0, count: 0 });
+      const avgAmount = stats.count > 0 ? (stats.total / stats.count) : 0;
+      const avgEl = document.getElementById('bbTipsAverageAmount');
+      if (avgEl) {
+        avgEl.textContent = avgAmount.toFixed(2);
       }
     });
   </script>

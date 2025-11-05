@@ -32,12 +32,71 @@
   gap: 16px;
 }
 
+
 .bb-welcome-title {
   margin: 0 0 4px;
   font-size: 13px;
   font-weight: 700;
   text-align: left;
   line-height: 1.3;
+}
+
+.waiter-home .bb-welcome-title,
+:root:has(#bbUserBadge) .bb-welcome-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  line-height: 1.2;
+  text-align: center;
+  flex-wrap: nowrap;
+}
+
+.waiter-home .bb-welcome,
+.waiter-home .bb-welcome-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.bb-user-identity {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 6px;
+}
+
+
+#bbUserBadge {
+  display: none;
+  inline-size: 28px;
+  block-size: 28px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  background: #1c1c1c;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.25);
+  border: 1px solid rgba(0,0,0,0.15);
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+#bbUserBadge[src]:not([src=""]):not(.bb-badge--hidden) {
+  display: inline-block;
+}
+
+@media (min-width: 420px) {
+  #bbUserBadge { inline-size: 32px; block-size: 32px; }
+}
+
+@media (min-width: 768px) {
+  #bbUserBadge { inline-size: 36px; block-size: 36px; }
+}
+
+#bbUserBadge.bb-badge--hidden {
+  display: none !important;
 }
 
 .bb-tips-boxes {
@@ -81,7 +140,7 @@
 
 .bb-tip-amount {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
 }
 

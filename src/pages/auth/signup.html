@@ -23,20 +23,16 @@
       </div>
 
       <div class="window-body window-body--scroll auth-window" id="app">
-        <div class="auth-card auth-card--intro">
-          <p class="auth-intro-text">Rejoins l’équipe et configure ton profil serveur en quelques secondes.</p>
-        </div>
-
         <div class="auth-card auth-card--form">
           <form id="signupForm" class="auth-form">
             <div class="auth-form__group">
               <label for="signupUsername">Nom d’utilisateur</label>
-              <input id="signupUsername" name="username" placeholder="Alex" required />
+              <input id="signupUsername" name="username" placeholder="Sans espaces" required />
             </div>
 
             <div class="auth-form__group">
               <label for="signupPassword">Mot de passe</label>
-              <input id="signupPassword" name="password" type="password" placeholder="Mot de passe (6 caractères mini)" required minlength="6" />
+              <input id="signupPassword" name="password" type="password" placeholder="min. 6 caractères" required minlength="6" />
             </div>
 
             <fieldset class="auth-fieldset">
