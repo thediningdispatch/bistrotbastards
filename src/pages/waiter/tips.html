@@ -4,79 +4,56 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Tips — Bistrot Bastards</title>
+  <title>Profil serveur — Bistrot Bastards</title>
   <link rel="stylesheet" href="../../styles/system7.css" />
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    #avatarContainer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100vh;
-      background: var(--panel-light);
-    }
-
-    #userAvatar {
-      width: 180px;
-      height: 180px;
-      border-radius: 100%;
-      border: 2px solid #000;
-      object-fit: cover;
-      background: var(--panel-light);
-      box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow), 1px 1px 0 var(--highlight);
-    }
-
-    @media (max-width: 640px) {
-      #userAvatar {
-        width: 140px;
-        height: 140px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/waiter-profile.css" />
 </head>
-<body>
-  <div id="avatarContainer">
-    <img id="userAvatar" alt="User avatar" />
+<body class="waiter-profile-page tips-page">
+  <div class="desktop">
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text"></span>
+      </div>
+
+      <div class="window-body pw-body" id="app">
+        <div class="pw-inner">
+          <div id="navHost"></div>
+
+          <section>
+            <p>Sélectionne tes jours de service pour la semaine.</p>
+            <div id="pwDayGrid" class="pw-day-grid" role="group" aria-label="Jours travaillés">
+              <button type="button" class="pw-day" data-day="Lundi" aria-pressed="false">Lundi</button>
+              <button type="button" class="pw-day" data-day="Mardi" aria-pressed="false">Mardi</button>
+              <button type="button" class="pw-day" data-day="Mercredi" aria-pressed="false">Mercredi</button>
+              <button type="button" class="pw-day" data-day="Jeudi" aria-pressed="false">Jeudi</button>
+              <button type="button" class="pw-day" data-day="Vendredi" aria-pressed="false">Vendredi</button>
+              <button type="button" class="pw-day" data-day="Samedi" aria-pressed="false">Samedi</button>
+              <button type="button" class="pw-day" data-day="Dimanche" aria-pressed="false">Dimanche</button>
+            </div>
+          </section>
+
+          <section>
+            <p>Indique tes pourboires pour chaque jour sélectionné.</p>
+            <div id="pwTipsContainer" class="pw-tips-container">
+              <p class="pw-empty">Sélectionne d'abord tes jours travaillés.</p>
+            </div>
+          </section>
+
+          <div class="pw-actions">
+            <button type="button" id="pwSave" class="btn pw-btn-save">Sauvegarder</button>
+            <button type="button" id="pwReset" class="btn pw-btn-reset">Réinitialiser la semaine</button>
+          </div>
+
+          <p id="pwStatus" class="pw-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script type="module">
-    import { auth, db } from '../../scripts/core/firebase.js';
-    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-    const avatarEl = document.getElementById('userAvatar');
-    const defaultAvatar = '/assets/images/default-avatar.svg';
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        avatarEl.src = defaultAvatar;
-        return;
-      }
-
-      try {
-        const userDocRef = doc(db, 'users', user.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          avatarEl.src = data.avatar || defaultAvatar;
-        } else {
-          avatarEl.src = defaultAvatar;
-        }
-      } catch (error) {
-        avatarEl.src = defaultAvatar;
-      }
-    });
-  </script>
-
+  <script type="module" src="../../scripts/core/navigation.js"></script>
   <script type="module" src="../../scripts/core/auth-guard.js"></script>
+  <script type="module" src="../../scripts/pages/waiter-profile.js"></script>
 </body>
 </html>

@@ -1,12 +1,10 @@
 import { NAV_ITEMS, ROUTES } from './config.js';
-import { getStoredUser, setStoredUser, getStoredAvatar, hydrateBadge } from './utils.js';
+import { getStoredUser, setStoredUser } from './utils.js';
 import { auth, onAuthStateChanged } from './firebase.js';
 
 const defaultUser = {
   username: 'Serveur Bistrot',
   role: 'serveur',
-  avatar: null,
-  avatarKey: null,
   restaurant: ''
 };
 
@@ -25,7 +23,6 @@ async function loadUser() {
 async function saveUser(user) {
   try {
     await setStoredUser(user);
-    // Store additional legacy keys for compatibility
     if (user.restaurant) {
       localStorage.setItem('restaurant', user.restaurant);
     }
@@ -34,263 +31,63 @@ async function saveUser(user) {
   }
 }
 
-let bbNavOffsetBound = false;
+// Fonction pour injecter la barre de navigation System 7 en haut de la page
+function renderNavigation() {
+  // Vérifier si la barre n'existe pas déjà
+  if (document.querySelector('.bb-topbar')) return;
 
-function updateNavOffset(nav) {
-  const header = nav || document.querySelector('.top-nav');
-  if (!header) return;
-
-  const safeTop = (header.offsetHeight || 0) + 8;
-  document.documentElement.style.setProperty('--bb-nav-height', `${safeTop}px`);
-}
-
-function bindNavOffsetUpdates(nav) {
-  updateNavOffset(nav);
-
-  if (bbNavOffsetBound) return;
-  bbNavOffsetBound = true;
-
-  const handler = () => updateNavOffset(nav);
-
-  window.addEventListener('resize', handler);
-  window.addEventListener('orientationchange', handler);
-  window.addEventListener('load', handler);
-}
-
-function ensureNavStyles() {
-  const existing = document.querySelector('link[href*="navigation.css"]');
-  if (existing) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = new URL('../../styles/navigation.css', import.meta.url).pathname;
-  link.id = 'bb-nav-css';
-  document.head.appendChild(link);
-}
-
-function ensureNav() {
-  if (document.body.classList.contains('no-nav')) return null;
-  let nav = document.querySelector('.top-nav');
-  if (nav) return nav;
-
-  ensureNavStyles();
-
-  nav = document.createElement('header');
-  nav.className = 'top-nav window';
-  nav.innerHTML = `
-    <nav class="bb-nav">
-      <div class="bb-nav-main-actions">
-        <div class="bb-nav-inline" role="menubar" aria-label="Main">
-          ${NAV_ITEMS.filter(item => item.key === 'home' || item.key === 'chat' || item.key === 'profile').map(item => {
-            return `<a href="${item.href}" class="btn" data-nav="${item.key}">${item.label}</a>`;
-          }).join('')}
-          <div class="bb-nav-dropdown-wrapper">
-            <button id="bbMenuToggleDesktop" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
-            <div id="bbMenuDropdownDesktop" class="bb-dropdown" role="menu" hidden>
-              ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat' && item.key !== 'profile').map(item => {
-                if (item.key === 'logout') {
-                  return `<button id="bbLogoutBtn" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
-                }
-                return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
-              }).join('')}
-            </div>
-          </div>
-        </div>
-        <div class="bb-nav-menu">
-          <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
-          <a href="${ROUTES.CHAT}" class="btn" data-nav="chat">Chat</a>
-          <a href="${ROUTES.WAITER_PROFILE}" class="btn" data-nav="profile">Profil</a>
-          <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
-          <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-            ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat' && item.key !== 'profile').map(item => {
-              if (item.key === 'logout') {
-                return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
-              }
-              return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
-            }).join('')}
-          </div>
-        </div>
-      </div>
-    </nav>
-  `;
-  document.body.prepend(nav);
-  return nav;
-}
-
-function mountNavIntoHost(nav) {
-  const host = document.getElementById('navHost');
-  if (nav && host && nav.parentElement !== host) {
-    host.appendChild(nav);
-  }
-}
-
-let navPerfLogged = false;
-
-async function initNavigation(user, existingNav) {
-  const tNavStart = performance.now();
-  const nav = existingNav || ensureNav();
-  if (!nav) return;
-
-  const normalizePath = (path) => path.replace(/\/+$/, '');
-  const currentPath = normalizePath(new URL(window.location.href).pathname);
-  const navLinks = nav.querySelectorAll('.bb-nav-inline a, .bb-nav-menu > a, #bbMenuDropdown a');
-  navLinks.forEach(link => {
-    const href = link.getAttribute('href') || '';
-    if (!href || href === '#') {
-      link.classList.remove('is-active');
-      link.removeAttribute('aria-current');
-      return;
+  // Construire les boutons de navigation avec la structure System 7
+  const navButtons = NAV_ITEMS.map(item => {
+    if (item.key === 'logout') {
+      return `<button id="bbLogoutBtn" class="bb-nav-btn" type="button">${item.label}</button>`;
     }
-    const linkPath = normalizePath(new URL(href, window.location.href).pathname);
-    const matches = linkPath === currentPath;
-    if (matches) {
-      link.classList.add('is-active');
-      link.setAttribute('aria-current', 'page');
-    } else {
-      link.classList.remove('is-active');
-      link.removeAttribute('aria-current');
-    }
-  });
+    return `<a href="${item.href}" class="bb-nav-btn">${item.label}</a>`;
+  }).join('');
 
-  mountNavIntoHost(nav);
-  bindNavInteractions(nav);
-  bindNavOffsetUpdates(nav);
+  // Créer et injecter la barre en haut du body
+  const topbar = document.createElement('div');
+  topbar.className = 'bb-topbar';
+  topbar.innerHTML = navButtons;
 
-  if (!navPerfLogged) {
-    navPerfLogged = true;
-    console.log('[Perf] navigation init in', (performance.now() - tNavStart).toFixed(1), 'ms');
+  document.body.insertBefore(topbar, document.body.firstChild);
+
+  // Bind le bouton de déconnexion
+  const logoutBtn = document.getElementById('bbLogoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
   }
 }
 
-function ensureDefaultRestaurant(user) {
-  if (!localStorage.getItem('restaurant') && user.restaurant) {
-    localStorage.setItem('restaurant', user.restaurant);
+// Gestion de la déconnexion
+async function handleLogout() {
+  try {
+    const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+    await signOut(auth);
+    localStorage.clear();
+    location.href = ROUTES.LOGIN;
+  } catch (error) {
+    console.error('Logout error:', error);
   }
 }
 
-async function bootstrap() {
-  const user = await loadUser();
-  const nav = ensureNav();
-  if (nav) {
-    await initNavigation(user, nav);
-  }
-  ensureDefaultRestaurant(user);
+// Initialisation
+function bootstrap() {
+  renderNavigation();
 }
 
+// Exécution
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', bootstrap);
 } else {
   bootstrap();
 }
 
-// Home page avatar hydration (auth + LS + observer)
-document.addEventListener('DOMContentLoaded', () => {
-  const isHome = /\/waiter\/home\.html$|\/home\.html$/.test(location.pathname);
-  if (!isHome) return;
-
-  const apply = () => {
-    const url = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
-    hydrateBadge(url);
-    console.debug("BB_AVATAR:home:apply", { photoURL: auth.currentUser?.photoURL, ls: getStoredAvatar() });
-  };
-
-  // 1) First paint (LS fallback)
-  apply();
-
-  // 2) When Firebase resolves user
-  onAuthStateChanged(auth, () => apply());
-
-  // 3) If title DOM is re-inserted (late render)
-  const mo = new MutationObserver(() => apply());
-  mo.observe(document.body, { childList: true, subtree: true });
-
-  // 4) Tab visibility / HMR Vite
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") apply(); });
-  if (import.meta?.hot) { import.meta.hot.on("vite:afterUpdate", apply); }
-});
-
+// API globale pour compatibilité
 window.appState = {
   async getUser() {
     return await loadUser();
   },
   async setUser(user) {
     await saveUser(user);
-    const updatedUser = await loadUser();
-    await initNavigation(updatedUser);
   }
 };
-
-function bindNavInteractions(nav) {
-  if (!nav || nav.dataset.navBound === '1') return;
-  nav.dataset.navBound = '1';
-
-  // Desktop dropdown
-  const menuBtnDesktop = nav.querySelector('#bbMenuToggleDesktop');
-  const menuDropDesktop = nav.querySelector('#bbMenuDropdownDesktop');
-  if (menuBtnDesktop && menuDropDesktop){
-    menuBtnDesktop.addEventListener('click', () => {
-      const open = !menuDropDesktop.hasAttribute('hidden');
-      if (open) {
-        menuDropDesktop.setAttribute('hidden','');
-        menuBtnDesktop.setAttribute('aria-expanded','false');
-      } else {
-        menuDropDesktop.removeAttribute('hidden');
-        menuBtnDesktop.setAttribute('aria-expanded','true');
-      }
-    });
-    document.addEventListener('click', (e)=>{
-      if (menuDropDesktop && !menuDropDesktop.contains(e.target) && e.target !== menuBtnDesktop){
-        menuDropDesktop.setAttribute('hidden','');
-        menuBtnDesktop.setAttribute('aria-expanded','false');
-      }
-    });
-    menuDropDesktop.addEventListener('click', (e)=>{
-      if (e.target.closest('a, button')){
-        menuDropDesktop.setAttribute('hidden','');
-        menuBtnDesktop.setAttribute('aria-expanded','false');
-      }
-    });
-  }
-
-  // Mobile dropdown
-  const menuBtn = nav.querySelector('#bbMenuToggle');
-  const menuDrop = nav.querySelector('#bbMenuDropdown');
-  if (menuBtn && menuDrop){
-    menuBtn.addEventListener('click', () => {
-      const open = !menuDrop.hasAttribute('hidden');
-      if (open) {
-        menuDrop.setAttribute('hidden','');
-        menuBtn.setAttribute('aria-expanded','false');
-      } else {
-        menuDrop.removeAttribute('hidden');
-        menuBtn.setAttribute('aria-expanded','true');
-      }
-    });
-    document.addEventListener('click', (e)=>{
-      if (menuDrop && !menuDrop.contains(e.target) && e.target !== menuBtn){
-        menuDrop.setAttribute('hidden','');
-        menuBtn.setAttribute('aria-expanded','false');
-      }
-    });
-    menuDrop.addEventListener('click', (e)=>{
-      if (e.target.closest('a, button')){
-        menuDrop.setAttribute('hidden','');
-        menuBtn.setAttribute('aria-expanded','false');
-      }
-    });
-  }
-
-  const logoutDesktop = nav.querySelector('#bbLogoutBtn');
-  const logoutMobile = nav.querySelector('#bbLogoutBtnMobile');
-  function wireLogout(btn){
-    if (!btn) return;
-    btn.addEventListener('click', async () => {
-      const { auth } = await import('./firebase.js');
-      const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-      await signOut(auth);
-      localStorage.clear();
-      location.href = ROUTES.LOGIN;
-    });
-  }
-  wireLogout(logoutDesktop);
-  wireLogout(logoutMobile);
-}

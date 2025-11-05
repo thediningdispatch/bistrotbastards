@@ -1,12 +1,212 @@
-/* Waiter Profile - Specific Styles */
+/* Waiter Profile & Tips pages */
 
-/* Override window-body pour permettre le scroll interne de la page profil */
-.window-body {
+/* ------------------------------
+   Profile hub (waiter/profile.html)
+--------------------------------- */
+
+.waiter-profile-page:not(.tips-page) .profile-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  gap: clamp(20px, 4vw, 30px);
+  padding: var(--window-padding-y) clamp(16px, 5vw, 28px) clamp(22px, 6vw, 34px);
+  background: var(--panel-light);
+}
+
+@media (max-width: 640px) {
+  .waiter-profile-page:not(.tips-page) .profile-body {
+    padding: var(--window-padding-y) clamp(14px, 6vw, 24px) clamp(24px, 8vw, 32px);
+    gap: clamp(18px, 5vw, 28px);
+  }
+}
+
+.waiter-profile-page:not(.tips-page) #navHost {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+.waiter-profile-page:not(.tips-page) .profile-inner {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 4vw, 30px);
+}
+
+.waiter-profile-page:not(.tips-page) .profile-card {
+  border: var(--border-strong);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow-strong);
+  padding: clamp(18px, 5vw, 26px);
+  background: linear-gradient(135deg, rgba(255, 232, 186, 0.92) 0%, rgba(255, 221, 244, 0.96) 45%, rgba(203, 228, 255, 0.94) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 4vw, 24px);
+}
+
+.profile-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.profile-card-tag {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border: var(--border-strong);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  background: var(--panel-light);
+  box-shadow: var(--card-shadow-medium);
+}
+
+.profile-card-title {
+  margin: 0;
+  font-size: clamp(24px, 5vw, 32px);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.profile-card-lead {
+  margin: 0;
+  font-size: clamp(14px, 4vw, 16px);
+  color: rgba(0, 0, 0, 0.75);
+  max-width: 48ch;
+  align-self: center;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: clamp(12px, 3.5vw, 18px);
+}
+
+.profile-stat {
+  border: var(--border-strong);
+  border-radius: 14px;
+  background: var(--panel-light);
+  box-shadow: var(--card-shadow-medium);
+  padding: clamp(8px, 2vw, 11px);    /* -40% (14-18px -> 8-11px) */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;                           /* réduit aussi */
+}
+
+.profile-stat-label {
+  font-size: 11px;              /* légèrement réduit */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.profile-stat-value {
+  font-size: clamp(16px, 3.5vw, 22px);  /* -40% (20-28px -> 16-22px) */
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.profile-stat-hint {
+  font-size: 11px;              /* réduit de 13px -> 11px */
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.profile-stat--xp {
+  background: linear-gradient(135deg, rgba(255, 245, 196, 0.95) 0%, rgba(255, 232, 152, 0.95) 100%);
+}
+
+.profile-stat--tips {
+  background: linear-gradient(135deg, rgba(218, 243, 255, 0.95) 0%, rgba(179, 217, 255, 0.95) 100%);
+}
+
+.profile-stat--rank {
+  background: linear-gradient(135deg, rgba(240, 227, 255, 0.95) 0%, rgba(221, 197, 255, 0.95) 100%);
+}
+
+.profile-actions {
+  display: grid;
+  grid-template-columns: minmax(min(320px, 100%), 1fr);
+  justify-items: center;
+  gap: 16px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.profile-btn {
+  width: min(100%, 340px);
+  padding: 14px 26px;
+  border-radius: 14px;
+  border: var(--border-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  box-shadow: var(--card-shadow-strong);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  color: #111;
+  text-align: center;
+}
+
+.profile-btn:focus-visible {
+  outline: 2px solid #6d5bff;
+  outline-offset: 2px;
+}
+
+.profile-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 3px 3px 0 #000;
+}
+
+.profile-btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--card-shadow-medium);
+}
+
+.profile-btn--primary {
+  background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
+}
+
+.profile-btn--secondary {
+  background: linear-gradient(135deg, #d4e8ff 0%, #b3d9ff 100%);
+}
+
+.profile-btn--tertiary {
+  background: linear-gradient(135deg, #ffd4f4 0%, #ffb6e6 100%);
+}
+
+@media (max-width: 640px) {
+  .profile-card-header {
+    gap: 8px;
+  }
+
+  .profile-card-tag {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  .profile-actions {
+    gap: 12px;
+  }
+}
+
+/* ------------------------------
+   Tips manager (waiter/tips.html)
+--------------------------------- */
+
+.tips-page .window-body {
   overflow: hidden;
   padding: 0 !important;
 }
 
-.pw-body {
+.tips-page .pw-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
@@ -16,7 +216,7 @@
   padding-bottom: calc(var(--window-padding-y) + env(safe-area-inset-bottom, 0));
 }
 
-.pw-inner {
+.tips-page .pw-inner {
   padding: var(--window-padding-y) clamp(18px, 4vw, 28px) 0;
   display: flex;
   flex-direction: column;
@@ -25,19 +225,19 @@
 }
 
 @media (max-width: 640px) {
-  .pw-inner {
+  .tips-page .pw-inner {
     padding: var(--window-padding-y) clamp(14px, 5vw, 20px) 0;
     gap: 18px;
   }
 }
 
-.pw-day-grid {
+.tips-page .pw-day-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 10px;
 }
 
-.pw-day {
+.tips-page .pw-day {
   border: var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
@@ -53,32 +253,32 @@
   letter-spacing: 0.3px;
 }
 
-.pw-day:hover {
+.tips-page .pw-day:hover {
   transform: translateY(-1px);
   background: #9ec9f5;
 }
 
-.pw-day.pw-day-active {
+.tips-page .pw-day.pw-day-active {
   background: var(--accent-mint);
   font-weight: 800;
 }
 
-.pw-day.pw-day-active:hover {
+.tips-page .pw-day.pw-day-active:hover {
   background: #99f5b8;
 }
 
-.pw-tips-container {
+.tips-page .pw-tips-container {
   display: grid;
   gap: 12px;
 }
 
-.pw-field {
+.tips-page .pw-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.pw-field input {
+.tips-page .pw-field input {
   padding: 9px 10px;
   border: 1px solid #000;
   background: var(--panel-light);
@@ -88,12 +288,12 @@
   box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
 }
 
-.pw-field input:focus {
+.tips-page .pw-field input:focus {
   outline: none;
   box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
 }
 
-.pw-actions {
+.tips-page .pw-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -101,7 +301,7 @@
   margin-top: 16px;
 }
 
-.pw-btn-save {
+.tips-page .pw-btn-save {
   flex: 1;
   min-width: 160px;
   padding: 14px 24px;
@@ -116,13 +316,13 @@
   transition: transform 0.1s ease;
 }
 
-.pw-btn-save:hover {
+.tips-page .pw-btn-save:hover {
   transform: translateY(-1px);
   background: #f5df35;
   box-shadow: var(--card-shadow-strong);
 }
 
-.pw-btn-reset {
+.tips-page .pw-btn-reset {
   flex: 1;
   min-width: 160px;
   padding: 14px 24px;
@@ -137,33 +337,33 @@
   transition: transform 0.1s ease;
 }
 
-.pw-btn-reset:hover {
+.tips-page .pw-btn-reset:hover {
   transform: translateY(-1px);
   background: #ddc9f5;
   box-shadow: var(--card-shadow-strong);
 }
 
-.pw-status {
+.tips-page .pw-status {
   min-height: 20px;
   font-size: 14px;
 }
 
-.pw-status-success {
+.tips-page .pw-status-success {
   color: #1e8449;
   font-weight: 600;
 }
 
-.pw-status-error {
+.tips-page .pw-status-error {
   color: #b03a2e;
   font-weight: 600;
 }
 
-.pw-empty {
+.tips-page .pw-empty {
   font-style: italic;
   color: var(--muted);
   margin: 0;
 }
 
-#navHost {
+.waiter-profile-page #navHost {
   display: flex;
 }

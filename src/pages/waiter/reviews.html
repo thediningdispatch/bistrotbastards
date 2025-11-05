@@ -14,10 +14,10 @@
     }
 
     .review-body {
-      padding: 8px clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px);
+      padding: 8px clamp(12px, 3vw, 18px) clamp(12px, 3vw, 18px);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     #navHost {
@@ -26,31 +26,31 @@
 
     @media (max-width: 640px) {
       .review-body {
-        padding: 6px clamp(14px, 5vw, 20px) clamp(14px, 5vw, 20px);
-        gap: 10px;
+        padding: 6px clamp(10px, 4vw, 16px) clamp(10px, 4vw, 16px);
+        gap: 6px;
       }
     }
 
     .review-header {
       text-align: center;
-      padding: 14px 16px;
+      padding: 10px 12px;
       background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
       border: 1px solid #000;
-      box-shadow: 3px 3px 0 #000;
+      box-shadow: 2px 2px 0 #000;
       border-radius: 4px;
       margin-bottom: 4px;
     }
 
     .review-header h2 {
-      margin: 0 0 4px;
-      font-size: 20px;
+      margin: 0;
+      font-size: 18px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .review-header p {
       margin: 0;
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.9;
     }
 
@@ -58,54 +58,54 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border: 1px solid #000;
-      box-shadow: 3px 3px 0 #000;
+      box-shadow: 2px 2px 0 #000;
       background: linear-gradient(135deg, #e9ffe3 0%, #d4ffc9 100%);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 13px;
-      margin-bottom: 10px;
+      font-size: 12px;
+      margin-bottom: 8px;
       border-radius: 4px;
     }
 
     .section-label:before {
       content: "✍️";
-      font-size: 16px;
+      font-size: 14px;
     }
 
     #reviewForm {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 12px;
       background: rgba(255, 255, 255, 0.3);
-      padding: 20px;
+      padding: 12px;
       border: 1px solid #000;
-      box-shadow: inset 1px 1px rgba(255,255,255,0.5);
-      border-radius: 4px;
+      box-shadow: inset 1px 1px rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
     }
 
     #reviewForm > div {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
 
     #reviewForm label {
       font-weight: 700;
-      font-size: 14px;
+      font-size: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     #serverSelect {
-      padding: 10px 14px;
+      padding: 8px 12px;
       border: 1px solid #000;
       box-shadow: inset 1px 1px #7d7d7d, inset -1px -1px #fff;
       background: #fff;
       font: inherit;
-      font-size: 15px;
+      font-size: 14px;
       border-radius: 2px;
       cursor: pointer;
     }
@@ -117,40 +117,32 @@
 
     .emoji-row {
       display: flex;
-      gap: 24px;
+      gap: 16px;
       justify-content: center;
-      padding: 20px 12px;
+      padding: 12px 8px;
     }
 
     .emoji {
-      font-size: 56px;
+      font-size: 40px;
       cursor: pointer;
-      padding: 8px;
+      padding: 6px;
       transition: all 0.1s ease;
       user-select: none;
-      opacity: 0.6;
+      opacity: 0.7;
     }
 
     .emoji:hover {
       opacity: 1;
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     .emoji.active {
       opacity: 1;
-      transform: scale(1.15);
-    }
-
-    .hint-inline {
-      margin: 6px 0 0;
-      font-size: 13px;
-      color: #555;
-      text-align: center;
-      font-style: italic;
+      transform: scale(1.08);
     }
 
     #commentField {
-      padding: 12px 14px;
+      padding: 10px 12px;
       border: 1px solid #000;
       box-shadow: inset 2px 2px #7d7d7d, inset -1px -1px #fff;
       background: #fff;
@@ -170,13 +162,13 @@
     .btn-submit {
       padding: 14px 28px;
       font-weight: 700;
-      font-size: 17px;
+      font-size: 15px;
       background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
       border: 1px solid #000;
-      box-shadow: 4px 4px 0 #000;
+      box-shadow: 3px 3px 0 #000;
       cursor: pointer;
       text-transform: uppercase;
-      margin-top: 12px;
+      margin-top: 8px;
       border-radius: 4px;
       transition: all 0.1s ease;
       letter-spacing: 0.5px;
@@ -247,7 +239,6 @@
               <div class="emoji" data-category="food" data-value="bon" aria-label="Bon" title="Bon">😋</div>
               <div class="emoji" data-category="food" data-value="top" aria-label="Top" title="Top">🤩</div>
             </div>
-            <p class="hint-inline">Comment avez-vous trouvé la cuisine ?</p>
           </div>
 
           <div>
@@ -257,7 +248,6 @@
               <div class="emoji" data-category="service" data-value="correct" aria-label="Correct" title="Correct">👍</div>
               <div class="emoji" data-category="service" data-value="rapide" aria-label="Rapide" title="Rapide">⚡</div>
             </div>
-            <p class="hint-inline">Quelle a été la qualité du service ?</p>
           </div>
 
           <div>
@@ -267,7 +257,6 @@
               <div class="emoji" data-category="experience" data-value="bien" aria-label="Bien" title="Bien">😊</div>
               <div class="emoji" data-category="experience" data-value="excellent" aria-label="Excellent" title="Excellent">🔥</div>
             </div>
-            <p class="hint-inline">Comment était l'atmosphère générale ?</p>
           </div>
 
           <input type="hidden" name="food" id="foodInput" />
@@ -277,7 +266,6 @@
           <div>
             <label for="commentField">Votre avis (généré automatiquement)</label>
             <textarea id="commentField" name="comment" rows="5" readonly></textarea>
-            <p class="hint-inline">Le message se génère automatiquement selon vos choix ✨</p>
           </div>
 
           <button class="btn btn-submit" type="submit">Publier l'avis</button>
@@ -293,23 +281,36 @@
   <script type="module" src="../../scripts/core/navigation.js"></script>
   <script>
     window.requestAnimationFrame(() => {
-      // Textes de génération pour chaque catégorie
-      const templates = {
-        food: {
-          bof: ["les plats étaient corrects", "la cuisine était moyenne", "les plats manquaient un peu de saveur"],
-          bon: ["les plats étaient bons", "la cuisine était savoureuse", "les plats étaient délicieux"],
-          top: ["les plats étaient exceptionnels", "la cuisine était au top", "les plats étaient incroyables"]
-        },
-        service: {
-          lent: ["le service était un peu lent", "l'attente était longue", "le service pourrait être plus rapide"],
-          correct: ["le service était correct", "le service était bien", "l'équipe était efficace"],
-          rapide: ["le service était ultra rapide", "l'équipe était au top", "le service était impeccable"]
-        },
-        experience: {
-          bof: ["l'ambiance était calme", "l'atmosphère était correcte", "le cadre était sympa"],
-          bien: ["l'atmosphère était vraiment bien", "l'ambiance était cool", "le cadre était agréable"],
-          excellent: ["l'atmosphère était électrique", "l'ambiance était incroyable", "l'expérience était au niveau"]
-        }
+      // Map complète des 27 combinaisons possibles (food-service-experience)
+      // 0 = mauvais (bof/lent), 1 = moyen (bon/correct/bien), 2 = excellent (top/rapide/excellent)
+      const reviewMessages = {
+        'bof-lent-bof': "Expérience décevante, plats sans saveur, service vraiment trop lent et ambiance fade. Il y a du travail à faire.",
+        'bof-lent-bien': "Ambiance correcte mais malheureusement les plats manquaient de goût et l'attente était longue. Peut mieux faire.",
+        'bof-lent-excellent': "Superbe ambiance qui sauve la soirée ! Dommage que les plats soient moyens et le service un peu lent.",
+        'bof-correct-bof': "Visite moyenne, les plats manquaient de caractère, service correct mais rien de mémorable. Mitigé.",
+        'bof-correct-bien': "Belle ambiance et service efficace, mais les plats étaient décevants. Un effort sur la cuisine serait apprécié.",
+        'bof-correct-excellent': "Atmosphère incroyable et bon service, dommage que la cuisine ne suive pas. Beaucoup de potentiel !",
+        'bof-rapide-bof': "Service rapide mais les plats étaient bof et l'ambiance sans âme. Pas convaincu.",
+        'bof-rapide-bien': "Service ultra efficace et cadre sympa, malheureusement la cuisine était en dessous de nos attentes.",
+        'bof-rapide-excellent': "Service au top et ambiance de fou ! Les plats pourraient être meilleurs mais l'expérience reste cool.",
+        'bon-lent-bof': "Bons plats mais gâchés par un service vraiment lent et une ambiance sans charme. C'est dommage.",
+        'bon-lent-bien': "Cuisine savoureuse et bonne ambiance, mais l'attente était vraiment trop longue. À améliorer.",
+        'bon-lent-excellent': "Plats délicieux et atmosphère géniale ! Seul bémol : le service pourrait être plus rapide.",
+        'bon-correct-bof': "Plats corrects et service efficace mais l'ambiance manquait de vie. Une expérience sans plus.",
+        'bon-correct-bien': "Belle soirée au Podium, bons plats, service pro et ambiance sympa. On reviendra !",
+        'bon-correct-excellent': "Super moment ! Cuisine délicieuse, service au point et ambiance électrique. Très bon resto !",
+        'bon-rapide-bof': "Plats savoureux et service rapide, dommage que l'ambiance soit un peu fade. Bon rapport qualité/prix.",
+        'bon-rapide-bien': "Excellente expérience ! Plats bons, service ultra efficace et cadre agréable. Je recommande.",
+        'bon-rapide-excellent': "Soirée au top ! Cuisine excellente, service impeccable et ambiance de folie. Bravo l'équipe !",
+        'top-lent-bof': "Plats exceptionnels mais malheureusement service trop lent et ambiance décevante. Potentiel inexploité.",
+        'top-lent-bien': "Cuisine incroyable et belle ambiance, seul point noir : l'attente était vraiment longue.",
+        'top-lent-excellent': "Plats au top et atmosphère de dingue ! Juste le service qui pourrait être plus rapide.",
+        'top-correct-bof': "Cuisine exceptionnelle et service correct, mais l'ambiance manquait de punch. À mi-chemin de l'excellence.",
+        'top-correct-bien': "Super moment au Podium ! Plats incroyables, bon service et ambiance cool. Une belle découverte !",
+        'top-correct-excellent': "Expérience au top ! Cuisine d'exception, service pro et ambiance électrique. Rien à redire !",
+        'top-rapide-bof': "Plats exceptionnels et service ultra rapide, dommage que l'ambiance soit plate. La cuisine sauve tout.",
+        'top-rapide-bien': "Excellent resto ! Cuisine incroyable, service impeccable et bonne ambiance. On adore !",
+        'top-rapide-excellent': "Soirée de folie au Podium ! Plats exceptionnels, service au top et ambiance de ouf. PARFAIT ! 🔥"
       };
 
       const state = {
@@ -325,19 +326,14 @@
           return '';
         }
 
-        const foodText = templates.food[state.food][Math.floor(Math.random() * templates.food[state.food].length)];
-        const serviceText = templates.service[state.service][Math.floor(Math.random() * templates.service[state.service].length)];
-        const experienceText = templates.experience[state.experience][Math.floor(Math.random() * templates.experience[state.experience].length)];
+        // Construire la clé à partir des sélections
+        const key = `${state.food}-${state.service}-${state.experience}`;
 
-        const intros = [
-          `Super moment avec ${state.server} au Podium`,
-          `Excellente soirée avec ${state.server} au Podium`,
-          `Belle expérience avec ${state.server} au Podium`,
-          `Top moment avec ${state.server} au Podium`
-        ];
-        const intro = intros[Math.floor(Math.random() * intros.length)];
+        // Récupérer le message correspondant
+        const baseMessage = reviewMessages[key] || "Merci pour votre visite au Podium !";
 
-        return `${intro}, ${foodText}, ${serviceText} et ${experienceText} !`;
+        // Ajouter le nom du serveur de manière naturelle
+        return `${state.server} nous a super bien accueillis. ${baseMessage}`;
       }
 
       // Gestion des clics sur les emojis

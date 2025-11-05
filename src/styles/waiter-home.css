@@ -42,8 +42,7 @@
   word-spacing: normal;
 }
 
-.waiter-home .bb-welcome-title,
-:root:has(#bbUserBadge) .bb-welcome-title {
+.waiter-home .bb-welcome-title {
   display: inline;
   text-align: center;
   line-height: 1.3;
@@ -54,47 +53,6 @@
 .waiter-home .bb-welcome-wrap {
   display: flex;
   justify-content: center;
-}
-
-.bb-user-identity {
-  display: inline;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-}
-
-
-#bbUserBadge {
-  display: none;
-  inline-size: 28px;
-  block-size: 28px;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center;
-  background: #1c1c1c;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.9), 0 4px 12px rgba(0,0,0,0.25);
-  border: 1px solid rgba(0,0,0,0.15);
-  vertical-align: middle;
-  user-select: none;
-  -webkit-user-drag: none;
-  image-rendering: -webkit-optimize-contrast;
-}
-
-#bbUserBadge[src]:not([src=""]):not(.bb-badge--hidden) {
-  display: inline-block;
-}
-
-@media (min-width: 420px) {
-  #bbUserBadge { inline-size: 32px; block-size: 32px; }
-}
-
-@media (min-width: 768px) {
-  #bbUserBadge { inline-size: 36px; block-size: 36px; }
-}
-
-#bbUserBadge.bb-badge--hidden {
-  display: none !important;
 }
 
 .bb-tips-boxes {
@@ -108,9 +66,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 64px;
-  padding: 10px 14px;
+  gap: 4px;
+  min-height: 38px;              /* -40% (64px -> 38px) */
+  padding: 6px 10px;             /* réduit aussi le padding */
   border: var(--border-strong);
   border-radius: var(--radius-sm);
   box-shadow: var(--card-shadow-strong);
@@ -129,16 +87,16 @@
 .bb-tip-contest { background: var(--accent-rose); }
 
 .bb-tip-label {
-  font-size: 11px;
+  font-size: 10px;                /* réduit pour s'adapter */
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .bb-tip-amount {
-  font-size: 20px;
+  font-size: 16px;                /* réduit de 20px -> 16px */
   font-weight: 500;
   line-height: 1;
 }
@@ -232,8 +190,8 @@
 .bb-top3-list li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 6px 10px;             /* -40% (10px -> 6px) */
   border: var(--border-strong);
   box-shadow: var(--card-shadow-medium);
   border-radius: var(--radius-sm);
@@ -249,12 +207,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
+  min-width: 26px;               /* -40% (32px -> 19px, arrondi à 26px pour lisibilité) */
+  height: 26px;
   text-align: center;
   font-weight: 800;
-  font-size: 14px;
-  padding: 4px 8px;
+  font-size: 12px;               /* réduit aussi */
+  padding: 3px 6px;
   border: var(--border-strong);
   box-shadow: var(--card-shadow-medium);
   border-radius: var(--radius-sm);
@@ -267,7 +225,7 @@
 
 .bb-user {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;               /* réduit aussi */
   flex: 1;
 }
 
@@ -275,7 +233,7 @@
   margin-left: auto;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;               /* réduit aussi */
   color: var(--muted);
 }
 
@@ -334,135 +292,3 @@
     font-size: 13px;
   }
 }
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   AVATAR (home) — STABILISÉ + ÉTATS + LOGS
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ———————————————————
-   Vars + centrage titre
-   ——————————————————— */
-:root {
-  --bb-badge-size: 32px;
-  --bb-badge-ring: 2px;
-}
-@media (min-width: 420px) { :root { --bb-badge-size: 34px; } }
-@media (min-width: 768px) { :root { --bb-badge-size: 36px; } }
-
-.waiter-home .bb-welcome,
-.waiter-home .bb-welcome-wrap {
-  display: flex;
-  justify-content: center;
-}
-.waiter-home .bb-welcome-title {
-  display: inline;
-  text-align: center;
-  line-height: 1.3;
-  word-spacing: normal;
-}
-
-/* ———————————————————
-   Base badge (hidden par défaut)
-   ——————————————————— */
-#bbUserBadge {
-  /* masqué tant qu'on n'a pas de source valide ET pas d'état forcé */
-  display: none;
-
-  inline-size: var(--bb-badge-size);
-  block-size: var(--bb-badge-size);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center;
-
-  /* look */
-  background: #1b1b1b;
-  border: 1px solid rgba(0, 0, 0, .12);
-  box-shadow:
-    0 0 0 var(--bb-badge-ring) rgba(255, 255, 255, .9),
-    0 4px 12px rgba(0, 0, 0, .25);
-
-  vertical-align: middle;
-  user-select: none;
-  -webkit-user-drag: none;
-  image-rendering: -webkit-optimize-contrast;
-}
-
-/* Visible si src non vide et pas marqué hidden */
-#bbUserBadge[src]:not([src=""]):not(.bb-badge--hidden) {
-  display: inline-block;
-}
-
-/* ———————————————————
-   État: loading (spinner doux)
-   ——————————————————— */
-#bbUserBadge.bb-badge--loading {
-  display: inline-block; /* réserve la place pendant le chargement */
-  position: relative;
-  overflow: hidden;
-  background: radial-gradient(circle at 30% 30%, #222 0%, #171717 60%, #121212 100%);
-}
-#bbUserBadge.bb-badge--loading::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: rgba(255, 255, 255, .6);
-  animation: bbBadgeSpin .8s linear infinite;
-}
-@keyframes bbBadgeSpin { to { transform: rotate(360deg) } }
-@media (prefers-reduced-motion: reduce) {
-  #bbUserBadge.bb-badge--loading::after { animation-duration: 1.6s; }
-}
-
-/* ———————————————————
-   État: hidden (erreur / vide)
-   ——————————————————— */
-#bbUserBadge.bb-badge--hidden {
-  display: none !important;
-}
-
-/* ———————————————————
-   (Option) Placeholder forcé si on ajoute data-placeholder="1"
-   ——————————————————— */
-#bbUserBadge[data-placeholder="1"] {
-  display: inline-block;
-  background:
-    radial-gradient(circle at 30% 30%, #232323 0%, #171717 60%, #121212 100%),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='24' r='14' fill='%23555'/><path d='M8 60c4-14 18-20 24-20s20 6 24 20' fill='%23555'/></svg>") center/60% no-repeat;
-}
-
-/* ———————————————————
-   Aides debug togglables (facultatif)
-   ——————————————————— */
-/* Ajoute temporairement .bb-badge--debug sur l'img pour voir sa box */
-#bbUserBadge.bb-badge--debug { outline: 2px dashed #0af; }
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   🧪 LOGS DIAGNOSTIC — À COLLER EN CONSOLE si l'avatar n'apparaît pas
-   (NE RIEN COLLER CI-DESSOUS DANS LE CSS, C'EST POUR LA CONSOLE)
-   ═══════════════════════════════════════════════════════════════════════════
-
-(() => {
-  const img = document.getElementById('bbUserBadge');
-  const ls  = (() => { try { return localStorage.getItem('bb.avatarUrl') } catch { return null } })();
-  const u   = (window.firebaseAuth || window.auth)?.currentUser || null;
-  console.log('BB_AVATAR:diag(css-only)', {
-    path: location.pathname,
-    user: u ? { uid: u.uid, photoURL: u.photoURL } : null,
-    localStorage: ls,
-    img: img ? {
-      present: true,
-      srcAttr: img.getAttribute('src'),
-      hidden: img.classList.contains('bb-badge--hidden'),
-      loading: img.classList.contains('bb-badge--loading'),
-      complete: img.complete,
-      natural: img.naturalWidth + 'x' + img.naturalHeight
-    } : { present: false }
-  });
-})();
-
-   ➜ Envoie-moi la sortie "BB_AVATAR:diag(css-only)" si l'avatar reste invisible.
-
-   ═══════════════════════════════════════════════════════════════════════════ */

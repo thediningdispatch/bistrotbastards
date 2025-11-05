@@ -1,8 +1,8 @@
 import { auth, db, authPersistenceReady } from '../core/firebase.js';
-import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser, setStoredAvatar } from '../core/utils.js';
-import { AVATAR_URLS, ROUTES } from '../core/config.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
+import { ROUTES } from '../core/config.js';
 
 const tPageStart = performance.now();
 
@@ -28,21 +28,14 @@ async function handleSubmit(event) {
   const username = normUsername(rawUsername);
   const password = form?.password?.value || '';
   const displayName = rawUsername.trim() || username;
-  const avatarKey = form?.avatarKey?.value || '';
-  const avatarUrl = AVATAR_URLS[avatarKey] || '';
 
   if (!username) {
-    showError(errElm, 'Choisissez un nom d’utilisateur.');
+    showError(errElm, 'Choisissez un nom d'utilisateur.');
     return;
   }
 
   if (password.length < 6) {
     showError(errElm, 'Le mot de passe doit contenir au moins 6 caractères.');
-    return;
-  }
-
-  if (!avatarUrl) {
-    showError(errElm, 'Choisis un badge avant de continuer.');
     return;
   }
 
@@ -57,28 +50,13 @@ async function handleSubmit(event) {
     await setDoc(doc(db, 'users', credential.user.uid), {
       uid: credential.user.uid,
       username: displayName,
-      avatarKey,
-      avatar: avatarUrl,
       createdAt: serverTimestamp()
     });
 
-    // Update Firebase Auth profile with photoURL
-    if (auth.currentUser && avatarUrl) {
-      try {
-        await updateProfile(auth.currentUser, { photoURL: avatarUrl });
-        console.debug("BB_AVATAR:signup:updateProfile", { photoURL: avatarUrl });
-      } catch (e) {
-        console.warn("BB_AVATAR:signup:updateProfile:error", e);
-      }
-    }
-
-    // Store user data with proper avatar resolution
+    // Store user data
     await setStoredUser({
-      username: displayName,
-      avatarKey,
-      avatar: avatarUrl
+      username: displayName
     });
-    setStoredAvatar(avatarUrl); // Sync to bb.avatarUrl for quick hydration
     console.log('[Auth] Stored user after signup:', await getStoredUser());
 
     if (!window.__bb_redirecting) {

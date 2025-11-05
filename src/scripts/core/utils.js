@@ -79,11 +79,11 @@ export function calculateAverageTipsPerDay(tipsHistory) {
 }
 
 /**
- * Store user data to localStorage with proper avatar resolution
- * @param {Object} user - User object with username, avatarKey, avatar, etc.
+ * Store user data to localStorage
+ * @param {Object} user - User object with username, etc.
  */
 export async function setStoredUser(user = {}) {
-  const { AVATAR_URLS, STORAGE_KEYS } = await import('./config.js');
+  const { STORAGE_KEYS } = await import('./config.js');
 
   let current = {};
   try {
@@ -107,25 +107,6 @@ export async function setStoredUser(user = {}) {
     }
   }
 
-  if (hasProp('avatarKey')) {
-    merged.avatarKey = user.avatarKey || null;
-  }
-
-  if (hasProp('avatar')) {
-    merged.avatar = user.avatar || null;
-  }
-
-  const finalAvatarKey = merged.avatarKey || null;
-  const resolvedAvatar = merged.avatar || (finalAvatarKey && AVATAR_URLS[finalAvatarKey]) || null;
-
-  if (resolvedAvatar) {
-    merged.avatar = resolvedAvatar;
-    localStorage.setItem(STORAGE_KEYS.AVATAR_URL, resolvedAvatar);
-  } else {
-    delete merged.avatar;
-    localStorage.removeItem(STORAGE_KEYS.AVATAR_URL);
-  }
-
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(merged));
   console.log('[setStoredUser] Persisted user state:', merged);
   return merged;
@@ -136,23 +117,14 @@ export async function setStoredUser(user = {}) {
  * @returns {Object} User object or empty object if parsing fails
  */
 export async function getStoredUser() {
-  // Lazy import to avoid circular dependencies
-  const { STORAGE_KEYS, AVATAR_URLS } = await import('./config.js');
+  const { STORAGE_KEYS } = await import('./config.js');
 
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.USER);
     const parsed = raw ? JSON.parse(raw) : {};
 
-    // Ensure avatar is resolved from avatarKey if not present
     if (parsed && typeof parsed === 'object') {
-      if (!parsed.avatar && parsed.avatarKey && AVATAR_URLS[parsed.avatarKey]) {
-        parsed.avatar = AVATAR_URLS[parsed.avatarKey];
-      }
-
       console.log('[getStoredUser] Retrieved user:', parsed);
-      console.log('[getStoredUser]   - avatarKey:', parsed.avatarKey);
-      console.log('[getStoredUser]   - avatar:', parsed.avatar);
-
       return parsed;
     }
 
@@ -161,51 +133,4 @@ export async function getStoredUser() {
     console.error('[getStoredUser] Parse error:', error);
     return {};
   }
-}
-
-/**
- * Get stored avatar URL from localStorage
- * @returns {string} Avatar URL or empty string
- */
-export function getStoredAvatar() {
-  try {
-    return localStorage.getItem("bb.avatarUrl") || "";
-  } catch {
-    return "";
-  }
-}
-
-/**
- * Set or remove stored avatar URL in localStorage
- * @param {string} url - Avatar URL to store (empty to remove)
- */
-export function setStoredAvatar(url) {
-  try {
-    if (url) {
-      localStorage.setItem("bb.avatarUrl", url);
-    } else {
-      localStorage.removeItem("bb.avatarUrl");
-    }
-  } catch (error) {
-    console.warn('[setStoredAvatar] Error:', error);
-  }
-}
-
-/**
- * Hydrate/refresh avatar badge, robust to cache hits
- * @param {string} url - Avatar URL to display
- */
-export function hydrateBadge(url) {
-  const img = document.getElementById("bbUserBadge");
-  if (!img) return;
-  const show = () => { img.classList.remove("bb-badge--loading", "bb-badge--hidden"); img.onload = null; img.onerror = null; };
-  const hide = () => { img.classList.add("bb-badge--hidden"); img.classList.remove("bb-badge--loading"); img.onload = null; img.onerror = null; };
-  if (!url) { hide(); return; }
-  img.classList.add("bb-badge--loading");
-  img.classList.remove("bb-badge--hidden");
-  img.onload = show;
-  img.onerror = hide;
-  if (img.src !== url) img.src = url; // avoid re-triggering load if same src
-  if (img.complete) (img.naturalWidth > 0 ? show() : hide()); // instant cache check
-  console.debug("BB_AVATAR:hydrateBadge", { url, complete: img.complete });
 }

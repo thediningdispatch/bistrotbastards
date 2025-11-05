@@ -3,18 +3,6 @@
  * @module config
  */
 
-// ========== ASSETS ==========
-
-/**
- * URLs des avatars disponibles
- * Using root-relative paths that work from any page depth
- * @constant {Object.<string, string>}
- */
-export const AVATAR_URLS = {
-  pup_orange: '/assets/images/avatar-pup-orange.svg',
-  pup_red: '/assets/images/avatar-pup-red.svg'
-};
-
 // ========== ROUTES ==========
 
 const resolvePath = (relativePath) => new URL(relativePath, import.meta.url).pathname;
@@ -43,9 +31,8 @@ export const ROUTES = {
  */
 export const NAV_ITEMS = [
   { key: 'home', label: 'Home', href: ROUTES.WAITER_HOME, type: 'link' },
-  { key: 'chat', label: 'Chat', href: ROUTES.CHAT, type: 'link' },
   { key: 'profile', label: 'Profil', href: ROUTES.WAITER_PROFILE, type: 'link' },
-  { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
+  { key: 'chat', label: 'Chat', href: ROUTES.CHAT, type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 
@@ -128,8 +115,7 @@ export const STORAGE_KEYS = {
   TIPS_WEEK: 'bb_tips_week',
   TIPS_HISTORY: 'bb_tips_history',
   RESTAURANT: 'restaurant',
-  USERNAME: 'username',
-  AVATAR_URL: 'avatarURL'
+  USERNAME: 'username'
 };
 
 // ========== WAITER PROFILE ==========
