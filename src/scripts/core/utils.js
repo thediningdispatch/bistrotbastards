@@ -162,3 +162,75 @@ export async function getStoredUser() {
     return {};
   }
 }
+
+/**
+ * Get stored avatar URL from localStorage
+ * @returns {string} Avatar URL or empty string
+ */
+export function getStoredAvatar() {
+  try {
+    return localStorage.getItem("bb.avatarUrl") || "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Set or remove stored avatar URL in localStorage
+ * @param {string} url - Avatar URL to store (empty to remove)
+ */
+export function setStoredAvatar(url) {
+  try {
+    if (url) {
+      localStorage.setItem("bb.avatarUrl", url);
+    } else {
+      localStorage.removeItem("bb.avatarUrl");
+    }
+  } catch (error) {
+    console.warn('[setStoredAvatar] Error:', error);
+  }
+}
+
+/**
+ * Hydrate/refresh avatar badge, robust to cache hits
+ * @param {string} url - Avatar URL to display
+ */
+export function hydrateBadge(url) {
+  const img = document.getElementById("bbUserBadge");
+  if (!img) return;
+
+  const show = () => {
+    img.classList.remove("bb-badge--loading", "bb-badge--hidden");
+    cleanup();
+  };
+  const hide = () => {
+    img.classList.add("bb-badge--hidden");
+    img.classList.remove("bb-badge--loading");
+    cleanup();
+  };
+  const cleanup = () => {
+    img.onload = null;
+    img.onerror = null;
+  };
+
+  if (!url) {
+    hide();
+    return;
+  }
+
+  img.classList.add("bb-badge--loading");
+  img.classList.remove("bb-badge--hidden");
+  img.onload = show;
+  img.onerror = hide;
+
+  // Assigner la source
+  img.src = url;
+
+  // Cas cache instantané: onload ne se déclenche pas → valider via complete/naturalWidth
+  if (img.complete) {
+    if (img.naturalWidth > 0) show();
+    else hide();
+  }
+
+  console.debug("BB_AVATAR:hydrateBadge", { url, complete: img.complete, naturalWidth: img.naturalWidth });
+}

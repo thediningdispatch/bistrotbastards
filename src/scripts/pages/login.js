@@ -1,7 +1,7 @@
 import { auth, db, authPersistenceReady } from '../core/firebase.js';
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
+import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser, setStoredAvatar } from '../core/utils.js';
 import { AVATAR_URLS, ROUTES } from '../core/config.js';
 
 const tPageStart = performance.now();
@@ -55,6 +55,14 @@ async function handleSubmit(event) {
         ...(avatarKey ? { avatarKey } : {}),
         ...(avatarUrl ? { avatar: avatarUrl } : {})
       });
+
+      // Sync avatar from user.photoURL or Firestore to localStorage
+      const finalAvatarUrl = auth.currentUser?.photoURL || avatarUrl;
+      if (finalAvatarUrl) {
+        setStoredAvatar(finalAvatarUrl);
+        console.debug("BB_AVATAR:login:sync", { photoURL: auth.currentUser?.photoURL, firestoreAvatar: avatarUrl, final: finalAvatarUrl });
+      }
+
       console.log('[Auth] Stored user after login:', await getStoredUser());
     } catch (profileError) {
       // Store minimal user data on profile fetch error

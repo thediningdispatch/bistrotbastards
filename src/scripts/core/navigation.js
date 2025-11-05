@@ -1,5 +1,6 @@
 import { AVATAR_URLS, NAV_ITEMS, ROUTES } from './config.js';
-import { getStoredUser, setStoredUser } from './utils.js';
+import { getStoredUser, setStoredUser, getStoredAvatar, hydrateBadge } from './utils.js';
+import { auth, onAuthStateChanged } from './firebase.js';
 
 const defaultUser = {
   username: 'Serveur Bistrot',
@@ -218,6 +219,40 @@ if (document.readyState === 'loading') {
 } else {
   bootstrap();
 }
+
+// Home page avatar hydration (onAuthStateChanged + visibility + HMR)
+document.addEventListener('DOMContentLoaded', () => {
+  const onHome = location.pathname.endsWith('/waiter/home.html') || location.pathname.endsWith('/home.html');
+  if (!onHome) return;
+
+  // Primary hydration via onAuthStateChanged
+  onAuthStateChanged(auth, (user) => {
+    const src = (user?.photoURL) || getStoredAvatar() || "";
+    hydrateBadge(src);
+    console.debug("BB_AVATAR:home:hydrate", {
+      hasUser: !!user,
+      photoURL: user?.photoURL,
+      ls: getStoredAvatar(),
+      final: src
+    });
+  });
+
+  // Refresh when tab becomes visible (in case avatar changed elsewhere)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      const src = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
+      hydrateBadge(src);
+    }
+  });
+
+  // HMR support (Vite hot reload)
+  if (import.meta && import.meta.hot) {
+    import.meta.hot.on("vite:afterUpdate", () => {
+      const src = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
+      hydrateBadge(src);
+    });
+  }
+});
 
 window.appState = {
   async getUser() {

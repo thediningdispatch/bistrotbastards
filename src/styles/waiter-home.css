@@ -335,3 +335,79 @@
     font-size: 13px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AVATAR UTILISATEUR (home) — STABILISÉ + LOADING STATE
+   ═══════════════════════════════════════════════════════════════════════════
+   Objectif: garantir affichage stable de <img id="bbUserBadge"> avec états loading/error
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* État loading : spinner léger pour éviter flash/shift */
+#bbUserBadge.bb-badge--loading {
+  display: inline-block; /* on montre la "boîte" pendant le chargement */
+  position: relative;
+  background: radial-gradient(circle at 30% 30%, #222 0%, #171717 60%, #121212 100%);
+  overflow: hidden;
+}
+
+#bbUserBadge.bb-badge--loading::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.6);
+  animation: bb-badge-spin 0.8s linear infinite;
+}
+
+@keyframes bb-badge-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Debug visuel (décommenter si nécessaire) */
+/*
+#bbUserBadge { outline: 2px dashed #0af; }
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   🧪 LOGS — COLLER EN CONSOLE SI L'AVATAR NE S'AFFICHE PAS
+   ═══════════════════════════════════════════════════════════════════════════
+
+   1) Diagnostic rapide (home)
+   ───────────────────────────────────────────────────────────────────────────
+   (() => {
+     const img = document.getElementById('bbUserBadge');
+     const ls = (() => { try { return localStorage.getItem('bb.avatarUrl') } catch { return null } })();
+     const u = (window.firebaseAuth && firebaseAuth.currentUser) || null;
+     console.log('BB_AVATAR:diagnostic', {
+       path: location.pathname,
+       img: img ? {
+         has: true,
+         srcAttr: img.getAttribute('src'),
+         hiddenCls: img.classList.contains('bb-badge--hidden'),
+         loadingCls: img.classList.contains('bb-badge--loading'),
+         complete: img.complete,
+         natural: img.naturalWidth + 'x' + img.naturalHeight
+       } : { has: false },
+       user: u ? { uid: u.uid, photoURL: u.photoURL } : null,
+       localStorage: ls
+     });
+     if (img) {
+       img.onerror = () => console.warn('BB_AVATAR:img.onerror', img.src);
+       img.onload = () => console.debug('BB_AVATAR:img.onload', img.src);
+     }
+   })();
+
+   2) Force test (doit afficher un avatar générique)
+   ───────────────────────────────────────────────────────────────────────────
+   document.getElementById('bbUserBadge')?.classList.remove('bb-badge--hidden');
+   document.getElementById('bbUserBadge')?.setAttribute('src','https://i.pravatar.cc/64');
+
+   3) Vérifie la présence du markup dans le titre
+   ───────────────────────────────────────────────────────────────────────────
+   document.querySelector('.bb-welcome-title')?.outerHTML
+
+   ➜ Envoie-moi : (a) la sortie "BB_AVATAR:diagnostic", (b) le outerHTML si l'img n'est pas présent.
+   J'ajusterai au sélecteur près s'il y a un décalage côté DOM/JS.
+
+   ═══════════════════════════════════════════════════════════════════════════ */

@@ -29,7 +29,7 @@
               <h2 class="bb-welcome-title">
                 Content de te revoir,
                 <span class="bb-user-identity">
-                  <img id="bbUserBadge" class="bb-user-avatar" alt="Badge serveur" hidden />
+                  <img id="bbUserBadge" class="bb-user-avatar bb-badge--hidden" alt="Badge serveur" />
                   <span id="bbUserName">—</span>
                 </span>
                 👋
@@ -87,20 +87,8 @@
         const nameEl = document.getElementById('bbUserName');
         if (nameEl) nameEl.textContent = name.toUpperCase();
       }
-      const avatarEl = document.getElementById('bbUserBadge');
-      if (avatarEl) {
-        const avatarMap = {
-          pup_orange: '/assets/images/avatar-pup-orange.svg',
-          pup_red: '/assets/images/avatar-pup-red.svg'
-        };
-        const inferredAvatar = user.avatar || (user.avatarKey && avatarMap[user.avatarKey]) || localStorage.getItem('avatarURL');
-        if (inferredAvatar) {
-          avatarEl.src = inferredAvatar;
-          avatarEl.hidden = false;
-        } else {
-          avatarEl.hidden = true;
-        }
-      }
+      // Avatar badge is now handled by navigation.js hydrateBadge() via onAuthStateChanged
+      // This ensures proper sync between Firebase Auth photoURL and localStorage
 
       const today = new Date();
       const CONTEST_END = new Date('2025-12-31T23:59:59');
