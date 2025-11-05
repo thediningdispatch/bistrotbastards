@@ -1,1 +1,32 @@
+# Claude AI assistant
 .claude/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Test and diagnostic files
+test_*.html
+*_test.html
+*_diagnostic.md
+DIAGNOSTIC*.md
+
+# Dependencies (if added later)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+
+# Build artifacts (if added later)
+dist/
+build/

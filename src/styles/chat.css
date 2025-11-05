@@ -4,6 +4,29 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.app-container, .desktop, .window {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.title-bar {
+  flex-shrink: 0;
+}
+
+.window-body.chat-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Override fixed nav positioning when inside chat */

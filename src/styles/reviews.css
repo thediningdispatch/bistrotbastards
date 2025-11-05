@@ -1,0 +1,195 @@
+/* Reviews page — Défi Podium */
+
+body {
+  background: repeating-linear-gradient(90deg, #d9d9d9, #d9d9d9 4px, #c3c3c3 4px, #c3c3c3 8px);
+}
+
+.review-body {
+  padding: 8px clamp(12px, 3vw, 18px) clamp(12px, 3vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#navHost {
+  display: flex;
+}
+
+@media (max-width: 640px) {
+  .review-body {
+    padding: 6px clamp(10px, 4vw, 16px) clamp(10px, 4vw, 16px);
+    gap: 6px;
+  }
+}
+
+.review-header {
+  text-align: center;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
+  border: 1px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.review-header h2 {
+  margin: 0;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.review-header p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  background: linear-gradient(135deg, #e9ffe3 0%, #d4ffc9 100%);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.section-label:before {
+  content: "✍️";
+  font-size: 14px;
+}
+
+#reviewForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 12px;
+  border: 1px solid #000;
+  box-shadow: inset 1px 1px rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+#reviewForm > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#reviewForm label {
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#serverSelect {
+  padding: 8px 12px;
+  border: 1px solid #000;
+  box-shadow: inset 1px 1px #7d7d7d, inset -1px -1px #fff;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+#serverSelect:focus {
+  outline: 2px solid #6d5bff;
+  outline-offset: 2px;
+}
+
+.emoji-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding: 12px 8px;
+}
+
+.emoji {
+  font-size: 40px;
+  cursor: pointer;
+  padding: 6px;
+  transition: all 0.1s ease;
+  user-select: none;
+  opacity: 0.7;
+}
+
+.emoji:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.emoji.active {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+#commentField {
+  padding: 10px 12px;
+  border: 1px solid #000;
+  box-shadow: inset 2px 2px #7d7d7d, inset -1px -1px #fff;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+  border-radius: 2px;
+  line-height: 1.5;
+}
+
+#commentField:focus {
+  outline: 2px solid #6d5bff;
+  outline-offset: 2px;
+}
+
+.btn-submit {
+  padding: 14px 28px;
+  font-weight: 700;
+  font-size: 15px;
+  background: linear-gradient(135deg, #ffe89a 0%, #ffd966 100%);
+  border: 1px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 8px;
+  border-radius: 4px;
+  transition: all 0.1s ease;
+  letter-spacing: 0.5px;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(135deg, #ffd966 0%, #ffc933 100%);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #000;
+}
+
+.btn-submit:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.footer-note {
+  text-align: center;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #d1c8ff 0%, #c4b5ff 100%);
+  border: 1px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  font-size: 13px;
+  margin-top: 8px;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.footer-note:before {
+  content: "ℹ️";
+  margin-right: 8px;
+  font-size: 14px;
+}
