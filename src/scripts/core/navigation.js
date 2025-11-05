@@ -220,38 +220,30 @@ if (document.readyState === 'loading') {
   bootstrap();
 }
 
-// Home page avatar hydration (onAuthStateChanged + visibility + HMR)
+// Home page avatar hydration (auth + LS + observer)
 document.addEventListener('DOMContentLoaded', () => {
-  const onHome = location.pathname.endsWith('/waiter/home.html') || location.pathname.endsWith('/home.html');
-  if (!onHome) return;
+  const isHome = /\/waiter\/home\.html$|\/home\.html$/.test(location.pathname);
+  if (!isHome) return;
 
-  // Primary hydration via onAuthStateChanged
-  onAuthStateChanged(auth, (user) => {
-    const src = (user?.photoURL) || getStoredAvatar() || "";
-    hydrateBadge(src);
-    console.debug("BB_AVATAR:home:hydrate", {
-      hasUser: !!user,
-      photoURL: user?.photoURL,
-      ls: getStoredAvatar(),
-      final: src
-    });
-  });
+  const apply = () => {
+    const url = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
+    hydrateBadge(url);
+    console.debug("BB_AVATAR:home:apply", { photoURL: auth.currentUser?.photoURL, ls: getStoredAvatar() });
+  };
 
-  // Refresh when tab becomes visible (in case avatar changed elsewhere)
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      const src = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
-      hydrateBadge(src);
-    }
-  });
+  // 1) First paint (LS fallback)
+  apply();
 
-  // HMR support (Vite hot reload)
-  if (import.meta && import.meta.hot) {
-    import.meta.hot.on("vite:afterUpdate", () => {
-      const src = (auth.currentUser?.photoURL) || getStoredAvatar() || "";
-      hydrateBadge(src);
-    });
-  }
+  // 2) When Firebase resolves user
+  onAuthStateChanged(auth, () => apply());
+
+  // 3) If title DOM is re-inserted (late render)
+  const mo = new MutationObserver(() => apply());
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  // 4) Tab visibility / HMR Vite
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") apply(); });
+  if (import.meta?.hot) { import.meta.hot.on("vite:afterUpdate", apply); }
 });
 
 window.appState = {

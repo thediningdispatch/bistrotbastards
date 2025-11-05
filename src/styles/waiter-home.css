@@ -337,77 +337,135 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   AVATAR UTILISATEUR (home) — STABILISÉ + LOADING STATE
-   ═══════════════════════════════════════════════════════════════════════════
-   Objectif: garantir affichage stable de <img id="bbUserBadge"> avec états loading/error
+   AVATAR (home) — STABILISÉ + ÉTATS + LOGS
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* État loading : spinner léger pour éviter flash/shift */
-#bbUserBadge.bb-badge--loading {
-  display: inline-block; /* on montre la "boîte" pendant le chargement */
-  position: relative;
-  background: radial-gradient(circle at 30% 30%, #222 0%, #171717 60%, #121212 100%);
-  overflow: hidden;
+/* ———————————————————
+   Vars + centrage titre
+   ——————————————————— */
+:root {
+  --bb-badge-size: 32px;
+  --bb-badge-ring: 2px;
+}
+@media (min-width: 420px) { :root { --bb-badge-size: 34px; } }
+@media (min-width: 768px) { :root { --bb-badge-size: 36px; } }
+
+.waiter-home .bb-welcome,
+.waiter-home .bb-welcome-wrap {
+  display: flex;
+  justify-content: center;
+}
+.waiter-home .bb-welcome-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
+/* ———————————————————
+   Base badge (hidden par défaut)
+   ——————————————————— */
+#bbUserBadge {
+  /* masqué tant qu'on n'a pas de source valide ET pas d'état forcé */
+  display: none;
+
+  inline-size: var(--bb-badge-size);
+  block-size: var(--bb-badge-size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+
+  /* look */
+  background: #1b1b1b;
+  border: 1px solid rgba(0, 0, 0, .12);
+  box-shadow:
+    0 0 0 var(--bb-badge-ring) rgba(255, 255, 255, .9),
+    0 4px 12px rgba(0, 0, 0, .25);
+
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Visible si src non vide et pas marqué hidden */
+#bbUserBadge[src]:not([src=""]):not(.bb-badge--hidden) {
+  display: inline-block;
+}
+
+/* ———————————————————
+   État: loading (spinner doux)
+   ——————————————————— */
+#bbUserBadge.bb-badge--loading {
+  display: inline-block; /* réserve la place pendant le chargement */
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 30% 30%, #222 0%, #171717 60%, #121212 100%);
+}
 #bbUserBadge.bb-badge--loading::after {
   content: "";
   position: absolute;
   inset: 4px;
   border-radius: 50%;
   border: 2px solid transparent;
-  border-top-color: rgba(255, 255, 255, 0.6);
-  animation: bb-badge-spin 0.8s linear infinite;
+  border-top-color: rgba(255, 255, 255, .6);
+  animation: bbBadgeSpin .8s linear infinite;
+}
+@keyframes bbBadgeSpin { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) {
+  #bbUserBadge.bb-badge--loading::after { animation-duration: 1.6s; }
 }
 
-@keyframes bb-badge-spin {
-  to { transform: rotate(360deg); }
+/* ———————————————————
+   État: hidden (erreur / vide)
+   ——————————————————— */
+#bbUserBadge.bb-badge--hidden {
+  display: none !important;
 }
 
-/* Debug visuel (décommenter si nécessaire) */
-/*
-#bbUserBadge { outline: 2px dashed #0af; }
-*/
+/* ———————————————————
+   (Option) Placeholder forcé si on ajoute data-placeholder="1"
+   ——————————————————— */
+#bbUserBadge[data-placeholder="1"] {
+  display: inline-block;
+  background:
+    radial-gradient(circle at 30% 30%, #232323 0%, #171717 60%, #121212 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='24' r='14' fill='%23555'/><path d='M8 60c4-14 18-20 24-20s20 6 24 20' fill='%23555'/></svg>") center/60% no-repeat;
+}
+
+/* ———————————————————
+   Aides debug togglables (facultatif)
+   ——————————————————— */
+/* Ajoute temporairement .bb-badge--debug sur l'img pour voir sa box */
+#bbUserBadge.bb-badge--debug { outline: 2px dashed #0af; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   🧪 LOGS — COLLER EN CONSOLE SI L'AVATAR NE S'AFFICHE PAS
+   🧪 LOGS DIAGNOSTIC — À COLLER EN CONSOLE si l'avatar n'apparaît pas
+   (NE RIEN COLLER CI-DESSOUS DANS LE CSS, C'EST POUR LA CONSOLE)
    ═══════════════════════════════════════════════════════════════════════════
 
-   1) Diagnostic rapide (home)
-   ───────────────────────────────────────────────────────────────────────────
-   (() => {
-     const img = document.getElementById('bbUserBadge');
-     const ls = (() => { try { return localStorage.getItem('bb.avatarUrl') } catch { return null } })();
-     const u = (window.firebaseAuth && firebaseAuth.currentUser) || null;
-     console.log('BB_AVATAR:diagnostic', {
-       path: location.pathname,
-       img: img ? {
-         has: true,
-         srcAttr: img.getAttribute('src'),
-         hiddenCls: img.classList.contains('bb-badge--hidden'),
-         loadingCls: img.classList.contains('bb-badge--loading'),
-         complete: img.complete,
-         natural: img.naturalWidth + 'x' + img.naturalHeight
-       } : { has: false },
-       user: u ? { uid: u.uid, photoURL: u.photoURL } : null,
-       localStorage: ls
-     });
-     if (img) {
-       img.onerror = () => console.warn('BB_AVATAR:img.onerror', img.src);
-       img.onload = () => console.debug('BB_AVATAR:img.onload', img.src);
-     }
-   })();
+(() => {
+  const img = document.getElementById('bbUserBadge');
+  const ls  = (() => { try { return localStorage.getItem('bb.avatarUrl') } catch { return null } })();
+  const u   = (window.firebaseAuth || window.auth)?.currentUser || null;
+  console.log('BB_AVATAR:diag(css-only)', {
+    path: location.pathname,
+    user: u ? { uid: u.uid, photoURL: u.photoURL } : null,
+    localStorage: ls,
+    img: img ? {
+      present: true,
+      srcAttr: img.getAttribute('src'),
+      hidden: img.classList.contains('bb-badge--hidden'),
+      loading: img.classList.contains('bb-badge--loading'),
+      complete: img.complete,
+      natural: img.naturalWidth + 'x' + img.naturalHeight
+    } : { present: false }
+  });
+})();
 
-   2) Force test (doit afficher un avatar générique)
-   ───────────────────────────────────────────────────────────────────────────
-   document.getElementById('bbUserBadge')?.classList.remove('bb-badge--hidden');
-   document.getElementById('bbUserBadge')?.setAttribute('src','https://i.pravatar.cc/64');
-
-   3) Vérifie la présence du markup dans le titre
-   ───────────────────────────────────────────────────────────────────────────
-   document.querySelector('.bb-welcome-title')?.outerHTML
-
-   ➜ Envoie-moi : (a) la sortie "BB_AVATAR:diagnostic", (b) le outerHTML si l'img n'est pas présent.
-   J'ajusterai au sélecteur près s'il y a un décalage côté DOM/JS.
+   ➜ Envoie-moi la sortie "BB_AVATAR:diag(css-only)" si l'avatar reste invisible.
 
    ═══════════════════════════════════════════════════════════════════════════ */

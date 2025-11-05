@@ -198,39 +198,14 @@ export function setStoredAvatar(url) {
 export function hydrateBadge(url) {
   const img = document.getElementById("bbUserBadge");
   if (!img) return;
-
-  const show = () => {
-    img.classList.remove("bb-badge--loading", "bb-badge--hidden");
-    cleanup();
-  };
-  const hide = () => {
-    img.classList.add("bb-badge--hidden");
-    img.classList.remove("bb-badge--loading");
-    cleanup();
-  };
-  const cleanup = () => {
-    img.onload = null;
-    img.onerror = null;
-  };
-
-  if (!url) {
-    hide();
-    return;
-  }
-
+  const show = () => { img.classList.remove("bb-badge--loading", "bb-badge--hidden"); img.onload = null; img.onerror = null; };
+  const hide = () => { img.classList.add("bb-badge--hidden"); img.classList.remove("bb-badge--loading"); img.onload = null; img.onerror = null; };
+  if (!url) { hide(); return; }
   img.classList.add("bb-badge--loading");
   img.classList.remove("bb-badge--hidden");
   img.onload = show;
   img.onerror = hide;
-
-  // Assigner la source
-  img.src = url;
-
-  // Cas cache instantané: onload ne se déclenche pas → valider via complete/naturalWidth
-  if (img.complete) {
-    if (img.naturalWidth > 0) show();
-    else hide();
-  }
-
-  console.debug("BB_AVATAR:hydrateBadge", { url, complete: img.complete, naturalWidth: img.naturalWidth });
+  if (img.src !== url) img.src = url; // avoid re-triggering load if same src
+  if (img.complete) (img.naturalWidth > 0 ? show() : hide()); // instant cache check
+  console.debug("BB_AVATAR:hydrateBadge", { url, complete: img.complete });
 }

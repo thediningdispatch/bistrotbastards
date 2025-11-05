@@ -24,6 +24,7 @@ export const firebaseConfig = {
 // ---- Initialize core services
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+window.firebaseAuth = auth; // expose for console diagnostics
 export const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.warn('[firebase] Failed to set local persistence:', error);
 });
