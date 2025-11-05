@@ -43,10 +43,9 @@ export const ROUTES = {
  */
 export const NAV_ITEMS = [
   { key: 'home', label: 'Home', href: ROUTES.WAITER_HOME, type: 'link' },
-  { key: 'performances', label: 'Performances', href: '#', type: 'link' },
-  { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
   { key: 'chat', label: 'Chat', href: ROUTES.CHAT, type: 'link' },
   { key: 'profile', label: 'Profil', href: ROUTES.WAITER_PROFILE, type: 'link' },
+  { key: 'leaderboard', label: 'Classement', href: '#', type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 

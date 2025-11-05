@@ -1,4 +1,4 @@
-import { AVATAR_URLS, NAV_ITEMS, ROUTES } from './config.js';
+import { NAV_ITEMS, ROUTES } from './config.js';
 import { getStoredUser, setStoredUser, getStoredAvatar, hydrateBadge } from './utils.js';
 import { auth, onAuthStateChanged } from './firebase.js';
 
@@ -57,15 +57,6 @@ function bindNavOffsetUpdates(nav) {
   window.addEventListener('load', handler);
 }
 
-function getAvatarUrl(user) {
-  if (!user) return null;
-  if (user.avatar) return user.avatar;
-  if (user.avatarKey && AVATAR_URLS[user.avatarKey]) {
-    return AVATAR_URLS[user.avatarKey];
-  }
-  return null;
-}
-
 function ensureNavStyles() {
   const existing = document.querySelector('link[href*="navigation.css"]');
   if (existing) return;
@@ -87,27 +78,30 @@ function ensureNav() {
   nav.className = 'top-nav window';
   nav.innerHTML = `
     <nav class="bb-nav">
-      <div class="bb-nav-main-profile">
-        <div class="nav-profile-box">
-          <img class="nav-profile-avatar" id="navAvatar" alt="Avatar" />
-          <span class="nav-profile-username" id="navUsername"></span>
-        </div>
-      </div>
       <div class="bb-nav-main-actions">
         <div class="bb-nav-inline" role="menubar" aria-label="Main">
-          ${NAV_ITEMS.map(item => {
-            if (item.key === 'logout') {
-              return `<button class="btn" type="button" data-nav="${item.key}" id="bbLogoutBtn">${item.label}</button>`;
-            }
+          ${NAV_ITEMS.filter(item => item.key === 'home' || item.key === 'chat' || item.key === 'profile').map(item => {
             return `<a href="${item.href}" class="btn" data-nav="${item.key}">${item.label}</a>`;
           }).join('')}
+          <div class="bb-nav-dropdown-wrapper">
+            <button id="bbMenuToggleDesktop" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
+            <div id="bbMenuDropdownDesktop" class="bb-dropdown" role="menu" hidden>
+              ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat' && item.key !== 'profile').map(item => {
+                if (item.key === 'logout') {
+                  return `<button id="bbLogoutBtn" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
+                }
+                return `<a href="${item.href}" role="menuitem" data-nav="${item.key}">${item.label}</a>`;
+              }).join('')}
+            </div>
+          </div>
         </div>
         <div class="bb-nav-menu">
           <a href="${ROUTES.WAITER_HOME}" class="btn" data-nav="home">Home</a>
           <a href="${ROUTES.CHAT}" class="btn" data-nav="chat">Chat</a>
+          <a href="${ROUTES.WAITER_PROFILE}" class="btn" data-nav="profile">Profil</a>
           <button id="bbMenuToggle" class="btn" aria-haspopup="true" aria-expanded="false">Menu ▾</button>
           <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
-            ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat').map(item => {
+            ${NAV_ITEMS.filter(item => item.key !== 'home' && item.key !== 'chat' && item.key !== 'profile').map(item => {
               if (item.key === 'logout') {
                 return `<button id="bbLogoutBtnMobile" role="menuitem" class="linklike" data-nav="${item.key}" type="button">${item.label}</button>`;
               }
@@ -135,38 +129,6 @@ async function initNavigation(user, existingNav) {
   const tNavStart = performance.now();
   const nav = existingNav || ensureNav();
   if (!nav) return;
-
-  const storedSnapshot = await getStoredUser();
-  console.log('[Nav] User state on init:', {
-    storedUser: storedSnapshot,
-    avatarKey: user?.avatarKey || null,
-    avatarFromUser: user?.avatar || null,
-    resolvedFromMap: user?.avatarKey ? AVATAR_URLS[user.avatarKey] : null
-  });
-
-  const avatarEl = nav.querySelector('#navAvatar');
-  const usernameEl = nav.querySelector('#navUsername');
-
-  if (avatarEl) {
-    const avatarUrl = getAvatarUrl(user);
-    if (avatarUrl) {
-      avatarEl.src = avatarUrl;
-      avatarEl.style.display = 'block';
-    } else {
-      avatarEl.style.display = 'none';
-      avatarEl.removeAttribute('src');
-    }
-    console.log('[Nav] Final avatar src:', avatarEl?.src || '(none)');
-  } else {
-    console.error('[Nav] ❌ Avatar element #navAvatar not found in DOM!');
-  }
-
-  if (usernameEl) {
-    const displayUsername = user.username || 'Guest';
-    usernameEl.textContent = displayUsername;
-  } else {
-    console.error('[Nav] ❌ Username element #navUsername not found in DOM!');
-  }
 
   const normalizePath = (path) => path.replace(/\/+$/, '');
   const currentPath = normalizePath(new URL(window.location.href).pathname);
@@ -261,6 +223,35 @@ function bindNavInteractions(nav) {
   if (!nav || nav.dataset.navBound === '1') return;
   nav.dataset.navBound = '1';
 
+  // Desktop dropdown
+  const menuBtnDesktop = nav.querySelector('#bbMenuToggleDesktop');
+  const menuDropDesktop = nav.querySelector('#bbMenuDropdownDesktop');
+  if (menuBtnDesktop && menuDropDesktop){
+    menuBtnDesktop.addEventListener('click', () => {
+      const open = !menuDropDesktop.hasAttribute('hidden');
+      if (open) {
+        menuDropDesktop.setAttribute('hidden','');
+        menuBtnDesktop.setAttribute('aria-expanded','false');
+      } else {
+        menuDropDesktop.removeAttribute('hidden');
+        menuBtnDesktop.setAttribute('aria-expanded','true');
+      }
+    });
+    document.addEventListener('click', (e)=>{
+      if (menuDropDesktop && !menuDropDesktop.contains(e.target) && e.target !== menuBtnDesktop){
+        menuDropDesktop.setAttribute('hidden','');
+        menuBtnDesktop.setAttribute('aria-expanded','false');
+      }
+    });
+    menuDropDesktop.addEventListener('click', (e)=>{
+      if (e.target.closest('a, button')){
+        menuDropDesktop.setAttribute('hidden','');
+        menuBtnDesktop.setAttribute('aria-expanded','false');
+      }
+    });
+  }
+
+  // Mobile dropdown
   const menuBtn = nav.querySelector('#bbMenuToggle');
   const menuDrop = nav.querySelector('#bbMenuDropdown');
   if (menuBtn && menuDrop){
