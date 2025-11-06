@@ -3,11 +3,24 @@ import { ADMIN_UID } from '../core/config.js';
 const statusEl = document.getElementById('bbAdminStatus');
 const gridEl = document.getElementById('bbAdminGrid');
 
-function openPortal(msg = 'Accès admin accordé (MVP).') {
-  statusEl.textContent = msg;
-  gridEl.hidden = false;
+function openPortal(msg = '✅ Accès confirmé. Bienvenue, admin.') {
+  if (statusEl) {
+    statusEl.textContent = msg;
+    statusEl.classList.remove('error');
+  }
+  if (gridEl) {
+    gridEl.classList.remove('hidden');
+    gridEl.setAttribute('aria-hidden', 'false');
+  }
   // Ne pas laisser le pass traîner pour les prochains onglets
   sessionStorage.removeItem('bb.admin.pass');
+}
+
+function showError(msg = 'Accès refusé.') {
+  if (statusEl) {
+    statusEl.textContent = msg;
+    statusEl.classList.add('error');
+  }
 }
 
 (async () => {
@@ -27,6 +40,6 @@ function openPortal(msg = 'Accès admin accordé (MVP).') {
     return;
   }
   // 3) Sinon, retour login
-  statusEl.textContent = 'Accès refusé — retourne à la page de connexion.';
+  showError('❌ Accès refusé — redirection vers la page de connexion...');
   setTimeout(() => location.href = '../auth/login.html', 900);
 })();
