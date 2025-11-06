@@ -1,32 +1,28 @@
-# Claude AI assistant
-.claude/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# System files
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Editor files
-*.swp
-*.swo
-*~
-.vscode/
-.idea/
-
-# Test and diagnostic files
-test_*.html
-*_test.html
-*_diagnostic.md
-DIAGNOSTIC*.md
-
-# Dependencies (if added later)
-node_modules/
-package-lock.json
-yarn.lock
-
-# Environment variables
-.env
-.env.local
-
-# Build artifacts (if added later)
-dist/
-build/
+# Firebase service account keys (NEVER commit these!)
+*serviceAccountKey*.json
+serviceAccount*.json

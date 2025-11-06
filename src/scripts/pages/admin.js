@@ -1,5 +1,6 @@
 import { db, auth } from '../core/firebase.js';
 import { collection, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { authReady } from '../core/auth-guard.js';
 
 const tPageStart = performance.now();
@@ -11,6 +12,18 @@ const statusEl = document.getElementById('adminStatus');
 const refreshBtn = document.getElementById('refreshBtn');
 
 let usersData = [];
+
+function hideAdminTable() {
+  if (contentEl) contentEl.style.display = 'none';
+  if (loadingEl) {
+    loadingEl.style.display = 'block';
+    loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">❌ Accès refusé — privilèges admin requis.</p>';
+  }
+}
+
+function redirectToLogin() {
+  window.location.href = '../../pages/auth/login.html';
+}
 
 function showStatus(message, type = 'info') {
   if (!statusEl) return;
@@ -272,8 +285,15 @@ async function loadUsers(filterActiveOnly = false) {
     contentEl.style.display = 'block';
   } catch (error) {
     console.error('[admin] Load error:', error);
-    loadingEl.innerHTML = '<p style="color: red;">Erreur lors du chargement des données</p>';
-    showStatus('Erreur lors du chargement', 'error');
+
+    // Vérifier si c'est une erreur de permissions Firestore
+    if (error.code === 'permission-denied') {
+      loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">❌ Permissions insuffisantes — vérifiez vos droits admin.</p>';
+      showStatus('Permissions Firestore refusées', 'error');
+    } else {
+      loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">Erreur lors du chargement des données</p>';
+      showStatus('Erreur lors du chargement', 'error');
+    }
   }
 }
 
@@ -303,8 +323,36 @@ const scheduleInitialLoad = () => {
   }
 };
 
-(async () => {
-  await authReady;
-  if (!auth.currentUser) return;
-  scheduleInitialLoad();
-})();
+// ========== ADMIN ACCESS GUARD ==========
+// Vérifier que l'utilisateur connecté possède le custom claim isAdmin
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    console.log('[admin] No user signed in, redirecting to login...');
+    redirectToLogin();
+    return;
+  }
+
+  try {
+    // Forcer le refresh du token pour obtenir les claims les plus récents
+    const tokenResult = await user.getIdTokenResult(false);
+    const isAdmin = !!tokenResult.claims?.isAdmin;
+
+    console.log('[admin] User authenticated:', user.uid);
+    console.log('[admin] isAdmin claim:', isAdmin);
+
+    if (!isAdmin) {
+      console.warn('[admin] Access denied - admin privileges required');
+      showStatus('Accès refusé — privilèges admin requis.', 'error');
+      hideAdminTable();
+      return;
+    }
+
+    // Admin OK → charger les données
+    console.log('[admin] Admin access granted');
+    scheduleInitialLoad();
+  } catch (error) {
+    console.error('[admin] Error checking admin status:', error);
+    showStatus('Erreur lors de la vérification des permissions', 'error');
+    hideAdminTable();
+  }
+});
