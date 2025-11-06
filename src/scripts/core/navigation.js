@@ -1,4 +1,4 @@
-import { NAV_ITEMS, ROUTES } from './config.js';
+import { NAV_ITEMS, ROUTES, ADMIN_UID } from './config.js';
 import { getStoredUser, setStoredUser } from './utils.js';
 import { auth, onAuthStateChanged } from './firebase.js';
 
@@ -86,7 +86,7 @@ async function handleLogout() {
 
 // Initialisation
 async function bootstrap() {
-  // Vérifier le claim isAdmin avant de rendre la nav
+  // Vérifier l'UID admin avant de rendre la nav (MVP)
   let isAdmin = false;
 
   try {
@@ -94,13 +94,8 @@ async function bootstrap() {
     await new Promise(resolve => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         unsubscribe();
-        if (user) {
-          try {
-            const tokenResult = await user.getIdTokenResult(false);
-            isAdmin = !!tokenResult.claims?.isAdmin;
-          } catch (err) {
-            console.warn('[nav] Could not check admin claim:', err);
-          }
+        if (user && user.uid === ADMIN_UID) {
+          isAdmin = true;
         }
         resolve();
       });

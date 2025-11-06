@@ -1,6 +1,7 @@
 import { auth } from '../core/firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { authReady } from '../core/auth-guard.js';
+import { ADMIN_UID } from '../core/config.js';
 
 const tPageStart = performance.now();
 
@@ -36,8 +37,8 @@ function setStatus(message, isError = false) {
 
 console.log('[Perf] admin-portal init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 
-// ========== ADMIN PORTAL ACCESS GUARD ==========
-// Vérifier que l'utilisateur possède le custom claim isAdmin
+// ========== ADMIN PORTAL ACCESS GUARD (MVP) ==========
+// Vérifier que l'utilisateur possède l'UID admin
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     console.log('[admin-portal] No user signed in, redirecting to login...');
@@ -46,27 +47,17 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  try {
-    // Récupérer le token avec les claims
-    const tokenResult = await user.getIdTokenResult(true);
-    const isAdmin = !!tokenResult.claims?.isAdmin;
+  console.log('[admin-portal] User authenticated:', user.uid);
 
-    console.log('[admin-portal] User authenticated:', user.uid);
-    console.log('[admin-portal] isAdmin claim:', isAdmin);
-
-    if (!isAdmin) {
-      console.warn('[admin-portal] Access denied - admin privileges required');
-      setStatus('Accès refusé — réservé à l\'administrateur.', true);
-      setTimeout(redirectToProfile, 1200);
-      return;
-    }
-
-    // Admin OK → afficher la grille
-    console.log('[admin-portal] Admin access granted');
-    setStatus('Accès confirmé. Bienvenue, admin.', false);
-    showGrid();
-  } catch (error) {
-    console.error('[admin-portal] Error checking admin status:', error);
-    setStatus('Erreur d\'authentification — réessayez.', true);
+  if (user.uid !== ADMIN_UID) {
+    console.warn('[admin-portal] Access denied - admin UID required');
+    setStatus('Accès refusé — réservé à l\'administrateur.', true);
+    setTimeout(redirectToProfile, 1200);
+    return;
   }
+
+  // Admin OK → afficher la grille
+  console.log('[admin-portal] Admin access granted (MVP)');
+  setStatus('Accès confirmé (MVP). Bienvenue, admin.', false);
+  showGrid();
 });

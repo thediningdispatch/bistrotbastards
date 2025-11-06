@@ -45,11 +45,96 @@
               <button type="submit" class="auth-submit">Se connecter</button>
               <a class="auth-link" href="signup.html">S'inscrire</a>
             </div>
+
+            <button type="button" id="adminShortcutBtn" class="bb-admin-shortcut">Accès Admin</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal Admin UID -->
+  <div id="adminUidModal" class="bb-admin-modal hidden" aria-hidden="true">
+    <div class="bb-admin-modal-card">
+      <h3>Accès Admin (MVP)</h3>
+      <p>Entre l'UID admin pour pré-remplir l'identifiant.</p>
+      <input id="adminUidInput" class="bb-admin-input" placeholder="UID admin" />
+      <div class="bb-admin-row">
+        <button id="adminUidOk" class="btn">OK</button>
+        <button id="adminUidCancel" class="btn">Annuler</button>
+      </div>
+      <p class="bb-admin-hint">L'UID n'accorde pas d'accès tout seul : tu dois te connecter avec le bon mot de passe.</p>
+    </div>
+  </div>
+
+  <style>
+    .bb-admin-shortcut {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      width: 100%;
+      cursor: pointer;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .bb-admin-shortcut:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+    .bb-admin-modal.hidden {
+      display: none;
+    }
+    .bb-admin-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: grid;
+      place-items: center;
+      z-index: 999;
+    }
+    .bb-admin-modal-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 380px;
+      width: 92%;
+      border: 1px solid #000;
+    }
+    .bb-admin-modal-card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+    .bb-admin-modal-card p {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .bb-admin-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #000;
+      background: #fff;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .bb-admin-row {
+      display: flex;
+      gap: 8px;
+    }
+    .bb-admin-row .btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 13px;
+    }
+    .bb-admin-hint {
+      font-size: 12px !important;
+      color: #9ca3af !important;
+      margin-top: 8px !important;
+    }
+  </style>
 
   <script type="module" src="../../scripts/core/auth-guard.js"></script>
   <script type="module" src="../../scripts/pages/login.js"></script>

@@ -2,7 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && request.auth.token.isAdmin == true; }
+    function isAdmin() {
+      return signedIn()
+        && (request.auth.token.isAdmin == true || request.auth.uid == '6jKlMTSdskPFgJvdoUmcAe3igPH2');
+    }
     function userSelf(uid) { return signedIn() && request.auth.uid == uid; }
     function userProfileUpdateOnly() {
       // Autoriser l'utilisateur à modifier uniquement son profil public

@@ -85,6 +85,20 @@ export const AUTH_CONFIG = {
   PSEUDO_EMAIL_DOMAIN: '@bistrotbastards.local'
 };
 
+// ========== ADMIN CONFIGURATION (MVP) ==========
+
+/**
+ * UID de l'administrateur (sécurité basée sur UID pour MVP)
+ * @constant {string}
+ */
+export const ADMIN_UID = '6jKlMTSdskPFgJvdoUmcAe3igPH2';
+
+/**
+ * Email/identifiant de l'administrateur pour pré-remplissage
+ * @constant {string}
+ */
+export const ADMIN_EMAIL = 'admin@bistrotbastards.local';
+
 // ========== FIREBASE / DATABASE ==========
 
 /**
