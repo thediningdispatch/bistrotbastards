@@ -21,13 +21,6 @@ const PUBLIC_PATHS = new Set([
   normalizePath(ROUTES.SIGNUP)
 ]);
 
-const ADMIN_PORTAL_SUFFIX = 'admin/admin-portal.html';
-
-function isAdminPortalPath() {
-  const normalized = window.location.pathname.replace(/\\/g, '/');
-  return normalized.endsWith(ADMIN_PORTAL_SUFFIX);
-}
-
 // Export auth ready promise for other modules to await
 let authReadyResolve;
 export const authReady = new Promise((resolve) => {
@@ -35,7 +28,6 @@ export const authReady = new Promise((resolve) => {
 });
 
 function redirectToLogin() {
-  if (isAdminPortalPath()) return;
   const loginPath = ROUTES.LOGIN;
   if (normalizePath(window.location.pathname) !== normalizePath(loginPath)) {
     window.location.replace(loginPath);
@@ -103,12 +95,6 @@ function guard() {
     }
 
     localStorage.removeItem(USER_KEY);
-
-    if (isAdminPortalPath()) {
-      showPage();
-      authReadyResolve(false);
-      return;
-    }
 
     if (isPublicPath) {
       showPage();

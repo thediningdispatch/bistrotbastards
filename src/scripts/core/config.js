@@ -22,7 +22,6 @@ export const ROUTES = {
   WAITER_LEADERBOARD: resolvePath('../../pages/waiter/classement.html'),
   WAITER_PERFORMANCES: resolvePath('../../pages/waiter/performances.html'),
   CHAT: resolvePath('../../pages/shared/chat.html'),
-  ADMIN_PORTAL: resolvePath('../../pages/admin/admin-portal.html'),
   ADMIN_DASHBOARD: resolvePath('../../pages/admin/dashboard.html')
 };
 
@@ -91,19 +90,13 @@ export const AUTH_CONFIG = {
  * UID de l'administrateur (sécurité basée sur UID pour MVP)
  * @constant {string}
  */
-export const ADMIN_UID = '6jKlMTSdskPFgJvdoUmcAe3igPH2';
+export const ADMIN_UID = 'ox7IA7SqTbh6BzDTjCI3PKlC1Kp1';
 
 /**
  * Email/identifiant de l'administrateur pour pré-remplissage
  * @constant {string}
  */
-export const ADMIN_EMAIL = 'bistrotbastards@bistrotbastards.com';
-
-/**
- * Chemin relatif vers le portail admin (depuis login.html)
- * @constant {string}
- */
-export const ADMIN_PORTAL_PATH = '../admin/admin-portal.html';
+export const ADMIN_EMAIL = 'team@thediningdispatch.com';
 
 // ========== FIREBASE / DATABASE ==========
 

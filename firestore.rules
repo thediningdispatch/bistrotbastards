@@ -4,7 +4,7 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function isAdmin() {
       return signedIn()
-        && (request.auth.token.isAdmin == true || request.auth.uid == '6jKlMTSdskPFgJvdoUmcAe3igPH2');
+        && (request.auth.token.isAdmin == true || request.auth.uid == 'ox7IA7SqTbh6BzDTjCI3PKlC1Kp1');
     }
     function userSelf(uid) { return signedIn() && request.auth.uid == uid; }
     function userProfileUpdateOnly() {

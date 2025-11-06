@@ -1,6 +1,5 @@
-import { NAV_ITEMS, ROUTES, ADMIN_UID } from './config.js';
+import { NAV_ITEMS, ROUTES } from './config.js';
 import { getStoredUser, setStoredUser } from './utils.js';
-import { auth, onAuthStateChanged } from './firebase.js';
 
 const defaultUser = {
   username: 'Serveur Bistrot',
@@ -32,31 +31,28 @@ async function saveUser(user) {
 }
 
 // Fonction pour injecter la barre de navigation System 7 en haut de la page
-async function renderNavigation(isAdmin = false) {
+async function renderNavigation() {
   // Vérifier si la barre n'existe pas déjà
   if (document.querySelector('.bb-topbar')) return;
 
-  // Copier les items de nav et ajouter Admin si nécessaire
-  let navItems = [...NAV_ITEMS];
+  const primaryItems = NAV_ITEMS.filter(item => ['home', 'chat', 'profile'].includes(item.key));
 
-  // Insérer l'item Admin avant logout si l'utilisateur est admin
-  if (isAdmin) {
-    const logoutIndex = navItems.findIndex(item => item.key === 'logout');
-    navItems.splice(logoutIndex, 0, {
-      key: 'admin',
-      label: 'Admin',
-      href: ROUTES.ADMIN_PORTAL,
-      type: 'link'
-    });
-  }
-
-  // Construire les boutons de navigation avec la structure System 7
-  const navButtons = navItems.map(item => {
-    if (item.key === 'logout') {
-      return `<button id="bbLogoutBtn" class="bb-nav-btn" type="button">${item.label}</button>`;
-    }
+  const primaryButtons = primaryItems.map(item => {
     return `<a href="${item.href}" class="bb-nav-btn">${item.label}</a>`;
   }).join('');
+
+  const dropdownMarkup = `
+    <div class="bb-nav-dropdown-wrapper">
+      <button id="bbMenuToggle" class="bb-nav-btn bb-nav-btn--menu" type="button" aria-haspopup="true" aria-expanded="false">
+        Menu ▾
+      </button>
+      <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
+        <button id="bbAdminBtn" class="bb-dropdown__item linklike" type="button" role="menuitem">Admin</button>
+        <button id="bbLogoutBtn" class="bb-dropdown__item linklike" type="button" role="menuitem">Out</button>
+      </div>
+    </div>`;
+
+  const navButtons = primaryButtons + dropdownMarkup;
 
   // Créer et injecter la barre en haut du body
   const topbar = document.createElement('div');
@@ -65,55 +61,108 @@ async function renderNavigation(isAdmin = false) {
 
   document.body.insertBefore(topbar, document.body.firstChild);
 
-  // Bind le bouton de déconnexion
-  const logoutBtn = document.getElementById('bbLogoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', handleLogout);
-  }
-}
+  const menuToggle = topbar.querySelector('#bbMenuToggle');
+  const dropdown = topbar.querySelector('#bbMenuDropdown');
+  const adminBtn = topbar.querySelector('#bbAdminBtn');
+  const logoutBtn = topbar.querySelector('#bbLogoutBtn');
 
-// Gestion de la déconnexion
-async function handleLogout() {
-  try {
-    const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-    await signOut(auth);
-    localStorage.clear();
-    location.href = ROUTES.LOGIN;
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
+  if (!menuToggle || !dropdown) return;
+
+  const ensureClosedState = () => {
+    dropdown.setAttribute('hidden', '');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  ensureClosedState();
+
+  const isOpen = () => !dropdown.hasAttribute('hidden');
+
+  const openMenu = () => {
+    if (isOpen()) return;
+    dropdown.removeAttribute('hidden');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    dropdown.querySelector('[role="menuitem"]')?.focus({ preventScroll: true });
+  };
+
+  const closeMenu = () => {
+    if (!isOpen()) return;
+    dropdown.setAttribute('hidden', '');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  const toggleMenu = () => {
+    if (isOpen()) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  };
+
+  menuToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleMenu();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!isOpen()) return;
+    if (dropdown.contains(event.target) || event.target === menuToggle) return;
+    closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeMenu();
+      menuToggle.focus();
+    }
+  });
+
+  window.addEventListener('resize', closeMenu);
+  window.addEventListener('orientationchange', closeMenu);
+
+  const handleLogout = async () => {
+    closeMenu();
+    try {
+      const { auth } = await import('../core/firebase.js');
+      const { signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+      await signOut(auth);
+    } catch (_) {}
+    try { localStorage.clear(); } catch (_) {}
+    try { sessionStorage.clear(); } catch (_) {}
+    const fallback = ROUTES.LOGIN || ROUTES.WAITER_HOME || '/';
+    window.location.href = fallback;
+  };
+
+  adminBtn?.addEventListener('click', () => {
+    closeMenu();
+    const PASS = 'pranklord666';
+    const input = window.prompt('Mot de passe admin :');
+    if (!input) return;
+    if (input === PASS) {
+      try {
+        sessionStorage.setItem('bb_admin_ok', '1');
+      } catch (_) {}
+      window.location.href = ROUTES.ADMIN_DASHBOARD;
+    } else {
+      window.alert('❌ Mot de passe incorrect');
+    }
+  });
+  logoutBtn?.addEventListener('click', async () => {
+    await handleLogout();
+    closeMenu();
+  });
 }
 
 // Initialisation
 async function bootstrap() {
   const body = document.body;
-  const skipNav = body?.classList?.contains('admin-portal-page')
-    || body?.classList?.contains('admin-page')
+  const skipNav = body?.classList?.contains('admin-page')
     || body?.classList?.contains('no-nav');
 
   if (skipNav) {
     return;
   }
 
-  // Vérifier l'UID admin avant de rendre la nav (MVP)
-  let isAdmin = false;
-
-  try {
-    // Attendre que l'auth soit prête
-    await new Promise(resolve => {
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        unsubscribe();
-        if (user && user.uid === ADMIN_UID) {
-          isAdmin = true;
-        }
-        resolve();
-      });
-    });
-  } catch (err) {
-    console.warn('[nav] Bootstrap auth check failed:', err);
-  }
-
-  renderNavigation(isAdmin);
+  renderNavigation();
 }
 
 // Exécution

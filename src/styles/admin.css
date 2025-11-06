@@ -1,99 +1,208 @@
-/* Admin dashboard page */
+/* Admin day management wizard */
 
 .admin-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #000;
+  margin-bottom: 12px;
+  text-align: left;
 }
 
 .admin-title {
-  font-size: 18px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.admin-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.admin-table-wrapper {
-  overflow-x: auto;
-  border: 1px solid #000;
-  background: var(--panel-light);
-  box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
+.admin-subtitle {
+  margin: 6px 0 0;
+  color: #475569;
   font-size: 13px;
 }
 
-.admin-table thead {
-  background: var(--panel-mid);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.admin-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
-.admin-table th {
-  padding: 10px 8px;
-  text-align: left;
-  font-weight: 700;
-  border-bottom: 1px solid #000;
-  white-space: nowrap;
+.date-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
 }
 
-.admin-table td {
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
-}
-
-.admin-table tbody tr:hover {
-  background: var(--panel-mid);
-}
-
-.admin-username {
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.admin-input {
-  width: 80px;
-  padding: 4px 6px;
+.date-picker input[type="date"] {
+  padding: 6px 10px;
+  border-radius: 8px;
   border: 1px solid #000;
   background: #fff;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.admin-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-step {
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: var(--window-bg, #fff);
+  padding: 16px;
   box-shadow: inset 1px 1px var(--highlight), inset -1px -1px var(--shadow);
 }
 
-.admin-input:focus {
-  outline: none;
-  box-shadow: inset -1px -1px var(--highlight), inset 1px 1px var(--shadow);
+.step-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
-.admin-input-wide {
-  width: 100px;
+.step-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 
-.admin-save-btn {
-  padding: 4px 10px;
-  font-size: 12px;
-  min-width: 80px;
+.step-head h2 {
+  margin: 2px 0 6px;
+  font-size: 18px;
+}
+
+.step-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.step-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.step-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.user-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  max-height: 50vh;
+  overflow: auto;
+  padding: 8px;
+  background: var(--panel-mid);
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.user-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-empty {
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.metrics-grid {
+  overflow: auto;
+  border: 1px solid #000;
+  border-radius: 10px;
+  background: var(--panel-light);
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: 140px repeat(8, minmax(90px, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.metrics-row--head {
+  background: var(--panel-mid);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.metrics-name {
+  font-weight: 600;
+}
+
+.metrics-row input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #000;
+  background: #fff;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fff9f0 0%, #ffe1c4 100%);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #111, #374151);
+  color: #fff;
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .admin-status {
-  margin-top: 12px;
-  padding: 8px 12px;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid #000;
   background: var(--panel-mid);
-  font-size: 12px;
+  font-size: 13px;
   display: none;
 }
 
@@ -112,63 +221,16 @@
 .admin-loading {
   padding: 40px;
   text-align: center;
-  font-size: 14px;
-  color: var(--muted);
+  color: #94a3b8;
 }
 
-.admin-filters {
-  margin-bottom: 12px;
-  padding: 8px;
-  background: var(--panel-mid);
-  border: 1px solid #000;
-}
-
-.admin-filter-checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.admin-filter-checkbox input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.admin-input-small {
-  width: 60px;
-}
-
-.admin-xp-output {
-  text-align: right;
-  font-weight: 600;
-  color: #0066cc;
-  font-family: 'Monaco', 'Courier New', monospace;
-  white-space: nowrap;
-}
-
-.admin-xp-total {
-  font-weight: 700;
-  font-size: 14px;
-  color: #cc6600;
-}
-
-@media (max-width: 768px) {
-  .admin-input {
-    width: 60px;
+@media (max-width: 640px) {
+  .metrics-row {
+    grid-template-columns: 120px repeat(8, minmax(80px, 1fr));
+    padding: 8px;
   }
 
-  .admin-input-wide {
-    width: 80px;
-  }
-
-  .admin-table {
-    font-size: 11px;
-  }
-
-  .admin-table th,
-  .admin-table td {
-    padding: 6px 4px;
+  .step-head {
+    flex-direction: column;
   }
 }

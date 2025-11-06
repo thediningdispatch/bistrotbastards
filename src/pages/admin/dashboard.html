@@ -24,58 +24,58 @@
       </div>
 
       <div class="window-body" id="app">
-        <div class="admin-header">
-          <h2 class="admin-title">Gestion des serveurs</h2>
-          <div class="admin-actions">
-            <button id="refreshBtn" class="btn">Actualiser</button>
-            <a href="../waiter/home.html" class="btn">Retour</a>
-          </div>
-        </div>
+        <header class="admin-header">
+          <h1 class="admin-title">Gestion du jour</h1>
+          <p class="admin-subtitle">Sélectionne les serveurs présents puis saisis leurs métriques.</p>
+        </header>
+
+        <section class="admin-toolbar">
+          <label class="date-picker">
+            <span>Date :</span>
+            <input type="date" id="dayPicker" />
+          </label>
+        </section>
 
         <div id="adminLoading" class="admin-loading">
-          ⏳ Chargement des données...
+          ⏳ Chargement des serveurs...
         </div>
 
-        <div id="adminContent" style="display: none;">
-          <div class="admin-filters">
-            <label class="admin-filter-checkbox">
-              <input type="checkbox" id="filterActiveOnly" />
-              <span>Afficher seulement les actifs</span>
-            </label>
-          </div>
+        <div id="adminContent" class="admin-wizard" style="display: none;">
+          <section id="stepAttendance" class="admin-step">
+            <header class="step-head">
+              <div>
+                <p class="step-label">Étape A</p>
+                <h2>Qui a travaillé ?</h2>
+              </div>
+              <div class="step-actions">
+                <button id="btnSelectAll" class="btn ghost">Tout sélectionner</button>
+                <button id="btnClearAll" class="btn ghost">Tout désélectionner</button>
+              </div>
+            </header>
+            <div id="userList" class="user-list" aria-live="polite"></div>
+            <div class="step-footer">
+              <button id="btnContinue" class="btn btn-primary">Continuer ➜</button>
+            </div>
+          </section>
 
-          <div class="admin-table-wrapper">
-            <table class="admin-table" id="adminTable">
-              <thead>
-                <tr>
-                  <th>Serveur</th>
-                  <th>Actif</th>
-                  <th>Scans</th>
-                  <th>Posts</th>
-                  <th>Note/10</th>
-                  <th>Ticket joueur (€)</th>
-                  <th>Ticket moyen (€)</th>
-                  <th>Ticket max (€)</th>
-                  <th>Chablis vendus</th>
-                  <th>Chablis max</th>
-                  <th>Connexion</th>
-                  <th>Saisie Tips</th>
-                  <th>Streak 7j</th>
-                  <th>XP Reviews</th>
-                  <th>XP Ticket</th>
-                  <th>XP Chablis</th>
-                  <th>XP Engagement</th>
-                  <th>XP Total</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="adminTableBody">
-                <!-- Filled dynamically -->
-              </tbody>
-            </table>
-          </div>
+          <section id="stepMetrics" class="admin-step" hidden>
+            <header class="step-head">
+              <div>
+                <p class="step-label">Étape B</p>
+                <h2>Métriques du jour</h2>
+                <p class="step-hint">Remplis les valeurs (0 par défaut). Toutes les valeurs sont optionnelles.</p>
+              </div>
+              <div class="step-actions">
+                <button id="btnBack" class="btn ghost">⟵ Retour</button>
+              </div>
+            </header>
+            <div id="metricsGrid" class="metrics-grid"></div>
+            <div class="step-footer">
+              <button id="btnSaveDay" class="btn btn-primary">Enregistrer la journée</button>
+            </div>
+          </section>
 
-          <div id="adminStatus" class="admin-status"></div>
+          <div id="adminStatus" class="admin-status" aria-live="polite"></div>
         </div>
       </div>
     </div>

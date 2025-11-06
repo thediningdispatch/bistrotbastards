@@ -1,334 +1,294 @@
-import { db, auth, onAuthStateChanged } from '../core/firebase.js';
-import { collection, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { ADMIN_UID } from '../core/config.js';
+import { db } from '../core/firebase.js';
+import { collection, getDocs, doc, setDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const tPageStart = performance.now();
+const todayISO = new Date().toISOString().slice(0, 10);
 
+const dayPicker = document.getElementById('dayPicker');
+const stepAttendance = document.getElementById('stepAttendance');
+const stepMetrics = document.getElementById('stepMetrics');
+const userListEl = document.getElementById('userList');
+const metricsGrid = document.getElementById('metricsGrid');
+const statusEl = document.getElementById('adminStatus');
 const loadingEl = document.getElementById('adminLoading');
 const contentEl = document.getElementById('adminContent');
-const tableBody = document.getElementById('adminTableBody');
-const statusEl = document.getElementById('adminStatus');
-const refreshBtn = document.getElementById('refreshBtn');
 
-let usersData = [];
+const btnSelectAll = document.getElementById('btnSelectAll');
+const btnClearAll = document.getElementById('btnClearAll');
+const btnContinue = document.getElementById('btnContinue');
+const btnBack = document.getElementById('btnBack');
+const btnSaveDay = document.getElementById('btnSaveDay');
+
+let allUsers = [];
+let selectedUids = new Set();
 
 function showStatus(message, type = 'info') {
   if (!statusEl) return;
   statusEl.textContent = message;
-  statusEl.className = 'admin-status show';
-  if (type === 'success') statusEl.classList.add('success');
-  if (type === 'error') statusEl.classList.add('error');
-  setTimeout(() => {
-    statusEl.classList.remove('show');
-  }, 4000);
+  statusEl.className = `admin-status show ${type}`;
 }
 
-/**
- * Calcule les XP pondérés à partir des valeurs de la ligne
- * et met à jour les cellules de sortie en lecture seule.
- * @param {HTMLTableRowElement} rowElement - La ligne à calculer
- * @returns {Object} Les XP calculés { reviewsPond, ticketPond, chablisPond, engagementPond, total }
- */
-function computeXpFromRow(rowElement) {
-  const getValue = (field) => {
-    const input = rowElement.querySelector(`input[data-field="${field}"]`);
-    if (!input) return 0;
-    if (input.type === 'checkbox') return input.checked ? 1 : 0;
-    const val = parseFloat(input.value) || 0;
-    return val >= 0 ? val : 0;
-  };
-
-  const scans = getValue('scans');
-  const posts = getValue('posts');
-  const note = getValue('note');
-  const ticketJoueur = getValue('ticketJoueur');
-  const ticketMoyenne = getValue('ticketMoyenne');
-  const ticketMax = getValue('ticketMax');
-  const chablisVendus = getValue('chablisVendus');
-  const chablisMax = getValue('chablisMax');
-  const connexion = getValue('connexion');
-  const saisieTips = getValue('saisieTips');
-  const streak7 = getValue('streak7');
-
-  // ——— REVIEWS (30%) ———
-  const XP_scans = 10 * scans;
-  const XP_posts = 25 * posts;
-  const bonus_qualite = (note < 7) ? 0 : (note - 6) / 3;
-  const XP_qualite = (XP_scans + XP_posts) * bonus_qualite;
-  const XP_reviews = Math.min(XP_scans + XP_posts + XP_qualite, 800);
-  const XP_reviews_pond = 0.30 * XP_reviews;
-
-  // ——— TICKET (30%) ———
-  const ratio = (ticketJoueur <= ticketMoyenne) ? 0 : (ticketJoueur - ticketMoyenne) / ticketMoyenne;
-  const XP_ticket_day = 200 * ratio;
-  const XP_bonus_leader = (ticketJoueur === ticketMax && ticketMax > 0) ? 100 : 0;
-  const XP_ticket = XP_ticket_day + XP_bonus_leader;
-  const XP_ticket_pond = 0.30 * XP_ticket;
-
-  // ——— CHABLIS (25%) ———
-  const XP_vente = 40 * chablisVendus;
-  const XP_bonus_chablis = (chablisVendus === chablisMax && chablisMax > 0) ? 150 : 0;
-  const XP_chablis = XP_vente + XP_bonus_chablis;
-  const XP_chablis_pond = 0.25 * XP_chablis;
-
-  // ——— ENGAGEMENT (15%) ———
-  const XP_engagement_day = (10 * connexion) + (15 * saisieTips);
-  const XP_bonus_assiduite = (streak7 ? 100 : 0);
-  const XP_engagement = XP_engagement_day + XP_bonus_assiduite;
-  const XP_engagement_pond = 0.15 * XP_engagement;
-
-  // ——— TOTAL ———
-  const XP_total = XP_reviews_pond + XP_ticket_pond + XP_chablis_pond + XP_engagement_pond;
-
-  // Update readonly output cells
-  const setOutput = (field, value) => {
-    const cell = rowElement.querySelector(`[data-xp="${field}"]`);
-    if (cell) cell.textContent = Math.round(value);
-  };
-
-  setOutput('reviewsPond', XP_reviews_pond);
-  setOutput('ticketPond', XP_ticket_pond);
-  setOutput('chablisPond', XP_chablis_pond);
-  setOutput('engagementPond', XP_engagement_pond);
-  setOutput('total', XP_total);
-
-  return {
-    reviewsPond: XP_reviews_pond,
-    ticketPond: XP_ticket_pond,
-    chablisPond: XP_chablis_pond,
-    engagementPond: XP_engagement_pond,
-    total: XP_total
-  };
+function clearStatus() {
+  if (statusEl) {
+    statusEl.textContent = '';
+    statusEl.className = 'admin-status';
+  }
 }
 
-function createUserRow(user) {
-  const tr = document.createElement('tr');
-  tr.dataset.uid = user.uid;
+function setStep(step) {
+  if (step === 'metrics') {
+    stepAttendance.hidden = true;
+    stepMetrics.hidden = false;
+  } else {
+    stepAttendance.hidden = false;
+    stepMetrics.hidden = true;
+  }
+}
 
-  const username = (user.username || user.uid).toString();
-
-  // Extract stats with defaults
-  const stats = user.stats || {};
-  const isActive = user.isActive !== undefined ? user.isActive : false;
-  const scans = stats.scans || 0;
-  const posts = stats.posts || 0;
-  const note = stats.note || 0;
-  const ticketJoueur = stats.ticketJoueur || 0;
-  const ticketMoyenne = stats.ticketMoyenne || 0;
-  const ticketMax = stats.ticketMax || 0;
-  const chablisVendus = stats.chablisVendus || 0;
-  const chablisMax = stats.chablisMax || 0;
-  const connexion = stats.connexion || 0;
-  const saisieTips = stats.saisieTips || 0;
-  const streak7 = stats.streak7 || 0;
-
-  tr.innerHTML = `
-    <td class="admin-username">${username}</td>
-    <td><input type="checkbox" data-field="isActive" ${isActive ? 'checked' : ''} /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="scans" min="0" step="1" value="${scans}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="posts" min="0" step="1" value="${posts}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="note" min="0" max="10" step="0.1" value="${note}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="ticketJoueur" min="0" step="0.01" value="${ticketJoueur}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="ticketMoyenne" min="0" step="0.01" value="${ticketMoyenne}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="ticketMax" min="0" step="0.01" value="${ticketMax}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="chablisVendus" min="0" step="1" value="${chablisVendus}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="chablisMax" min="0" step="1" value="${chablisMax}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="connexion" min="0" max="1" step="1" value="${connexion}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="saisieTips" min="0" max="1" step="1" value="${saisieTips}" /></td>
-    <td><input type="number" class="admin-input admin-input-small" data-field="streak7" min="0" max="1" step="1" value="${streak7}" /></td>
-    <td class="admin-xp-output" data-xp="reviewsPond">—</td>
-    <td class="admin-xp-output" data-xp="ticketPond">—</td>
-    <td class="admin-xp-output" data-xp="chablisPond">—</td>
-    <td class="admin-xp-output" data-xp="engagementPond">—</td>
-    <td class="admin-xp-output admin-xp-total" data-xp="total">—</td>
-    <td><button class="btn admin-save-btn" data-action="save">Enregistrer</button></td>
+function buildUserItem(user) {
+  const item = document.createElement('label');
+  item.className = 'user-item';
+  item.innerHTML = `
+    <input type="checkbox" value="${user.uid}" ${selectedUids.has(user.uid) ? 'checked' : ''} />
+    <div class="user-info">
+      <span class="user-name">${user.username}</span>
+    </div>
   `;
-
-  // Auto-compute XP on input change
-  const inputs = tr.querySelectorAll('input[data-field]');
-  inputs.forEach(input => {
-    input.addEventListener('input', () => computeXpFromRow(tr));
+  const checkbox = item.querySelector('input');
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      selectedUids.add(user.uid);
+    } else {
+      selectedUids.delete(user.uid);
+    }
   });
-
-  const saveBtn = tr.querySelector('[data-action="save"]');
-  saveBtn.addEventListener('click', () => saveUserData(user.uid, tr));
-
-  // Initial XP computation
-  computeXpFromRow(tr);
-
-  return tr;
+  return item;
 }
 
-async function saveUserData(uid, rowElement) {
-  const getValue = (field) => {
-    const input = rowElement.querySelector(`input[data-field="${field}"]`);
-    if (!input) return null;
-    if (input.type === 'checkbox') return input.checked;
-    const val = parseFloat(input.value) || 0;
-    return val >= 0 ? val : 0;
-  };
+function renderUserList() {
+  if (!userListEl) return;
+  userListEl.innerHTML = '';
+  if (allUsers.length === 0) {
+    userListEl.innerHTML = '<p class="user-empty">Aucun serveur enregistré.</p>';
+    return;
+  }
+  allUsers.forEach(user => userListEl.appendChild(buildUserItem(user)));
+}
 
-  // Validate note
-  const note = getValue('note');
-  if (note !== null && note > 10) {
-    showStatus('La note doit être entre 0 et 10', 'error');
+function renderMetricsForm() {
+  if (!metricsGrid) return;
+  metricsGrid.innerHTML = '';
+  const selectedUsers = allUsers.filter(user => selectedUids.has(user.uid));
+  if (selectedUsers.length === 0) {
+    metricsGrid.innerHTML = '<p class="user-empty">Sélectionne au moins un serveur.</p>';
     return;
   }
 
-  // Extract all stats
-  const isActive = getValue('isActive');
-  const stats = {
-    scans: Math.floor(getValue('scans') || 0),
-    posts: Math.floor(getValue('posts') || 0),
-    note: parseFloat((note || 0).toFixed(1)),
-    ticketJoueur: parseFloat((getValue('ticketJoueur') || 0).toFixed(2)),
-    ticketMoyenne: parseFloat((getValue('ticketMoyenne') || 0).toFixed(2)),
-    ticketMax: parseFloat((getValue('ticketMax') || 0).toFixed(2)),
-    chablisVendus: Math.floor(getValue('chablisVendus') || 0),
-    chablisMax: Math.floor(getValue('chablisMax') || 0),
-    connexion: getValue('connexion') ? 1 : 0,
-    saisieTips: getValue('saisieTips') ? 1 : 0,
-    streak7: getValue('streak7') ? 1 : 0
-  };
+  const header = document.createElement('div');
+  header.className = 'metrics-row metrics-row--head';
+  header.innerHTML = `
+    <div>Serveur</div>
+    <div>Scans</div>
+    <div>Posts</div>
+    <div>Note/10</div>
+    <div>Ticket joueur (€)</div>
+    <div>Ticket moyen (€)</div>
+    <div>Ticket max (€)</div>
+    <div>Chablis vendus</div>
+    <div>Chablis max</div>
+  `;
+  metricsGrid.appendChild(header);
 
-  // Compute XP
-  const xp = computeXpFromRow(rowElement);
+  selectedUsers.forEach((user) => {
+    const row = document.createElement('div');
+    row.className = 'metrics-row';
+    row.dataset.uid = user.uid;
+    row.innerHTML = `
+      <div class="metrics-name">${user.username}</div>
+      <input type="number" name="scans" min="0" step="1" value="0" inputmode="numeric"/>
+      <input type="number" name="posts" min="0" step="1" value="0" inputmode="numeric"/>
+      <input type="number" name="noteSur10" min="0" max="10" step="0.1" value="0" inputmode="decimal"/>
+      <input type="number" name="ticketJoueur" min="0" step="0.01" value="0" inputmode="decimal"/>
+      <input type="number" name="ticketMoyen" min="0" step="0.01" value="0" inputmode="decimal"/>
+      <input type="number" name="ticketMax" min="0" step="0.01" value="0" inputmode="decimal"/>
+      <input type="number" name="chablisVendus" min="0" step="1" value="0" inputmode="numeric"/>
+      <input type="number" name="chablisMax" min="0" step="1" value="0" inputmode="numeric"/>
+    `;
+    metricsGrid.appendChild(row);
+  });
+}
 
-  // Import serverTimestamp
-  const { serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+function parseNumberValue(input, options = {}) {
+  const raw = (input.value || '').trim();
+  let value = raw === '' ? 0 : Number(raw);
+  if (!Number.isFinite(value) || value < 0) value = 0;
+  if (options.max !== undefined && value > options.max) value = options.max;
+  if (options.decimals !== undefined) {
+    value = Number(value.toFixed(options.decimals));
+  } else {
+    value = Math.floor(value);
+  }
+  return value;
+}
 
-  // Build update object
-  const updates = {
-    isActive,
-    stats,
-    xp: {
-      reviewsPond: xp.reviewsPond,
-      ticketPond: xp.ticketPond,
-      chablisPond: xp.chablisPond,
-      engagementPond: xp.engagementPond,
-      total: xp.total,
-      updatedAt: serverTimestamp()
-    },
-    score: xp.total
-  };
+function collectMetrics() {
+  const metrics = {};
+  const rows = metricsGrid?.querySelectorAll('.metrics-row[data-uid]');
+  rows?.forEach((row) => {
+    const uid = row.dataset.uid;
+    if (!uid) return;
+
+    metrics[uid] = {
+      scans: parseNumberValue(row.querySelector('input[name="scans"]')),
+      posts: parseNumberValue(row.querySelector('input[name="posts"]')),
+      noteSur10: parseNumberValue(row.querySelector('input[name="noteSur10"]'), { max: 10, decimals: 2 }),
+      ticketJoueur: parseNumberValue(row.querySelector('input[name="ticketJoueur"]'), { decimals: 2 }),
+      ticketMoyen: parseNumberValue(row.querySelector('input[name="ticketMoyen"]'), { decimals: 2 }),
+      ticketMax: parseNumberValue(row.querySelector('input[name="ticketMax"]'), { decimals: 2 }),
+      chablisVendus: parseNumberValue(row.querySelector('input[name="chablisVendus"]')),
+      chablisMax: parseNumberValue(row.querySelector('input[name="chablisMax"]'))
+    };
+  });
+  return metrics;
+}
+
+function getSelectedUsers() {
+  return allUsers.filter(user => selectedUids.has(user.uid));
+}
+
+async function saveDay() {
+  if (!btnSaveDay) return;
+  const dateISO = dayPicker?.value || todayISO;
+  const selected = getSelectedUsers();
+  if (selected.length === 0) {
+    showStatus('Sélectionne au moins un serveur.', 'error');
+    return;
+  }
+
+  const metrics = collectMetrics();
+  btnSaveDay.disabled = true;
+  showStatus('Enregistrement en cours…', 'info');
 
   try {
-    const userRef = doc(db, 'users', uid);
-    await updateDoc(userRef, updates);
+    const metaRef = doc(db, 'days', dateISO, 'meta', 'info');
+    await setDoc(metaRef, {
+      dateISO,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
 
-    // Update local cache
-    const userIndex = usersData.findIndex(u => u.uid === uid);
-    if (userIndex !== -1) {
-      usersData[userIndex] = { ...usersData[userIndex], ...updates };
+    const rosterRef = doc(db, 'days', dateISO, 'attendance', 'roster');
+    await setDoc(rosterRef, {
+      uids: selected.map(u => u.uid),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    for (const user of selected) {
+      const metricPayload = {
+        uid: user.uid,
+        username: user.username,
+        ...metrics[user.uid],
+        updatedAt: serverTimestamp()
+      };
+
+      const metricRef = doc(db, 'days', dateISO, 'metrics', user.uid);
+      await setDoc(metricRef, metricPayload, { merge: true });
+
+      const currentStats = {
+        scans: metricPayload.scans,
+        posts: metricPayload.posts,
+        note: metricPayload.noteSur10,
+        noteSur10: metricPayload.noteSur10,
+        ticketJoueur: metricPayload.ticketJoueur,
+        ticketMoyen: metricPayload.ticketMoyen,
+        ticketMax: metricPayload.ticketMax,
+        chablisVendus: metricPayload.chablisVendus,
+        chablisMax: metricPayload.chablisMax
+      };
+
+      await setDoc(doc(db, 'users', user.uid), {
+        stats: currentStats,
+        lastActiveDate: dateISO
+      }, { merge: true });
     }
 
-    showStatus('Données enregistrées avec succès', 'success');
+    showStatus(`✅ Journée ${dateISO} enregistrée. <a href="../waiter/classement.html">Voir le classement</a>`, 'success');
   } catch (error) {
-    console.error('[admin] Save error:', error);
-    showStatus('Erreur lors de l\'enregistrement', 'error');
+    console.error('[admin] Save day error:', error);
+    showStatus(`❌ Erreur d'enregistrement: ${error?.message || error}`, 'error');
+  } finally {
+    btnSaveDay.disabled = false;
   }
 }
 
-async function loadUsers(filterActiveOnly = false) {
+async function loadUsers() {
   try {
     loadingEl.style.display = 'block';
     contentEl.style.display = 'none';
-    tableBody.innerHTML = '';
+    clearStatus();
 
     const q = query(collection(db, 'users'), orderBy('username', 'asc'));
     const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      tableBody.innerHTML = '<tr><td colspan="19" style="text-align: center; padding: 20px; color: var(--muted);">Aucun utilisateur trouvé</td></tr>';
-    } else {
-      usersData = [];
-      snapshot.forEach(docSnap => {
-        const userData = docSnap.data();
-        usersData.push({
-          uid: docSnap.id,
-          username: userData.username || docSnap.id,
-          isActive: userData.isActive || false,
-          stats: userData.stats || {},
-          xp: userData.xp || {},
-          score: userData.score || 0
-        });
+    allUsers = [];
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data() || {};
+      allUsers.push({
+        uid: docSnap.id,
+        username: data.username || docSnap.id
       });
+    });
 
-      // Apply filter if needed
-      const filteredUsers = filterActiveOnly
-        ? usersData.filter(u => u.isActive)
-        : usersData;
-
-      if (filteredUsers.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="19" style="text-align: center; padding: 20px; color: var(--muted);">Aucun serveur actif trouvé</td></tr>';
-      } else {
-        filteredUsers.forEach(user => {
-          tableBody.appendChild(createUserRow(user));
-        });
-      }
-    }
+    renderUserList();
 
     loadingEl.style.display = 'none';
     contentEl.style.display = 'block';
   } catch (error) {
-    console.error('[admin] Load error:', error);
+    console.error('[admin] Load users error:', error);
+    showStatus('Impossible de charger les utilisateurs.', 'error');
+    loadingEl.innerHTML = '<p style="padding:20px;color:red;">Erreur de chargement.</p>';
+  }
+}
 
-    // Vérifier si c'est une erreur de permissions Firestore
-    if (error.code === 'permission-denied') {
-      loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">❌ Permissions insuffisantes — vérifiez vos droits admin.</p>';
-      showStatus('Permissions Firestore refusées', 'error');
-    } else {
-      loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">Erreur lors du chargement des données</p>';
-      showStatus('Erreur lors du chargement', 'error');
+function initDatePicker() {
+  if (dayPicker && !dayPicker.value) {
+    dayPicker.value = todayISO;
+  }
+}
+
+function initActions() {
+  btnSelectAll?.addEventListener('click', () => {
+    selectedUids = new Set(allUsers.map(u => u.uid));
+    renderUserList();
+  });
+
+  btnClearAll?.addEventListener('click', () => {
+    selectedUids.clear();
+    renderUserList();
+  });
+
+  btnContinue?.addEventListener('click', () => {
+    const checkedBoxes = userListEl?.querySelectorAll('input[type="checkbox"]:checked') || [];
+    selectedUids = new Set(Array.from(checkedBoxes).map(cb => cb.value));
+    if (selectedUids.size === 0) {
+      showStatus('Sélectionne au moins un serveur.', 'error');
+      return;
     }
-  }
-}
-
-if (refreshBtn) {
-  refreshBtn.addEventListener('click', () => {
-    const filterCheckbox = document.getElementById('filterActiveOnly');
-    loadUsers(filterCheckbox ? filterCheckbox.checked : false);
+    renderMetricsForm();
+    setStep('metrics');
+    clearStatus();
   });
-}
 
-// Handle filter checkbox
-const filterCheckbox = document.getElementById('filterActiveOnly');
-if (filterCheckbox) {
-  filterCheckbox.addEventListener('change', (e) => {
-    loadUsers(e.target.checked);
+  btnBack?.addEventListener('click', () => {
+    setStep('attendance');
+    clearStatus();
   });
+
+  btnSaveDay?.addEventListener('click', saveDay);
 }
 
-console.log('[Perf] admin init in', (performance.now() - tPageStart).toFixed(1), 'ms');
-
-const scheduleInitialLoad = () => {
-  const start = () => loadUsers();
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(start);
-  } else {
-    setTimeout(start, 0);
-  }
-};
-
-let adminBootstrapped = false;
-
-function bootstrapAdmin() {
-  if (adminBootstrapped) return;
-  adminBootstrapped = true;
-  scheduleInitialLoad();
+function bootstrap() {
+  initDatePicker();
+  initActions();
+  setStep('attendance');
+  loadUsers();
 }
 
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.replace('../admin/admin-portal.html');
-    return;
-  }
-
-  if (user.uid !== ADMIN_UID) {
-    showStatus('Accès refusé — administrateur requis.', 'error');
-    window.location.replace('../auth/login.html');
-    return;
-  }
-
-  bootstrapAdmin();
-});
+bootstrap();

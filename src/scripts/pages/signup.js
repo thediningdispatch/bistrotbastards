@@ -30,7 +30,7 @@ async function handleSubmit(event) {
   const displayName = rawUsername.trim() || username;
 
   if (!username) {
-    showError(errElm, 'Choisissez un nom d'utilisateur.');
+    showError(errElm, "Choisissez un nom d'utilisateur.");
     return;
   }
 
