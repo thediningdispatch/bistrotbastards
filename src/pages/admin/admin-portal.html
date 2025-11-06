@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portail Admin — Bistrot Bastards (MVP)</title>
+  <style>
+    body{margin:0;font-family:system-ui,Inter,Segoe UI,Roboto,Arial,sans-serif;background:#fafafa;color:#0f172a}
+    .wrap{max-width:960px;margin:0 auto;padding:16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px}
+    .card{display:block;padding:20px;border:1px solid #e5e7eb;border-radius:16px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.06);text-decoration:none;color:inherit}
+    .card h2{margin:0 0 6px;font-size:1.1rem}
+    .card p{margin:0;color:#64748b;font-size:0.9rem}
+    .status{margin-top:6px;color:#64748b}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Portail Admin (MVP)</h1>
+    <div id="bbAdminStatus" class="status">Vérification…</div>
+    <section id="bbAdminGrid" class="grid" hidden>
+      <a class="card" href="dashboard.html"><h2>Dashboard</h2><p>Paramètres & scores</p></a>
+      <a class="card" href="../shared/chat.html"><h2>Chat</h2><p>Salon global</p></a>
+      <a class="card" href="../waiter/classement.html"><h2>Classement</h2><p>Top joueurs</p></a>
+    </section>
+  </main>
+  <script type="module" src="../../scripts/pages/admin-portal-mvp.js"></script>
+</body>
+</html>

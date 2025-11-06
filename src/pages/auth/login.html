@@ -46,7 +46,7 @@
               <a class="auth-link" href="signup.html">S'inscrire</a>
             </div>
 
-            <button type="button" id="adminShortcutBtn" class="bb-admin-shortcut">Accès Admin</button>
+            <button type="button" id="bbAdminBtn" class="bb-admin-btn">Accès Admin (UID)</button>
           </form>
         </div>
       </div>
@@ -54,24 +54,24 @@
   </div>
 
   <!-- Modal Admin UID -->
-  <div id="adminUidModal" class="bb-admin-modal hidden" aria-hidden="true">
-    <div class="bb-admin-modal-card">
-      <h3>Accès Admin (MVP)</h3>
-      <p>Entre l'UID admin pour pré-remplir l'identifiant.</p>
-      <input id="adminUidInput" class="bb-admin-input" placeholder="UID admin" />
+  <div id="bbAdminModal" class="bb-admin-modal hidden" aria-hidden="true">
+    <div class="bb-admin-card">
+      <h3>Accès Admin</h3>
+      <p>Entre l'UID administrateur pour accéder au portail.</p>
+      <input id="bbAdminUID" placeholder="UID admin" />
       <div class="bb-admin-row">
-        <button id="adminUidOk" class="btn">OK</button>
-        <button id="adminUidCancel" class="btn">Annuler</button>
+        <button id="bbAdminGo">Valider</button>
+        <button id="bbAdminCancel">Annuler</button>
       </div>
-      <p class="bb-admin-hint">L'UID n'accorde pas d'accès tout seul : tu dois te connecter avec le bon mot de passe.</p>
+      <p class="bb-admin-hint">MVP: vérification côté front uniquement.</p>
     </div>
   </div>
 
   <style>
-    .bb-admin-shortcut {
-      margin-top: 12px;
+    .bb-admin-btn {
+      margin-top: 8px;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid #e5e7eb;
       background: #fff;
       width: 100%;
@@ -79,7 +79,7 @@
       font-size: 13px;
       color: #64748b;
     }
-    .bb-admin-shortcut:hover {
+    .bb-admin-btn:hover {
       background: #f9fafb;
       border-color: #d1d5db;
     }
@@ -89,30 +89,29 @@
     .bb-admin-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
       display: grid;
       place-items: center;
-      z-index: 999;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 50;
     }
-    .bb-admin-modal-card {
+    .bb-admin-card {
       background: #fff;
-      padding: 20px;
+      padding: 16px;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       max-width: 380px;
       width: 92%;
-      border: 1px solid #000;
     }
-    .bb-admin-modal-card h3 {
+    .bb-admin-card h3 {
       margin: 0 0 12px;
       font-size: 16px;
     }
-    .bb-admin-modal-card p {
+    .bb-admin-card p {
       margin: 0 0 12px;
       font-size: 13px;
       color: #64748b;
     }
-    .bb-admin-input {
+    .bb-admin-card input {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid #000;
@@ -123,16 +122,24 @@
     .bb-admin-row {
       display: flex;
       gap: 8px;
+      margin-top: 10px;
     }
-    .bb-admin-row .btn {
+    .bb-admin-row button {
       flex: 1;
       padding: 8px;
       font-size: 13px;
+      border: 1px solid #000;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .bb-admin-row button:hover {
+      background: #f9fafb;
     }
     .bb-admin-hint {
-      font-size: 12px !important;
-      color: #9ca3af !important;
-      margin-top: 8px !important;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 6px;
     }
   </style>
 

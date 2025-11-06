@@ -2,7 +2,7 @@ import { auth, db, authPersistenceReady } from '../core/firebase.js';
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
-import { ROUTES, ADMIN_UID, ADMIN_EMAIL } from '../core/config.js';
+import { ROUTES, ADMIN_UID, ADMIN_PORTAL_PATH } from '../core/config.js';
 
 const tPageStart = performance.now();
 
@@ -17,34 +17,29 @@ if (onceBind(form, handleSubmit)) {
   showError(errElm, '');
 }
 
-// Admin shortcut modal logic
+// Admin shortcut modal logic (MVP: redirection directe sans auth Firebase)
 const $ = (id) => document.getElementById(id);
 
-$('adminShortcutBtn')?.addEventListener('click', () => {
-  $('#adminUidModal').classList.remove('hidden');
-  $('#adminUidModal').setAttribute('aria-hidden', 'false');
-  $('#adminUidInput').focus();
+$('bbAdminBtn')?.addEventListener('click', () => {
+  $('#bbAdminModal').classList.remove('hidden');
+  $('#bbAdminModal').setAttribute('aria-hidden', 'false');
+  $('#bbAdminUID').focus();
 });
 
-$('adminUidCancel')?.addEventListener('click', () => {
-  $('#adminUidModal').classList.add('hidden');
-  $('#adminUidModal').setAttribute('aria-hidden', 'true');
+$('bbAdminCancel')?.addEventListener('click', () => {
+  $('#bbAdminModal').classList.add('hidden');
+  $('#bbAdminModal').setAttribute('aria-hidden', 'true');
 });
 
-$('adminUidOk')?.addEventListener('click', () => {
-  const v = ($('#adminUidInput')?.value || '').trim();
-  if (v !== ADMIN_UID) {
-    alert('UID incorrect');
+$('bbAdminGo')?.addEventListener('click', () => {
+  const val = ($('#bbAdminUID')?.value || '').trim();
+  if (val !== ADMIN_UID) {
+    alert('UID invalide');
     return;
   }
-  const usernameField = $('#loginUsername');
-  const passwordField = $('#loginPassword');
-  // Pre-fill with email if available, otherwise username "bistrotbastards"
-  usernameField.value = (ADMIN_EMAIL && ADMIN_EMAIL.includes('@')) ? ADMIN_EMAIL : 'bistrotbastards';
-  usernameField.dispatchEvent(new Event('input', { bubbles: true }));
-  $('#adminUidModal').classList.add('hidden');
-  $('#adminUidModal').setAttribute('aria-hidden', 'true');
-  passwordField.focus();
+  // Token MVP pour le portail admin (effacé à l'ouverture)
+  sessionStorage.setItem('bb.admin.pass', 'ok');
+  window.location.href = ADMIN_PORTAL_PATH;
 });
 
 console.log('[Perf] login init in', (performance.now() - tPageStart).toFixed(1), 'ms');
@@ -94,9 +89,7 @@ async function handleSubmit(event) {
     if (!window.__bb_redirecting) {
       window.__bb_redirecting = true;
       shouldUnlock = false;
-      // Redirect to admin portal if user is admin, otherwise to waiter home
-      const redirectUrl = (credential.user.uid === ADMIN_UID) ? ROUTES.ADMIN_PORTAL : ROUTES.WAITER_HOME;
-      window.location.replace(redirectUrl);
+      window.location.replace(ROUTES.WAITER_HOME);
     }
   } catch (error) {
     console.error('[login]', error?.code, error?.message);

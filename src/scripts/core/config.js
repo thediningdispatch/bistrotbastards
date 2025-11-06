@@ -99,6 +99,12 @@ export const ADMIN_UID = '6jKlMTSdskPFgJvdoUmcAe3igPH2';
  */
 export const ADMIN_EMAIL = 'admin@bistrotbastards.local';
 
+/**
+ * Chemin relatif vers le portail admin (depuis login.html)
+ * @constant {string}
+ */
+export const ADMIN_PORTAL_PATH = '../admin/admin-portal.html';
+
 // ========== FIREBASE / DATABASE ==========
 
 /**
