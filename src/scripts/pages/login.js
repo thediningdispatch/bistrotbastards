@@ -20,27 +20,35 @@ if (onceBind(form, handleSubmit)) {
 // Admin shortcut modal logic (MVP: redirection directe sans auth Firebase)
 const $ = (id) => document.getElementById(id);
 
-$('bbAdminBtn')?.addEventListener('click', () => {
-  $('#bbAdminModal').classList.remove('hidden');
-  $('#bbAdminModal').setAttribute('aria-hidden', 'false');
-  $('#bbAdminUID').focus();
-});
+const adminBtn = $('bbAdminBtn');
+const adminModal = $('bbAdminModal');
+const adminUIDInput = $('bbAdminUID');
+const adminGo = $('bbAdminGo');
+const adminCancel = $('bbAdminCancel');
 
-$('bbAdminCancel')?.addEventListener('click', () => {
-  $('#bbAdminModal').classList.add('hidden');
-  $('#bbAdminModal').setAttribute('aria-hidden', 'true');
-});
+if (adminBtn && adminModal) {
+  adminBtn.addEventListener('click', () => {
+    adminModal.classList.remove('hidden');
+    adminModal.setAttribute('aria-hidden', 'false');
+    adminUIDInput?.focus();
+  });
 
-$('bbAdminGo')?.addEventListener('click', () => {
-  const val = ($('#bbAdminUID')?.value || '').trim();
-  if (val !== ADMIN_UID) {
-    alert('UID invalide');
-    return;
-  }
-  // Token MVP pour le portail admin (effacé à l'ouverture)
-  sessionStorage.setItem('bb.admin.pass', 'ok');
-  window.location.href = ADMIN_PORTAL_PATH;
-});
+  adminCancel?.addEventListener('click', () => {
+    adminModal.classList.add('hidden');
+    adminModal.setAttribute('aria-hidden', 'true');
+  });
+
+  adminGo?.addEventListener('click', () => {
+    const val = (adminUIDInput?.value || '').trim();
+    if (val !== ADMIN_UID) {
+      alert('UID invalide');
+      return;
+    }
+    // Token MVP pour le portail admin (effacé à l'ouverture)
+    sessionStorage.setItem('bb.admin.pass', 'ok');
+    window.location.href = ADMIN_PORTAL_PATH;
+  });
+}
 
 console.log('[Perf] login init in', (performance.now() - tPageStart).toFixed(1), 'ms');
 
