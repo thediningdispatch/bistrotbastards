@@ -1,7 +1,6 @@
-import { db, auth } from '../core/firebase.js';
+import { db, auth, onAuthStateChanged } from '../core/firebase.js';
 import { collection, getDocs, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { authReady } from '../core/auth-guard.js';
+import { ADMIN_UID } from '../core/config.js';
 
 const tPageStart = performance.now();
 
@@ -12,18 +11,6 @@ const statusEl = document.getElementById('adminStatus');
 const refreshBtn = document.getElementById('refreshBtn');
 
 let usersData = [];
-
-function hideAdminTable() {
-  if (contentEl) contentEl.style.display = 'none';
-  if (loadingEl) {
-    loadingEl.style.display = 'block';
-    loadingEl.innerHTML = '<p style="color: red; padding: 40px; text-align: center;">❌ Accès refusé — privilèges admin requis.</p>';
-  }
-}
-
-function redirectToLogin() {
-  window.location.href = '../../pages/auth/login.html';
-}
 
 function showStatus(message, type = 'info') {
   if (!statusEl) return;
@@ -323,36 +310,25 @@ const scheduleInitialLoad = () => {
   }
 };
 
-// ========== ADMIN ACCESS GUARD ==========
-// Vérifier que l'utilisateur connecté possède le custom claim isAdmin
-onAuthStateChanged(auth, async (user) => {
+let adminBootstrapped = false;
+
+function bootstrapAdmin() {
+  if (adminBootstrapped) return;
+  adminBootstrapped = true;
+  scheduleInitialLoad();
+}
+
+onAuthStateChanged(auth, (user) => {
   if (!user) {
-    console.log('[admin] No user signed in, redirecting to login...');
-    redirectToLogin();
+    window.location.replace('../admin/admin-portal.html');
     return;
   }
 
-  try {
-    // Forcer le refresh du token pour obtenir les claims les plus récents
-    const tokenResult = await user.getIdTokenResult(false);
-    const isAdmin = !!tokenResult.claims?.isAdmin;
-
-    console.log('[admin] User authenticated:', user.uid);
-    console.log('[admin] isAdmin claim:', isAdmin);
-
-    if (!isAdmin) {
-      console.warn('[admin] Access denied - admin privileges required');
-      showStatus('Accès refusé — privilèges admin requis.', 'error');
-      hideAdminTable();
-      return;
-    }
-
-    // Admin OK → charger les données
-    console.log('[admin] Admin access granted');
-    scheduleInitialLoad();
-  } catch (error) {
-    console.error('[admin] Error checking admin status:', error);
-    showStatus('Erreur lors de la vérification des permissions', 'error');
-    hideAdminTable();
+  if (user.uid !== ADMIN_UID) {
+    showStatus('Accès refusé — administrateur requis.', 'error');
+    window.location.replace('../auth/login.html');
+    return;
   }
+
+  bootstrapAdmin();
 });

@@ -2,200 +2,159 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Portail Admin — Bistrot Bastards</title>
-  <meta name="description" content="Espace admin Bistrot Bastards." />
+  <title>Admin — Bistrot Bastards</title>
   <link rel="stylesheet" href="../../styles/system7.css" />
-  <link rel="stylesheet" href="../../styles/navigation.css" />
   <style>
-    /* Admin portal specific styles */
-    .admin-portal-page {
-      background: var(--panel-mid);
+    :root {
+      color-scheme: light;
     }
 
-    .admin-portal {
-      display: flex;
-      flex-direction: column;
-      gap: clamp(20px, 3vw, 28px);
-      padding: var(--window-padding-y) clamp(18px, 4vw, 28px) calc(var(--window-padding-y) + 12px);
-      min-height: 0;
+    body {
+      margin: 0;
+      background: #fafafa;
+      font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     }
 
-    .admin-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: clamp(12px, 3vw, 18px);
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
 
-    .admin-main {
-      display: flex;
-      flex-direction: column;
-      gap: clamp(20px, 3vw, 28px);
-    }
-
-    .admin-welcome {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .admin-welcome-title {
+    h1 {
       margin: 0 0 4px;
-      font-size: 18px;
+      font-size: clamp(24px, 4vw, 30px);
       font-weight: 700;
-      text-align: center;
-      line-height: 1.3;
+      letter-spacing: -0.02em;
     }
 
-    .admin-subtitle {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      margin: -8px 0 0;
+    .muted {
+      color: #64748b;
+      margin: 6px 0 0;
+      font-size: 14px;
     }
 
-    .admin-status {
-      margin: 8px 0;
-      padding: 10px 14px;
-      border: var(--border-strong);
-      border-radius: var(--radius-sm);
-      background: var(--accent-success);
-      font-size: 12px;
-      text-align: center;
+    #adminStatus {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .login {
+      max-width: 420px;
+      margin-top: 28px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .login h3 {
+      margin: 0;
+      font-size: 18px;
       font-weight: 600;
     }
 
-    .admin-status.error {
-      background: var(--accent-blush);
-    }
-
-    .admin-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .admin-card {
+    .row {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 120px;
-      padding: 20px 16px;
-      border: var(--border-strong);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--card-shadow-strong);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .row input,
+    .row button {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #111;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .row input:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    .row button {
+      cursor: pointer;
+      font-weight: 600;
+      background: linear-gradient(135deg, #111, #334155);
+      color: #fff;
+    }
+
+    .row button:disabled {
+      cursor: progress;
+      opacity: 0.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .card {
+      display: block;
+      padding: 20px 22px;
+      border: 1px solid #111;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
       text-decoration: none;
       color: inherit;
-      transition: transform 0.1s ease;
-      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
 
-    .admin-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+    .card strong {
+      display: inline-block;
+      margin: 6px 0 4px;
+      font-size: 18px;
     }
 
-    .admin-card:active {
-      transform: translateY(0);
-      box-shadow: var(--card-shadow-strong);
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
     }
 
-    .admin-card--dashboard {
-      background: var(--accent-sun);
-    }
-
-    .admin-card--classement {
-      background: var(--accent-sky);
-    }
-
-    .admin-card__icon {
-      font-size: 32px;
-      line-height: 1;
-    }
-
-    .admin-card__title {
-      font-size: 15px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin: 0;
-    }
-
-    .admin-card__desc {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-      margin: 0;
-    }
-
-    @media (max-width: 640px) {
-      .admin-portal {
-        gap: 18px;
-        padding: var(--window-padding-y) clamp(14px, 5vw, 20px) calc(var(--window-padding-y) + 8px);
-      }
-
-      .admin-actions {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .admin-card {
-        min-height: 100px;
-        padding: 16px 12px;
-      }
+    .card span {
+      display: inline-block;
+      font-size: 13px;
+      color: #475569;
     }
   </style>
 </head>
-<body class="admin-portal-page">
-  <div class="app-container">
-    <div class="desktop">
-      <div class="window">
-        <div class="title-bar">
-          <div class="window-controls"><span></span><span></span><span></span></div>
-          <span class="title-text"></span>
-        </div>
+<body class="admin-portal-page no-nav">
+  <main class="wrap">
+    <h1>Admin</h1>
+    <p class="muted">Saisir les stats serveurs et consulter le classement.</p>
+    <p id="adminStatus" class="muted" aria-live="polite"></p>
 
-        <div class="window-body admin-portal" id="app">
-          <div class="admin-header">
-            <div id="navHost"></div>
-          </div>
-
-          <div class="admin-main">
-            <div class="admin-welcome">
-              <h1 class="admin-welcome-title">Hello Pranklord & Princess 👑</h1>
-              <p class="admin-subtitle">Espace modération et administration</p>
-
-              <div id="bbAdminStatus" class="admin-status" aria-live="polite">
-                ⏳ Vérification des permissions...
-              </div>
-
-              <div id="bbAdminGrid" class="admin-actions hidden" aria-hidden="true">
-                <a href="dashboard.html" class="admin-card admin-card--dashboard">
-                  <div class="admin-card__icon">📊</div>
-                  <h2 class="admin-card__title">Dashboard</h2>
-                  <p class="admin-card__desc">Gestion des serveurs & scores XP</p>
-                </a>
-
-                <a href="../waiter/classement.html" class="admin-card admin-card--classement">
-                  <div class="admin-card__icon">🏆</div>
-                  <h2 class="admin-card__title">Classement</h2>
-                  <p class="admin-card__desc">Top joueurs & performances</p>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section id="adminLogin" class="login" hidden>
+      <h3>Connexion administrateur</h3>
+      <div class="row">
+        <input id="adminEmail" type="email" placeholder="Email admin" autocomplete="username" />
+        <input id="adminPass" type="password" placeholder="Mot de passe" autocomplete="current-password" />
+        <button id="adminSignIn" type="button">Se connecter</button>
       </div>
-    </div>
-  </div>
+      <p class="muted">Accès réservé à bistrotbastards@bistrotbastards.com.</p>
+    </section>
 
-  <script type="module" src="../../scripts/core/navigation.js"></script>
-  <script type="module" src="../../scripts/core/auth-guard.js"></script>
-  <script type="module" src="../../scripts/pages/admin-portal-mvp.js"></script>
+    <section id="adminGrid" class="grid" hidden>
+      <a class="card" href="./dashboard.html">
+        📊 <strong>Dashboard</strong><br />
+        <span>Entrer et mettre à jour les stats serveurs.</span>
+      </a>
+      <a class="card" href="../waiter/classement.html">
+        🏆 <strong>Classement</strong><br />
+        <span>Visualiser le ranking temps réel.</span>
+      </a>
+    </section>
+  </main>
+
+  <script type="module" src="../../scripts/pages/admin-portal.js"></script>
 </body>
 </html>

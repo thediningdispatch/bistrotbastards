@@ -4,7 +4,8 @@ import {
   getAuth,
   setPersistence,
   browserLocalPersistence,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -33,4 +34,4 @@ export const db = getFirestore(app);
 // ---- Realtime Database (explicit regional URL)
 export const rtdb = getDatabase(app, firebaseConfig.databaseURL);
 
-export { setPersistence, browserLocalPersistence, onAuthStateChanged };
+export { setPersistence, browserLocalPersistence, onAuthStateChanged, signInWithEmailAndPassword };

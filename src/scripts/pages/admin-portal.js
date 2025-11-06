@@ -1,63 +1,76 @@
-import { auth } from '../core/firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { authReady } from '../core/auth-guard.js';
-import { ADMIN_UID } from '../core/config.js';
-
-const tPageStart = performance.now();
+import { auth, onAuthStateChanged, signInWithEmailAndPassword } from '../core/firebase.js';
+import { ADMIN_UID, ADMIN_EMAIL } from '../core/config.js';
 
 const statusEl = document.getElementById('adminStatus');
 const gridEl = document.getElementById('adminGrid');
+const loginEl = document.getElementById('adminLogin');
+const emailEl = document.getElementById('adminEmail');
+const passEl = document.getElementById('adminPass');
+const signInBtn = document.getElementById('adminSignIn');
 
-function redirectToLogin() {
-  window.location.href = '../../pages/auth/login.html';
+let busy = false;
+
+if (emailEl && ADMIN_EMAIL) {
+  emailEl.value = ADMIN_EMAIL;
 }
 
-function redirectToProfile() {
-  window.location.href = '../../pages/waiter/profile.html';
-}
-
-function showGrid() {
+function show(message = '', { grid = false, login = false } = {}) {
+  if (statusEl) {
+    statusEl.textContent = message;
+  }
   if (gridEl) {
-    gridEl.classList.remove('hidden');
-    gridEl.setAttribute('aria-hidden', 'false');
+    gridEl.hidden = !grid;
+  }
+  if (loginEl) {
+    loginEl.hidden = !login;
   }
 }
 
-function setStatus(message, isError = false) {
-  if (!statusEl) return;
-  statusEl.textContent = message;
-  if (isError) {
-    statusEl.style.background = '#ffe3e3';
-    statusEl.style.color = '#c00';
-  } else {
-    statusEl.style.background = '#e9ffe3';
-    statusEl.style.color = '#060';
-  }
-}
+async function handleSignIn() {
+  if (!signInBtn || busy) return;
 
-console.log('[Perf] admin-portal init in', (performance.now() - tPageStart).toFixed(1), 'ms');
+  const email = (emailEl?.value || '').trim();
+  const password = passEl?.value || '';
 
-// ========== ADMIN PORTAL ACCESS GUARD (MVP) ==========
-// Vérifier que l'utilisateur possède l'UID admin
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    console.log('[admin-portal] No user signed in, redirecting to login...');
-    setStatus('Connexion requise.', true);
-    setTimeout(redirectToLogin, 600);
+  if (!email || !password) {
+    show('Renseigne email et mot de passe.', { login: true });
     return;
   }
 
-  console.log('[admin-portal] User authenticated:', user.uid);
+  busy = true;
+  signInBtn.disabled = true;
+  show('Connexion…', { login: true });
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error('[admin portal] signIn error:', error);
+    show('Échec de connexion. Vérifie les identifiants.', { login: true });
+  } finally {
+    busy = false;
+    signInBtn.disabled = false;
+  }
+}
+
+signInBtn?.addEventListener('click', handleSignIn);
+
+passEl?.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    handleSignIn();
+  }
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    show('Connecte-toi pour accéder à l’administration.', { login: true });
+    return;
+  }
 
   if (user.uid !== ADMIN_UID) {
-    console.warn('[admin-portal] Access denied - admin UID required');
-    setStatus('Accès refusé — réservé à l\'administrateur.', true);
-    setTimeout(redirectToProfile, 1200);
+    show('Accès refusé — compte administrateur requis.', { login: true });
     return;
   }
 
-  // Admin OK → afficher la grille
-  console.log('[admin-portal] Admin access granted (MVP)');
-  setStatus('Accès confirmé (MVP). Bienvenue, admin.', false);
-  showGrid();
+  show('Accès confirmé.', { grid: true });
 });

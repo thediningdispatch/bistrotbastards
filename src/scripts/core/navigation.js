@@ -86,6 +86,15 @@ async function handleLogout() {
 
 // Initialisation
 async function bootstrap() {
+  const body = document.body;
+  const skipNav = body?.classList?.contains('admin-portal-page')
+    || body?.classList?.contains('admin-page')
+    || body?.classList?.contains('no-nav');
+
+  if (skipNav) {
+    return;
+  }
+
   // Vérifier l'UID admin avant de rendre la nav (MVP)
   let isAdmin = false;
 

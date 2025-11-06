@@ -2,7 +2,7 @@ import { auth, db, authPersistenceReady } from '../core/firebase.js';
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onceBind, withSubmitLock, showError, normUsername, setStoredUser, getStoredUser } from '../core/utils.js';
-import { ROUTES, ADMIN_UID, ADMIN_PORTAL_PATH } from '../core/config.js';
+import { ROUTES } from '../core/config.js';
 
 const tPageStart = performance.now();
 
@@ -10,76 +10,9 @@ const tPageStart = performance.now();
 const form = document.getElementById('loginForm');
 const errElm = document.getElementById('loginError');
 
-// ========== ADMIN MODAL ELEMENTS ==========
-const adminBtn = document.getElementById('bbAdminBtn');
-const adminModal = document.getElementById('bbAdminModal');
-const adminUIDInput = document.getElementById('bbAdminUID');
-const adminGo = document.getElementById('bbAdminGo');
-const adminCancel = document.getElementById('bbAdminCancel');
-
 // ========== GLOBAL STATE ==========
 if (typeof window.__bb_redirecting !== 'boolean') {
   window.__bb_redirecting = false;
-}
-
-// ========== ADMIN MODAL LOGIC ==========
-console.log('[Admin] Module loaded, checking elements...');
-console.log('[Admin] Elements check:', {
-  btn: !!adminBtn,
-  modal: !!adminModal,
-  input: !!adminUIDInput,
-  go: !!adminGo,
-  cancel: !!adminCancel
-});
-console.log('[Admin] ADMIN_PORTAL_PATH:', ADMIN_PORTAL_PATH);
-console.log('[Admin] ADMIN_UID:', ADMIN_UID);
-
-if (adminBtn && adminModal && adminUIDInput) {
-  console.log('[Admin] All required elements found, attaching listeners...');
-  adminBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log('[Admin] Opening modal...');
-    adminModal.classList.remove('hidden');
-    adminModal.setAttribute('aria-hidden', 'false');
-    adminUIDInput.focus();
-  });
-
-  if (adminCancel) {
-    adminCancel.addEventListener('click', (e) => {
-      e.preventDefault();
-      console.log('[Admin] Closing modal...');
-      adminModal.classList.add('hidden');
-      adminModal.setAttribute('aria-hidden', 'true');
-    });
-  }
-
-  if (adminGo) {
-    adminGo.addEventListener('click', (e) => {
-      e.preventDefault();
-      const val = (adminUIDInput.value || '').trim();
-      console.log('[Admin] Validating UID...');
-      console.log('[Admin] Input value:', val);
-      console.log('[Admin] Expected UID:', ADMIN_UID);
-
-      if (val !== ADMIN_UID) {
-        alert('UID invalide');
-        return;
-      }
-
-      console.log('[Admin] UID valid! Setting sessionStorage and redirecting...');
-      sessionStorage.setItem('bb.admin.pass', 'ok');
-      console.log('[Admin] sessionStorage set:', sessionStorage.getItem('bb.admin.pass'));
-      console.log('[Admin] Redirecting to:', ADMIN_PORTAL_PATH);
-
-      // Small delay to ensure sessionStorage is persisted before navigation
-      setTimeout(() => {
-        console.log('[Admin] Navigation starting...');
-        window.location.replace(ADMIN_PORTAL_PATH);
-      }, 100);
-    });
-  }
-} else {
-  console.error('[Admin] Missing required elements!');
 }
 
 // ========== LOGIN FORM LOGIC ==========
