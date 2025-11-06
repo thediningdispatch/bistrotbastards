@@ -24,11 +24,18 @@ function showError(msg = 'Accès refusé.') {
 }
 
 (async () => {
+  console.log('[Admin Portal] Script loaded');
+  console.log('[Admin Portal] Checking sessionStorage...');
+  const passValue = sessionStorage.getItem('bb.admin.pass');
+  console.log('[Admin Portal] sessionStorage bb.admin.pass:', passValue);
+
   // 1) Pass MVP depuis login (via UID) :
-  if (sessionStorage.getItem('bb.admin.pass') === 'ok') {
+  if (passValue === 'ok') {
+    console.log('[Admin Portal] Valid pass found, opening portal...');
     openPortal();
     return;
   }
+  console.log('[Admin Portal] No valid pass, checking Firebase auth...');
   // 2) Ou, si déjà connecté à Firebase avec l'UID admin, on autorise aussi :
   const waitAuth = () => new Promise(res => {
     let i = setInterval(() => { if (window.auth) { clearInterval(i); res(window.auth) } }, 50);

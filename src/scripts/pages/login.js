@@ -58,15 +58,24 @@ if (adminBtn && adminModal && adminUIDInput) {
       e.preventDefault();
       const val = (adminUIDInput.value || '').trim();
       console.log('[Admin] Validating UID...');
+      console.log('[Admin] Input value:', val);
+      console.log('[Admin] Expected UID:', ADMIN_UID);
 
       if (val !== ADMIN_UID) {
         alert('UID invalide');
         return;
       }
 
-      console.log('[Admin] UID valid! Redirecting...');
+      console.log('[Admin] UID valid! Setting sessionStorage and redirecting...');
       sessionStorage.setItem('bb.admin.pass', 'ok');
-      window.location.href = ADMIN_PORTAL_PATH;
+      console.log('[Admin] sessionStorage set:', sessionStorage.getItem('bb.admin.pass'));
+      console.log('[Admin] Redirecting to:', ADMIN_PORTAL_PATH);
+
+      // Small delay to ensure sessionStorage is persisted before navigation
+      setTimeout(() => {
+        console.log('[Admin] Navigation starting...');
+        window.location.replace(ADMIN_PORTAL_PATH);
+      }, 100);
     });
   }
 } else {
