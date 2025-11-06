@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Classement général — Bistrot Bastards</title>
+  <meta name="description" content="Classement des serveurs participants au concours." />
+  <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <link rel="stylesheet" href="../../styles/leaderboard.css" />
+</head>
+<body class="leaderboard-page">
+  <div class="desktop">
+    <div class="menu-bar">
+      <span class="menu-item menu-apple"></span>
+      <span class="menu-item">Classement</span>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text"></span>
+      </div>
+
+      <div class="window-body" id="app">
+        <div class="leaderboard-header">
+          <h2 class="leaderboard-title">Classement général</h2>
+          <div class="leaderboard-actions">
+            <button id="refreshBtn" class="btn">Actualiser</button>
+            <a href="home.html" class="btn">Retour</a>
+          </div>
+        </div>
+
+        <div id="leaderboardLoading" class="leaderboard-loading">
+          ⏳ Chargement du classement...
+        </div>
+
+        <div id="leaderboardContent" style="display: none;">
+          <div class="leaderboard-table-wrapper">
+            <table class="leaderboard-table" id="bbLeaderboard">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Serveur</th>
+                  <th>Poste</th>
+                  <th>Score</th>
+                  <th>Détail</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardTableBody">
+                <!-- Filled dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../../scripts/core/navigation.js"></script>
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
+  <script type="module" src="../../scripts/pages/waiter-classement.js"></script>
+</body>
+</html>
