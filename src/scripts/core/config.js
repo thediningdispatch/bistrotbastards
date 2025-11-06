@@ -22,6 +22,7 @@ export const ROUTES = {
   WAITER_LEADERBOARD: resolvePath('../../pages/waiter/classement.html'),
   WAITER_PERFORMANCES: resolvePath('../../pages/waiter/performances.html'),
   CHAT: resolvePath('../../pages/shared/chat.html'),
+  ADMIN_PORTAL: resolvePath('../../pages/admin/portal.html'),
   ADMIN_DASHBOARD: resolvePath('../../pages/admin/dashboard.html')
 };
 

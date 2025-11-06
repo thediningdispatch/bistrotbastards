@@ -32,12 +32,26 @@ async function saveUser(user) {
 }
 
 // Fonction pour injecter la barre de navigation System 7 en haut de la page
-function renderNavigation() {
+async function renderNavigation(isAdmin = false) {
   // Vérifier si la barre n'existe pas déjà
   if (document.querySelector('.bb-topbar')) return;
 
+  // Copier les items de nav et ajouter Admin si nécessaire
+  let navItems = [...NAV_ITEMS];
+
+  // Insérer l'item Admin avant logout si l'utilisateur est admin
+  if (isAdmin) {
+    const logoutIndex = navItems.findIndex(item => item.key === 'logout');
+    navItems.splice(logoutIndex, 0, {
+      key: 'admin',
+      label: 'Admin',
+      href: ROUTES.ADMIN_PORTAL,
+      type: 'link'
+    });
+  }
+
   // Construire les boutons de navigation avec la structure System 7
-  const navButtons = NAV_ITEMS.map(item => {
+  const navButtons = navItems.map(item => {
     if (item.key === 'logout') {
       return `<button id="bbLogoutBtn" class="bb-nav-btn" type="button">${item.label}</button>`;
     }
@@ -71,8 +85,31 @@ async function handleLogout() {
 }
 
 // Initialisation
-function bootstrap() {
-  renderNavigation();
+async function bootstrap() {
+  // Vérifier le claim isAdmin avant de rendre la nav
+  let isAdmin = false;
+
+  try {
+    // Attendre que l'auth soit prête
+    await new Promise(resolve => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        unsubscribe();
+        if (user) {
+          try {
+            const tokenResult = await user.getIdTokenResult(false);
+            isAdmin = !!tokenResult.claims?.isAdmin;
+          } catch (err) {
+            console.warn('[nav] Could not check admin claim:', err);
+          }
+        }
+        resolve();
+      });
+    });
+  } catch (err) {
+    console.warn('[nav] Bootstrap auth check failed:', err);
+  }
+
+  renderNavigation(isAdmin);
 }
 
 // Exécution

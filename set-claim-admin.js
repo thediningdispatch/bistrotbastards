@@ -24,8 +24,7 @@ import { getAuth } from 'firebase-admin/auth';
 initializeApp();
 
 // UID de l'utilisateur à promouvoir admin
-// IMPORTANT: Remplacer par l'UID réel
-const adminUid = '<TON_UID_ADMIN>';
+const adminUid = '6jKlMTSdskPFgJvdoUmcAe3igPH2';
 
 async function setAdminClaim() {
   try {
