@@ -116,6 +116,44 @@
   color: var(--muted);
 }
 
+.admin-filters {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: var(--panel-mid);
+  border: 1px solid #000;
+}
+
+.admin-filter-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-filter-checkbox input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.admin-input-small {
+  width: 60px;
+}
+
+.admin-xp-output {
+  text-align: right;
+  font-weight: 600;
+  color: #0066cc;
+  font-family: 'Monaco', 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+.admin-xp-total {
+  font-weight: 700;
+  font-size: 14px;
+  color: #cc6600;
+}
+
 @media (max-width: 768px) {
   .admin-input {
     width: 60px;

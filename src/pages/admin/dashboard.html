@@ -37,15 +37,35 @@
         </div>
 
         <div id="adminContent" style="display: none;">
+          <div class="admin-filters">
+            <label class="admin-filter-checkbox">
+              <input type="checkbox" id="filterActiveOnly" />
+              <span>Afficher seulement les actifs</span>
+            </label>
+          </div>
+
           <div class="admin-table-wrapper">
-            <table class="admin-table">
+            <table class="admin-table" id="adminTable">
               <thead>
                 <tr>
                   <th>Serveur</th>
+                  <th>Actif</th>
+                  <th>Scans</th>
+                  <th>Posts</th>
+                  <th>Note/10</th>
+                  <th>Ticket joueur (€)</th>
                   <th>Ticket moyen (€)</th>
-                  <th>Reviews Google</th>
-                  <th>Note clients (/10)</th>
-                  <th>Ventes Ruinart</th>
+                  <th>Ticket max (€)</th>
+                  <th>Chablis vendus</th>
+                  <th>Chablis max</th>
+                  <th>Connexion</th>
+                  <th>Saisie Tips</th>
+                  <th>Streak 7j</th>
+                  <th>XP Reviews</th>
+                  <th>XP Ticket</th>
+                  <th>XP Chablis</th>
+                  <th>XP Engagement</th>
+                  <th>XP Total</th>
                   <th>Action</th>
                 </tr>
               </thead>
