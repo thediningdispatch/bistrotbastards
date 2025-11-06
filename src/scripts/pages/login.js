@@ -23,6 +23,7 @@ if (typeof window.__bb_redirecting !== 'boolean') {
 }
 
 // ========== ADMIN MODAL LOGIC ==========
+console.log('[Admin] Module loaded, checking elements...');
 console.log('[Admin] Elements check:', {
   btn: !!adminBtn,
   modal: !!adminModal,
@@ -30,8 +31,11 @@ console.log('[Admin] Elements check:', {
   go: !!adminGo,
   cancel: !!adminCancel
 });
+console.log('[Admin] ADMIN_PORTAL_PATH:', ADMIN_PORTAL_PATH);
+console.log('[Admin] ADMIN_UID:', ADMIN_UID);
 
 if (adminBtn && adminModal && adminUIDInput) {
+  console.log('[Admin] All required elements found, attaching listeners...');
   adminBtn.addEventListener('click', (e) => {
     e.preventDefault();
     console.log('[Admin] Opening modal...');

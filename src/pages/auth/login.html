@@ -143,6 +143,20 @@
     }
   </style>
 
+  <script>
+    // Debug: Check if elements exist immediately
+    console.log('[Debug] DOM loaded, checking elements...');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('bbAdminBtn');
+      const modal = document.getElementById('bbAdminModal');
+      const input = document.getElementById('bbAdminUID');
+      console.log('[Debug] Elements found:', {
+        btn: !!btn,
+        modal: !!modal,
+        input: !!input
+      });
+    });
+  </script>
   <script type="module" src="../../scripts/core/auth-guard.js"></script>
   <script type="module" src="../../scripts/pages/login.js"></script>
 </body>
