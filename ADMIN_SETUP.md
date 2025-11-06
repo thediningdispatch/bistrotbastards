@@ -32,6 +32,44 @@ firebase init firestore
 firebase deploy --only firestore:rules
 ```
 
+## 📊 1.5. Déployer les index Firestore
+
+Les index sont nécessaires pour les requêtes complexes (WHERE + ORDER BY).
+
+### Option A : Via la console Firebase
+
+1. Accéder à la page classement : `/waiter/classement.html`
+2. Si l'index manque, un lien de création apparaît dans l'erreur
+3. Cliquer sur le lien et confirmer la création
+4. Attendre quelques minutes (création en arrière-plan)
+
+### Option B : Via Firebase CLI (Recommandé)
+
+```bash
+# Déployer tous les index définis dans firestore.indexes.json
+firebase deploy --only firestore:indexes
+
+# Ou déployer rules + indexes ensemble
+firebase deploy --only firestore
+```
+
+### Index requis (définis dans `firestore.indexes.json`)
+
+**Index 1 : Classement de base**
+- Collection : `users`
+- Champs :
+  - `isActive` (ASCENDING)
+  - `score` (DESCENDING)
+- Usage : Query `WHERE isActive==true ORDER BY score DESC`
+
+**Index 2 : Classement avec tri secondaire (optionnel)**
+- Collection : `users`
+- Champs :
+  - `isActive` (ASCENDING)
+  - `score` (DESCENDING)
+  - `username` (ASCENDING)
+- Usage : Query avec tri alphabétique en cas d'égalité de score
+
 ## 👤 2. Attribuer le claim admin à un utilisateur
 
 ### Étape 1 : Obtenir l'UID de l'utilisateur
@@ -119,6 +157,34 @@ Pour que le claim prenne effet :
 - ✅ Le Top 3 se met à jour avec les nouveaux scores
 
 ## 🐛 Dépannage
+
+### "The query requires an index" sur la page classement
+
+**Erreur complète :**
+```
+The query requires an index. You can create it here: https://console.firebase.google.com/...
+```
+
+**Solutions :**
+
+**Option 1 : Via le lien (rapide)**
+1. Cliquer sur le lien dans l'erreur
+2. Confirmer la création de l'index
+3. Attendre 2-5 minutes (création en arrière-plan)
+4. Rafraîchir la page
+
+**Option 2 : Via Firebase CLI (recommandé)**
+```bash
+# Déployer les index définis dans firestore.indexes.json
+firebase deploy --only firestore:indexes
+```
+
+**Option 3 : Manuellement dans la console**
+1. Aller dans Firebase Console > Firestore Database > Index
+2. Créer un index composite :
+   - Collection : `users`
+   - Champs : `isActive` (Ascending), `score` (Descending)
+3. Attendre la création
 
 ### "Permission denied" lors du chargement des users
 
