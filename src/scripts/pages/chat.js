@@ -1,4 +1,4 @@
-import { db, auth, rtdb, authPersistenceReady } from '../core/firebase.js';
+import { db, auth, rtdb } from '../core/firebase.js';
 import {
   collection,
   addDoc,
@@ -17,11 +17,10 @@ import {
   onDisconnect,
   onValue
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { ROUTES } from '../core/config.js';
+import { authReady } from '../core/auth-guard.js';
 
 const tPageStart = performance.now();
-console.log('[chat] boot', { module: true, file: 'chat.js' });
 
 // DOM Elements (initialized after DOM loads)
 let chatForm;
@@ -36,19 +35,14 @@ let typingTimeout = null;
 let lastMessageTime = 0;
 let presenceInitialized = false;
 let presenceRefCache = null;
-let unsubscribeMessages = null;
-let presenceListenerUnsub = null;
-let lifecycleListenersAttached = false;
-let activeUser = null;
 const MESSAGE_COOLDOWN = 2000; // 2 seconds
 
 // Message collection reference
-const ROOM_ID = 'general';
-const messagesRef = collection(db, 'rooms', ROOM_ID, 'messages');
+const messagesRef = collection(db, 'rooms', 'global', 'messages');
 
 // Get current user info
 function getCurrentUser() {
-  const firebaseUser = auth.currentUser || activeUser;
+  const firebaseUser = auth.currentUser;
   if (!firebaseUser) return null;
 
   let storedUser = {};
@@ -251,12 +245,13 @@ function initKeyboardAwareLayout() {
 }
 
 // Listen to messages in real-time (last 50)
-function subscribeToMessages() {
+function initMessageListener() {
   const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(50));
 
   let isFirstLoad = true;
 
-  return onSnapshot(q, (snapshot) => {
+  onSnapshot(q, (snapshot) => {
+    // Store last visible for pagination
     if (!snapshot.empty) {
       lastVisible = snapshot.docs[snapshot.docs.length - 1];
     }
@@ -266,9 +261,9 @@ function subscribeToMessages() {
       messages.push({ id: doc.id, ...doc.data() });
     });
 
+    // Reverse to show oldest first
     messages.reverse();
 
-    if (!chatStream) return;
     chatStream.innerHTML = '';
 
     if (messages.length === 0) {
@@ -279,6 +274,7 @@ function subscribeToMessages() {
       return;
     }
 
+    // Add "Load More" button if we have 50 messages
     if (messages.length === 50) {
       const loadMoreBtn = document.createElement('button');
       loadMoreBtn.className = 'load-more-btn';
@@ -292,6 +288,7 @@ function subscribeToMessages() {
       chatStream.appendChild(messageElement);
     });
 
+    // Scroll to bottom on first load or new message
     if (isFirstLoad) {
       setTimeout(() => scrollToBottom(true), 100);
       isFirstLoad = false;
@@ -300,9 +297,7 @@ function subscribeToMessages() {
     }
   }, (error) => {
     console.error('[Chat Load Error]', error.code, error.message);
-    if (chatStream) {
-      chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
-    }
+    chatStream.innerHTML = '<div class="chat-empty">❌ Erreur de chargement.</div>';
   });
 }
 
@@ -365,7 +360,12 @@ function initDOM() {
     return false;
   }
 
-  chatMessage.addEventListener('input', handleMessageInput);
+  // Auto-resize textarea
+  chatMessage.addEventListener('input', () => {
+    chatMessage.style.height = 'auto';
+    const maxHeight = window.innerWidth <= 640 ? 60 : 80;
+    chatMessage.style.height = Math.min(chatMessage.scrollHeight, maxHeight) + 'px';
+  });
 
   // Send message on form submit
   chatForm.addEventListener('submit', handleSubmit);
@@ -378,11 +378,23 @@ function initDOM() {
     }
   });
 
+  // Listen to typing input
+  chatMessage.addEventListener('input', () => {
+    void updateTypingStatus(true);
+
+    // Clear previous timeout
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    // Set typing to false after 1.5s of inactivity
+    typingTimeout = setTimeout(() => {
+      void updateTypingStatus(false);
+    }, 1500);
+  });
+
   // Activer le layout "keyboard aware"
   initKeyboardAwareLayout();
-
-  updateSendButtonState();
-  sendBtn.disabled = true;
 
   return true;
 }
@@ -455,34 +467,7 @@ async function handleSubmit(e) {
   } finally {
     sendBtn.disabled = false;
     chatMessage.focus();
-    updateSendButtonState();
   }
-}
-
-function updateSendButtonState() {
-  if (!sendBtn || !chatMessage) return;
-  const hasUser = Boolean(getCurrentUser());
-  const text = chatMessage.value?.trim() || '';
-  sendBtn.disabled = !(hasUser && text.length > 0);
-}
-
-function handleMessageInput() {
-  if (!chatMessage) return;
-  chatMessage.style.height = 'auto';
-  const maxHeight = window.innerWidth <= 640 ? 60 : 80;
-  chatMessage.style.height = Math.min(chatMessage.scrollHeight, maxHeight) + 'px';
-
-  updateSendButtonState();
-
-  if (!getCurrentUser()) return;
-
-  void updateTypingStatus(true);
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-  }
-  typingTimeout = setTimeout(() => {
-    void updateTypingStatus(false);
-  }, 1500);
 }
 
 // ========== PRESENCE & TYPING ==========
@@ -543,14 +528,15 @@ async function updateTypingStatus(isTyping) {
 }
 
 // Listen to all presence data
-function subscribeToPresence() {
+function initPresenceListener() {
   const presenceRef = ref(rtdb, 'presence');
 
-  return onValue(presenceRef, (snapshot) => {
+  onValue(presenceRef, (snapshot) => {
     if (!typingIndicator) return;
 
     const currentUser = getCurrentUser();
     const presences = snapshot.val() || {};
+
     const typingUsers = [];
 
     Object.keys(presences).forEach((uid) => {
@@ -567,6 +553,7 @@ function subscribeToPresence() {
       }
     });
 
+    // Update typing indicator
     if (typingUsers.length === 0) {
       typingIndicator.hidden = true;
     } else {
@@ -582,52 +569,27 @@ function subscribeToPresence() {
   });
 }
 
+// Initialize chat only when authenticated
 let chatInitialized = false;
 let chatPerfLogged = false;
-let authUnsubscribe = null;
 
-function handleAuthChange(user) {
-  activeUser = user;
-  updateSendButtonState();
+async function initChat() {
+  // Wait for auth-guard to confirm authentication
+  await authReady;
 
-  if (!user) {
-    teardownRealtime();
-    return;
+  // Only initialize if user is authenticated (authReady resolves with user or true)
+  if (!auth.currentUser) {
+    return; // User not authenticated, auth-guard will redirect
   }
 
   if (!chatInitialized) {
-    presenceListenerUnsub = subscribeToPresence();
+    initMessageListener();
+    initPresenceListener();
     chatInitialized = true;
   }
 
   presenceInitialized = false;
   ensurePresenceOnline();
-  attachLifecycleListeners();
-
-  if (!chatPerfLogged) {
-    chatPerfLogged = true;
-    console.log('[Perf] chat init in', (performance.now() - tPageStart).toFixed(1), 'ms');
-  }
-}
-
-function teardownRealtime() {
-  if (presenceListenerUnsub) {
-    presenceListenerUnsub();
-    presenceListenerUnsub = null;
-  }
-  presenceInitialized = false;
-  chatInitialized = false;
-  lastVisible = null;
-  presenceRefCache = null;
-  typingIndicator?.setAttribute('hidden', '');
-  if (chatStream) {
-    chatStream.innerHTML = '<div class="chat-empty">Connecte-toi pour discuter.</div>';
-  }
-}
-
-function attachLifecycleListeners() {
-  if (lifecycleListenersAttached) return;
-  lifecycleListenersAttached = true;
 
   window.addEventListener('focus', ensurePresenceOnline);
   window.addEventListener('blur', markLastSeen);
@@ -638,35 +600,27 @@ function attachLifecycleListeners() {
       markLastSeen();
     }
   });
+
   window.addEventListener('beforeunload', () => {
     updatePresence(false);
-    unsubscribeMessages?.();
   });
-}
 
-async function initChat() {
-  if (authUnsubscribe) return;
-  try {
-    await authPersistenceReady;
-  } catch (_) {
-    // Persistence might fail (private browsing); continue.
+  if (!chatPerfLogged) {
+    chatPerfLogged = true;
+    console.log('[Perf] chat init in', (performance.now() - tPageStart).toFixed(1), 'ms');
   }
-  if (authUnsubscribe) return;
-  authUnsubscribe = onAuthStateChanged(auth, handleAuthChange);
 }
 
-function bootstrap() {
-  if (!initDOM()) return;
-  if (!unsubscribeMessages) {
-    unsubscribeMessages = subscribeToMessages();
-  }
-  initChat().catch((error) => {
-    console.error('[Chat] init auth listener failed', error);
-  });
-}
-
+// Main initialization - wait for DOM then start
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootstrap, { once: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    if (initDOM()) {
+      initChat();
+    }
+  });
 } else {
-  bootstrap();
+  // DOM already loaded
+  if (initDOM()) {
+    initChat();
+  }
 }
