@@ -22,7 +22,6 @@ export const ROUTES = {
   WAITER_LEADERBOARD: resolvePath('../../pages/waiter/classement.html'),
   WAITER_RULES: resolvePath('../../pages/waiter/regles.html'),
   WAITER_PERFORMANCES: resolvePath('../../pages/waiter/performances.html'),
-  CHAT: resolvePath('../../pages/shared/chat.html'),
   ADMIN_DASHBOARD: resolvePath('../../pages/admin/dashboard.html')
 };
 
@@ -36,7 +35,6 @@ export const NAV_ITEMS = [
   { key: 'home', label: 'Home', href: ROUTES.WAITER_HOME, type: 'link' },
   { key: 'profile', label: 'Profil', href: ROUTES.WAITER_PROFILE, type: 'link' },
   { key: 'leaderboard', label: 'Classement', href: ROUTES.WAITER_LEADERBOARD, type: 'link' },
-  { key: 'chat', label: 'Chat', href: ROUTES.CHAT, type: 'link' },
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 

@@ -35,7 +35,7 @@ async function renderNavigation() {
   // Vérifier si la barre n'existe pas déjà
   if (document.querySelector('.bb-topbar')) return;
 
-  const primaryItems = NAV_ITEMS.filter(item => ['home', 'chat', 'profile'].includes(item.key));
+  const primaryItems = NAV_ITEMS.filter(item => ['home', 'profile', 'leaderboard'].includes(item.key));
 
   const primaryButtons = primaryItems.map(item => {
     return `<a href="${item.href}" class="bb-nav-btn">${item.label}</a>`;

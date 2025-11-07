@@ -75,8 +75,6 @@ bistrotbastards/
     │   │   ├── tips.html
     │   │   ├── reviews.html
     │   │   └── crypto-tips.html
-    │   ├── shared/
-    │   │   └── chat.html
     │   └── admin/
     │       └── dashboard.html
     │
@@ -94,7 +92,6 @@ bistrotbastards/
     │       ├── signup.js
     │       ├── waiter-profile.js
     │       ├── waiter-crypto-tips.js
-    │       ├── chat.js
     │       └── admin.js
     │
     └── styles/             # CSS stylesheets
