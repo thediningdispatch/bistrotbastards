@@ -5,27 +5,147 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Règles du jeu — Bistrot Bastards</title>
-  <meta name="description" content="Comprends en un coup d'œil les règles du concours serveurs Bistrot Bastards." />
+  <meta name="description" content="Comprends comment gagner des points (XP) chez Bistrot Bastards en quelques secondes." />
   <link rel="stylesheet" href="../../styles/system7.css" />
   <link rel="stylesheet" href="../../styles/navigation.css" />
   <style>
-    :root { font-family: "Helvetica Neue", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #111; }
-    body.rules-page { background: #f3f3f3; color: #111; }
-    .rules-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
-    .rules-section { background: #fff; border: 1px solid #dfdfdf; border-radius: 12px; padding: 1.5rem; }
-    .hero { text-align: center; padding: 1.75rem 1.25rem; }
-    .hero h1 { margin: 0 0 0.5rem; font-size: clamp(1.8rem, 4vw, 2.3rem); }
-    .hero p { margin: 0; color: #4a4a4a; font-size: 1rem; }
-    .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-    .pillar-card { border: 1px solid #ededed; border-radius: 10px; padding: 1rem; background: #fff; }
-    .pillar-card h3 { margin: 0 0 0.5rem; font-size: 1rem; display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
-    .pillar-card .weight { font-size: 0.9rem; color: #6a6a6a; }
-    .pillar-card p { margin: 0; font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.9rem; color: #222; line-height: 1.4; }
-    .tl-dr ul { margin: 0; padding-left: 1.25rem; color: #2f2f2f; line-height: 1.5; }
-    .tl-dr li { margin-bottom: 0.4rem; }
-    @media (max-width: 640px) {
-      .rules-body { padding: 1rem; }
-      .pillars-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    :root {
+      font-family: "Helvetica Neue", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #0d0d0d;
+    }
+    body.rules-page {
+      background: #f3f3f3;
+      color: inherit;
+    }
+    .rules-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .rules-section {
+      background: #fff;
+      border: 1px solid #e1e1e1;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15, 15, 15, 0.05);
+    }
+    .hero {
+      text-align: center;
+      padding: 1.75rem 1rem;
+    }
+    .hero .eyebrow {
+      display: inline-block;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+    }
+    .hero p {
+      margin: 0;
+      color: #3c3c3c;
+    }
+    .hero ul {
+      list-style: disc;
+      text-align: left;
+      margin: 1rem auto 0;
+      padding-left: 1.25rem;
+      max-width: 420px;
+      line-height: 1.5;
+      color: #1f1f1f;
+    }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    @media (min-width: 1024px) {
+      .pillars-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+    .pillar-card {
+      border: 1px solid #ededed;
+      border-radius: 12px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: #fff;
+    }
+    .pillar-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .goal {
+      margin: 0;
+      font-weight: 600;
+      color: #373737;
+    }
+    .measure {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .measure-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      line-height: 1.4;
+      color: #2b2b2b;
+    }
+    .formula-block {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 0.6rem;
+      font-size: 0.9rem;
+    }
+    .formula {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      margin: 0.25rem 0 0;
+    }
+    .note {
+      margin: 0;
+      color: #2a2a2a;
+      font-size: 0.95rem;
+    }
+    .tldr ul {
+      margin: 0.75rem 0 0;
+      padding-left: 1.25rem;
+      line-height: 1.5;
+    }
+    .return-block {
+      text-align: center;
+    }
+    .return-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      border: 1px solid #141414;
+      color: #141414;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .return-link:hover {
+      background: #141414;
+      color: #fff;
+    }
+    @media (max-width: 560px) {
+      .rules-body {
+        padding: 1rem;
+      }
+      .rules-section {
+        padding: 1.25rem;
+      }
+      .hero ul {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -40,41 +160,97 @@
       <div class="window-body rules-body" id="app">
         <div id="navHost"></div>
 
-        <section class="rules-section hero" aria-labelledby="rules-hero-title">
-          <h1 id="rules-hero-title">Règles du jeu</h1>
-          <p>Chacun peut gagner selon ses forces (ticket moyen, avis Google, produit phare, satisfaction).</p>
+        <section class="rules-section hero" aria-labelledby="rules-hero">
+          <p class="eyebrow">🧾 Règles du jeu — Bistrot Bastards</p>
+          <h1 id="rules-hero">💡 Tout le monde peut gagner !</h1>
+          <p>Il n’y a pas un seul profil gagnant :</p>
+          <ul>
+            <li>le vendeur qui fait un super ticket moyen,</li>
+            <li>celui qui génère plein d’avis Google,</li>
+            <li>celui qui cartonne sur le produit du mois,</li>
+            <li>ou celui que les clients adorent 🥰</li>
+          </ul>
         </section>
 
-        <section class="rules-section pillars" aria-labelledby="rules-pillars-title">
-          <h2 id="rules-pillars-title">Les piliers (tous sur 10)</h2>
+        <section class="rules-section pillars" aria-labelledby="rules-pillars">
+          <h2 id="rules-pillars">4 piliers = ton XP</h2>
           <div class="pillars-grid">
-            <article class="pillar-card">
-              <h3>Satisfaction 💛 <span class="weight">40%</span></h3>
-              <p>Sous-score = (Top%×10 + OK%×5) / 10</p>
+            <article class="pillar-card" aria-labelledby="pillar-satisfaction">
+              <h3 id="pillar-satisfaction">💛 Satisfaction — 40%</h3>
+              <p class="goal">But : rendre les clients heureux.</p>
+              <p class="measure">Comment c’est mesuré :</p>
+              <ul class="measure-list">
+                <li>Les clients laissent un petit retour sur leur expérience :</li>
+                <li>Top 👍 = client très content</li>
+                <li>OK 🙂 = client satisfait mais sans plus</li>
+              </ul>
+              <div class="formula-block">
+                <span>Formule :</span>
+                <p class="formula">Sous-score = ( % de “Top” × 10 ) + ( % de “OK” × 5 ) ÷ 10</p>
+              </div>
+              <p class="note">🗣️ Plus tu as de “Top”, plus ton score monte. Les “OK” comptent pour moitié.</p>
             </article>
-            <article class="pillar-card">
-              <h3>Ticket moyen 💶 <span class="weight">25%</span></h3>
-              <p>Sous-score = min((Ticket / Référence)×10, 10)</p>
+
+            <article class="pillar-card" aria-labelledby="pillar-ticket">
+              <h3 id="pillar-ticket">💶 Ticket moyen — 25%</h3>
+              <p class="goal">But : valoriser la qualité de vente.</p>
+              <p class="measure">Comment c’est mesuré :</p>
+              <ul class="measure-list">
+                <li>Ton ticket moyen est comparé à celui du restaurant entier.</li>
+                <li>Si tu es au-dessus, tu gagnes plus de points.</li>
+                <li>Si tu fais le meilleur ticket moyen du service, tu marques un bonus.</li>
+              </ul>
+              <div class="formula-block">
+                <span>Formule :</span>
+                <p class="formula">Sous-score = ( Ton ticket moyen ÷ Ticket moyen du resto ) × 10 (limité à 10 maximum)</p>
+              </div>
+              <p class="note">💡 En clair : un ticket moyen dans le top du service = un gros coup de boost à ton score.</p>
             </article>
-            <article class="pillar-card">
-              <h3>Avis Google ⭐ <span class="weight">15%</span></h3>
-              <p>Sous-score = (Taux d’avis publiés)×10</p>
+
+            <article class="pillar-card" aria-labelledby="pillar-avis">
+              <h3 id="pillar-avis">⭐ Avis Google — 15%</h3>
+              <p class="goal">But : inciter les clients à laisser un avis Google.</p>
+              <p class="measure">Comment c’est mesuré :</p>
+              <ul class="measure-list">
+                <li>Parmi les clients qui ont scanné le QR code, combien ont vraiment posté un avis ?</li>
+              </ul>
+              <div class="formula-block">
+                <span>Formule :</span>
+                <p class="formula">Sous-score = ( Taux d’avis publiés ) × 10</p>
+              </div>
+              <p class="note">😉 Plus tu convaincs de clients de laisser un vrai avis, plus ton score grimpe.</p>
             </article>
-            <article class="pillar-card">
-              <h3>Produit phare 🥂 <span class="weight">20%</span></h3>
-              <p>Sous-score = min((Ventes / Objectif)×10, 10)</p>
+
+            <article class="pillar-card" aria-labelledby="pillar-produit">
+              <h3 id="pillar-produit">🥂 Produit phare — 20%</h3>
+              <p class="goal">But : promouvoir le produit du moment.</p>
+              <p class="measure">Comment c’est mesuré :</p>
+              <ul class="measure-list">
+                <li>Chaque mois, un produit est mis en avant (ex : Chablis, Ruinart, etc.).</li>
+                <li>Ton nombre de ventes est comparé à un objectif.</li>
+              </ul>
+              <div class="formula-block">
+                <span>Formule :</span>
+                <p class="formula">Sous-score = ( Tes ventes ÷ Objectif ) × 10 (limité à 10 maximum)</p>
+              </div>
+              <p class="note">🍾 Atteins ou dépasse l’objectif, et tu prends le maximum de points !</p>
             </article>
           </div>
         </section>
 
-        <section class="rules-section tl-dr" aria-labelledby="rules-tldr-title">
-          <h2 id="rules-tldr-title">TL;DR</h2>
+        <section class="rules-section tldr" aria-labelledby="rules-tldr">
+          <h2 id="rules-tldr">TL;DR 🧠</h2>
+          <p class="formula">Total (/10) = (0,40 × Satisfaction) + (0,25 × Ticket) + (0,15 × Avis) + (0,20 × Produit)</p>
           <ul>
-            <li>Total (/10) = 0,40×Satisfaction + 0,25×Ticket + 0,15×Avis + 0,20×Produit.</li>
-            <li>Personne n’écrase tout : chaque force peut gagner.</li>
-            <li>Cap à 10 pour éviter qu’un seul levier domine.</li>
+            <li>✅ Tout le monde peut gagner selon ses forces.</li>
+            <li>🚫 Aucun paramètre ne peut écraser les autres.</li>
+            <li>🎯 Le but : faire progresser le resto ensemble.</li>
           </ul>
         </section>
+
+        <div class="rules-section return-block">
+          <a class="return-link" href="home.html">⬅ Retour</a>
+        </div>
       </div>
     </div>
   </div>
