@@ -35,7 +35,7 @@ function createLeaderboardRow(userData, rank) {
     <td class="leaderboard-position">${position}</td>
     <td class="leaderboard-score">${Math.round(score)}</td>
     <td class="leaderboard-actions">
-      <a href="performances.html?uid=${userData.uid}" class="btn btn-small">Voir performances</a>
+      <a href="/waiter/performances.html?uid=${userData.uid}" class="btn btn-small">Voir performances</a>
     </td>
   `;
 
