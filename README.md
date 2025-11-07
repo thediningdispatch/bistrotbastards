@@ -18,10 +18,11 @@ so that recognition, feedback, and pride in one's craft can circulate as easily 
 
 🧩 What We're Building
 
+## 🧩 What We're Building
+
 A modular ecosystem of web-based tools, all open-source and easy to deploy:
 	•	🧑‍🍳 Server profiles & leaderboards — celebrate the people behind great experiences.
 	•	🏅 Performance dashboards — fair, data-driven scoring models (like Bistrot Podium V1.3) to visualize progress.
-	•	💬 Team chats & feedback loops — real-time communication that replaces WhatsApp chaos.
 	•	📊 Manager tools — transparent dashboards for HR, satisfaction, and motivation.
 	•	💸 Optional QR tipping — a lightweight, wallet-based tipping system that lets guests reward staff directly.
 
@@ -101,8 +102,7 @@ bistrotbastards/
         ├── waiter-home.css
         ├── waiter-profile.css
         ├── waiter-tips.css
-        ├── waiter-crypto.css
-        └── chat.css
+        └── waiter-crypto.css
 ```
 
 ⸻

@@ -17,22 +17,6 @@ service cloud.firestore {
       match /metrics/{uid}    { allow read, write: if true; }
     }
 
-    // rooms/*/messages/* : chat en temps réel
-    match /rooms/{roomId}/messages/{messageId} {
-      allow read: if true;
-
-      allow create: if
-        request.resource.data.uid is string
-        && request.resource.data.username is string
-        && request.resource.data.text is string
-        && request.resource.data.text.size() > 0
-        && request.resource.data.text.size() <= 400
-        && request.resource.data.createdAt == request.time
-        && request.resource.data.keys().hasOnly(['uid','username','text','createdAt']);
-
-      allow update, delete: if false;
-    }
-
     // Par défaut : rien d'autre autorisé
     match /{document=**} { allow read, write: if false; }
   }

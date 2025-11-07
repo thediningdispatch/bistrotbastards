@@ -38,25 +38,6 @@ export const NAV_ITEMS = [
   { key: 'logout', label: 'Out', href: '#', type: 'action' }
 ];
 
-// ========== CHAT CONFIGURATION ==========
-
-/**
- * Configuration du système de chat
- * @constant {Object}
- */
-export const CHAT_CONFIG = {
-  /** Délai minimum entre deux messages (ms) */
-  MESSAGE_COOLDOWN: 2000,
-  /** Longueur maximale d'un message */
-  MAX_MESSAGE_LENGTH: 400,
-  /** Seuil de scroll pour considérer qu'on est "en bas" (px) */
-  SCROLL_THRESHOLD: 100,
-  /** Nombre de messages à charger par batch */
-  LOAD_MORE_LIMIT: 20,
-  /** Nombre de messages initiaux à afficher */
-  INITIAL_MESSAGES_LIMIT: 50
-};
-
 // ========== ADMIN CONFIGURATION ==========
 
 /**
@@ -154,18 +135,3 @@ export const WAITER_CONFIG = {
   /** Liste des jours */
   DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 };
-
-// ========== COLORS ==========
-
-/**
- * Couleurs pastel pour le chat (attribution par username)
- * @constant {Array<string>}
- */
-export const CHAT_PASTEL_COLORS = [
-  '#FFE5E5', '#FFE5F0', '#FFE5FA', '#F0E5FF', '#E5E5FF',
-  '#E5F0FF', '#E5FAFF', '#E5FFFA', '#E5FFF0', '#E5FFE5',
-  '#F0FFE5', '#FAFFE5', '#FFFFE5', '#FFF0E5', '#FFFAE5',
-  '#FFD6E5', '#FFD6F5', '#F5D6FF', '#E5D6FF', '#D6E5FF',
-  '#D6F5FF', '#D6FFFF', '#D6FFF5', '#D6FFE5', '#E5FFD6',
-  '#F5FFD6', '#FFFFD6', '#FFF5D6', '#FFE5D6', '#FFDDE5'
-];
