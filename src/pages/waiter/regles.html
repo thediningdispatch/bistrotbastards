@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Règles du jeu — Bistrot Bastards</title>
+  <meta name="description" content="Comprends en un clin d'œil les règles du concours serveurs Bistrot Bastards." />
+  <link rel="stylesheet" href="../../styles/system7.css" />
+  <link rel="stylesheet" href="../../styles/navigation.css" />
+  <style>
+    :root {
+      font-family: "Helvetica Neue", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body.rules-page {
+      background: #ececec;
+      color: #1a1a1a;
+    }
+    .rules-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .rules-section {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px rgba(15, 15, 15, 0.08);
+    }
+    .hero {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      margin: 0 0 0.5rem;
+    }
+    .hero p {
+      margin: 0;
+      color: #555;
+      font-size: 1rem;
+    }
+    .pillars-grid,
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .pillar-card,
+    .example-card {
+      border: 1px solid #e4e4e4;
+      border-radius: 10px;
+      padding: 1.25rem;
+      background: #fff;
+      min-height: 170px;
+    }
+    .pillar-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+    .pillar-card strong {
+      font-size: 0.9rem;
+      color: #7a7a7a;
+    }
+    .pillar-card p {
+      margin: 0.5rem 0 0;
+      color: #454545;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .formula {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9rem;
+      color: #111;
+      margin-top: 0.75rem;
+    }
+    .tl-dr ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      color: #303030;
+      line-height: 1.6;
+    }
+    .tl-dr li {
+      margin-bottom: 0.4rem;
+    }
+    .example-card h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .example-card p {
+      margin: 0.6rem 0 0;
+      color: #4b4b4b;
+      line-height: 1.4;
+    }
+    .calculator {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .calc-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .calc-field label {
+      font-weight: 600;
+      color: #333;
+    }
+    .calc-field input {
+      border: 1px solid #cfcfcf;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      background: #fafafa;
+    }
+    .calc-total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #111;
+    }
+    .calc-total span {
+      font-variant-numeric: tabular-nums;
+    }
+    small {
+      color: #6a6a6a;
+    }
+    @media (max-width: 600px) {
+      .rules-body {
+        padding: 1rem;
+      }
+      .hero {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="rules-page">
+  <div class="desktop">
+    <div class="window">
+      <div class="title-bar">
+        <div class="window-controls"><span></span><span></span><span></span></div>
+        <span class="title-text">Règles du jeu</span>
+      </div>
+
+      <div class="window-body rules-body" id="app">
+        <div id="navHost"></div>
+
+        <section class="rules-section hero" aria-labelledby="rules-hero-title">
+          <h1 id="rules-hero-title">Règles du jeu</h1>
+          <p>Quatre piliers, un seul total sur 10. Tu peux gagner grâce à ta meilleure arme.</p>
+        </section>
+
+        <section class="rules-section pillars" aria-labelledby="rules-pillars-title">
+          <header>
+            <h2 id="rules-pillars-title">Les 4 piliers notés sur 10</h2>
+            <p>Total (/10) = 0,40×Satisfaction + 0,25×Ticket + 0,15×Avis + 0,20×Produit</p>
+          </header>
+          <div class="pillars-grid">
+            <article class="pillar-card">
+              <h3>Satisfaction 💛 <strong>40%</strong></h3>
+              <p>Plus tes tables sont top, plus tu montes. Les retours « Top » comptent double.</p>
+              <p class="formula">Sous-score = (Top% × 10 + OK% × 5) / 10</p>
+            </article>
+            <article class="pillar-card">
+              <h3>Ticket moyen 💶 <strong>25%</strong></h3>
+              <p>Monte le panier moyen vs la référence resto. Capé à 10 pour rester fair-play.</p>
+              <p class="formula">Sous-score = min((Ticket / Référence) × 10, 10)</p>
+            </article>
+            <article class="pillar-card">
+              <h3>Avis Google ⭐ <strong>15%</strong></h3>
+              <p>Chaque avis publié compte. On mesure ton taux de clients qui postent réellement.</p>
+              <p class="formula">Sous-score = (Taux d’avis publiés) × 10</p>
+            </article>
+            <article class="pillar-card">
+              <h3>Produit phare 🥂 <strong>20%</strong></h3>
+              <p>Vends le produit focus du moment. Objectif atteint = note max.</p>
+              <p class="formula">Sous-score = min((Ventes / Objectif) × 10, 10)</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="rules-section tl-dr" aria-labelledby="rules-tldr-title">
+          <h2 id="rules-tldr-title">TL;DR</h2>
+          <ul>
+            <li>Chaque pilier est sur 10 puis pondéré, personne n’écrase tout.</li>
+            <li>Tu peux gagner via ton point fort (ticket moyen, avis Google, ou ventes produit).</li>
+            <li>Le cap à 10 évite qu’un seul levier domine.</li>
+            <li>Le but: faire progresser le resto et récompenser toutes les forces.</li>
+          </ul>
+        </section>
+
+        <section class="rules-section examples" aria-labelledby="rules-examples-title">
+          <h2 id="rules-examples-title">Exemples rapides</h2>
+          <div class="example-grid">
+            <article class="example-card">
+              <h4>« Le Vendeur »</h4>
+              <p>Ticket moyen 🔥, satisfaction stable, avis corrects. Il score fort grâce à son panier sans tout écraser.</p>
+            </article>
+            <article class="example-card">
+              <h4>« Le Booster d’avis »</h4>
+              <p>Chaque table repart avec un avis publié. Son 15% d’avis suffit pour rester dans la course.</p>
+            </article>
+            <article class="example-card">
+              <h4>« Le Sniper produit »</h4>
+              <p>Connaît le produit phare par cœur et atteint l’objectif vite. 20% quasi garantis même sans ticket record.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="rules-section calculator" aria-labelledby="rules-calc-title">
+          <h2 id="rules-calc-title">Mini-calculateur</h2>
+          <p>Teste ton total: renseigne tes notes (0 à 10). Le calcul applique directement les pondérations officielles.</p>
+          <form class="calc-grid" id="rulesCalculator" aria-describedby="calc-hint">
+            <label class="calc-field">
+              Satisfaction
+              <input type="number" min="0" max="10" step="0.1" value="0" data-weight="0.40" inputmode="decimal" aria-label="Satisfaction sur 10">
+            </label>
+            <label class="calc-field">
+              Ticket moyen
+              <input type="number" min="0" max="10" step="0.1" value="0" data-weight="0.25" inputmode="decimal" aria-label="Ticket moyen sur 10">
+            </label>
+            <label class="calc-field">
+              Avis Google
+              <input type="number" min="0" max="10" step="0.1" value="0" data-weight="0.15" inputmode="decimal" aria-label="Avis Google sur 10">
+            </label>
+            <label class="calc-field">
+              Produit phare
+              <input type="number" min="0" max="10" step="0.1" value="0" data-weight="0.20" inputmode="decimal" aria-label="Produit phare sur 10">
+            </label>
+          </form>
+          <div class="calc-total" aria-live="polite">Total (/10) : <span id="calcTotal">0.00</span></div>
+          <small id="calc-hint">Formule: 0,40×Satisfaction + 0,25×Ticket + 0,15×Avis + 0,20×Produit.</small>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../../scripts/core/navigation.js"></script>
+  <script type="module" src="../../scripts/core/auth-guard.js"></script>
+  <script>
+    (function () {
+      const inputs = document.querySelectorAll('#rulesCalculator input[data-weight]');
+      const totalEl = document.getElementById('calcTotal');
+
+      function clampValue(value) {
+        if (!Number.isFinite(value)) return 0;
+        if (value < 0) return 0;
+        if (value > 10) return 10;
+        return value;
+      }
+
+      function updateTotal() {
+        const total = Array.from(inputs).reduce((sum, input) => {
+          const weight = Number(input.dataset.weight);
+          const value = clampValue(Number(input.value));
+          return sum + value * weight;
+        }, 0);
+        totalEl.textContent = total.toFixed(2);
+      }
+
+      inputs.forEach((input) => {
+        input.addEventListener('input', updateTotal);
+        input.addEventListener('blur', () => {
+          const clamped = clampValue(Number(input.value));
+          if (!Number.isNaN(clamped)) {
+            input.value = clamped.toFixed(1).replace(/\.0$/, '');
+          }
+        });
+      });
+
+      updateTotal();
+    })();
+  </script>
+</body>
+</html>

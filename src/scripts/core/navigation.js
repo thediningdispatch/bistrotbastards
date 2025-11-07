@@ -47,6 +47,7 @@ async function renderNavigation() {
         Menu ▾
       </button>
       <div id="bbMenuDropdown" class="bb-dropdown" role="menu" hidden>
+        <button id="bbRulesBtn" class="bb-dropdown__item linklike" type="button" role="menuitem">Règles</button>
         <button id="bbAdminBtn" class="bb-dropdown__item linklike" type="button" role="menuitem">Admin</button>
         <button id="bbLogoutBtn" class="bb-dropdown__item linklike" type="button" role="menuitem">Out</button>
       </div>
@@ -63,6 +64,7 @@ async function renderNavigation() {
 
   const menuToggle = topbar.querySelector('#bbMenuToggle');
   const dropdown = topbar.querySelector('#bbMenuDropdown');
+  const rulesBtn = topbar.querySelector('#bbRulesBtn');
   const adminBtn = topbar.querySelector('#bbAdminBtn');
   const logoutBtn = topbar.querySelector('#bbLogoutBtn');
 
@@ -133,6 +135,10 @@ async function renderNavigation() {
   };
 
   const ADMIN_PASS = 'pranklord666';
+  rulesBtn?.addEventListener('click', () => {
+    closeMenu();
+    window.location.href = '/waiter/regles.html';
+  });
   adminBtn?.addEventListener('click', () => {
     closeMenu();
     const input = window.prompt('Mot de passe admin :');
