@@ -1,5 +1,7 @@
-import { db } from '../core/firebase.js';
+import { auth, db } from '../core/firebase.js';
+import { ROUTES } from '../core/config.js';
 import { collection, getDocs, doc, setDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const todayISO = new Date().toISOString().slice(0, 10);
 
@@ -21,6 +23,11 @@ const btnSaveDay = document.getElementById('btnSaveDay');
 let allUsers = [];
 let selectedUids = new Set();
 
+if (sessionStorage.getItem('bb_admin_ok') !== '1') {
+  console.warn('[admin] accès refusé — code non validé');
+  window.location.replace(ROUTES.WAITER_HOME);
+}
+
 function showStatus(message, type = 'info') {
   if (!statusEl) return;
   statusEl.textContent = message;
@@ -32,6 +39,39 @@ function clearStatus() {
     statusEl.textContent = '';
     statusEl.className = 'admin-status';
   }
+}
+
+async function ensureConnected() {
+  if (!auth.currentUser) {
+    await signInAnonymously(auth);
+  }
+  console.debug('[admin] writing as uid:', auth.currentUser?.uid, 'isAnonymous:', auth.currentUser?.isAnonymous);
+}
+
+function cleanFirestore(obj) {
+  const out = {};
+  Object.entries(obj || {}).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value) || Number.isNaN(value)) return;
+      out[key] = value;
+      return;
+    }
+    if (Array.isArray(value)) {
+      out[key] = value.filter(item => item !== undefined && item !== null);
+      return;
+    }
+
+    if (typeof value === 'object') {
+      const nested = cleanFirestore(value);
+      if (Object.keys(nested).length === 0) return;
+      out[key] = nested;
+      return;
+    }
+
+    out[key] = value;
+  });
+  return out;
 }
 
 function setStep(step) {
@@ -164,58 +204,92 @@ async function saveDay() {
     return;
   }
 
+  if (sessionStorage.getItem('bb_admin_ok') !== '1') {
+    showStatus('Accès refusé: mot de passe admin requis.', 'error');
+    return;
+  }
+
   const metrics = collectMetrics();
   btnSaveDay.disabled = true;
   showStatus('Enregistrement en cours…', 'info');
 
   try {
-    const metaRef = doc(db, 'days', dateISO, 'meta', 'info');
-    await setDoc(metaRef, {
-      dateISO,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-
-    const rosterRef = doc(db, 'days', dateISO, 'attendance', 'roster');
-    await setDoc(rosterRef, {
-      uids: selected.map(u => u.uid),
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-
-    for (const user of selected) {
-      const metricPayload = {
-        uid: user.uid,
-        username: user.username,
-        ...metrics[user.uid],
-        updatedAt: serverTimestamp()
-      };
-
-      const metricRef = doc(db, 'days', dateISO, 'metrics', user.uid);
-      await setDoc(metricRef, metricPayload, { merge: true });
-
-      const currentStats = {
-        scans: metricPayload.scans,
-        posts: metricPayload.posts,
-        note: metricPayload.noteSur10,
-        noteSur10: metricPayload.noteSur10,
-        ticketJoueur: metricPayload.ticketJoueur,
-        ticketMoyen: metricPayload.ticketMoyen,
-        ticketMax: metricPayload.ticketMax,
-        chablisVendus: metricPayload.chablisVendus,
-        chablisMax: metricPayload.chablisMax
-      };
-
-      await setDoc(doc(db, 'users', user.uid), {
-        stats: currentStats,
-        lastActiveDate: dateISO
-      }, { merge: true });
-    }
-
+    await ensureConnected();
+    console.debug('[admin] write as', auth.currentUser?.uid, { dateISO, selected: selected.map(u => u.uid) });
+    await persistDay(dateISO, selected, metrics);
     showStatus(`✅ Journée ${dateISO} enregistrée. <a href="../waiter/classement.html">Voir le classement</a>`, 'success');
   } catch (error) {
     console.error('[admin] Save day error:', error);
-    showStatus(`❌ Erreur d'enregistrement: ${error?.message || error}`, 'error');
+    const msg = (error && (error.code || error.message)) || 'Erreur inconnue';
+    showStatus(`❌ Erreur d'enregistrement: ${msg}`, 'error');
   } finally {
     btnSaveDay.disabled = false;
+  }
+}
+
+async function persistDay(dateISO, selectedUsers, metricsByUid) {
+  await ensureConnected();
+  const uids = selectedUsers.map(user => user.uid);
+
+  await setDoc(
+    doc(db, 'days', dateISO, 'meta', 'info'),
+    cleanFirestore({
+      dateISO,
+      updatedAt: serverTimestamp()
+    }),
+    { merge: true }
+  );
+
+  await setDoc(
+    doc(db, 'days', dateISO, 'attendance', 'roster'),
+    cleanFirestore({
+      uids,
+      updatedAt: serverTimestamp()
+    }),
+    { merge: true }
+  );
+
+  for (const user of selectedUsers) {
+    const raw = metricsByUid[user.uid] || {};
+    const metrics = cleanFirestore({
+      uid: user.uid,
+      username: user.username,
+      scans: Number(raw.scans || 0) || 0,
+      posts: Number(raw.posts || 0) || 0,
+      noteSur10: Math.max(0, Math.min(10, Number(raw.noteSur10 || 0) || 0)),
+      ticketJoueur: Number(raw.ticketJoueur || 0) || 0,
+      ticketMoyen: Number(raw.ticketMoyen || 0) || 0,
+      ticketMax: Number(raw.ticketMax || 0) || 0,
+      chablisVendus: Math.max(0, Number.parseInt(raw.chablisVendus || 0, 10) || 0),
+      chablisMax: Math.max(0, Number.parseInt(raw.chablisMax || 0, 10) || 0),
+      updatedAt: serverTimestamp()
+    });
+    console.debug('[admin] write metrics', { dateISO, uid: user.uid, metrics });
+
+    await setDoc(
+      doc(db, 'days', dateISO, 'metrics', user.uid),
+      metrics,
+      { merge: true }
+    );
+
+    await setDoc(
+      doc(db, 'users', user.uid),
+      cleanFirestore({
+        stats: {
+          scans: metrics.scans,
+          posts: metrics.posts,
+          noteSur10: metrics.noteSur10,
+          ticketJoueur: metrics.ticketJoueur,
+          ticketMoyen: metrics.ticketMoyen,
+          ticketMax: metrics.ticketMax,
+          chablisVendus: metrics.chablisVendus,
+          chablisMax: metrics.chablisMax
+        },
+        lastActiveDate: dateISO,
+        updatedAt: serverTimestamp()
+      }),
+      { merge: true }
+    );
   }
 }
 

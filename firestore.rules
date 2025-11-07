@@ -2,44 +2,24 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function isAdmin() {
-      return signedIn()
-        && (request.auth.token.isAdmin == true || request.auth.uid == 'ox7IA7SqTbh6BzDTjCI3PKlC1Kp1');
-    }
     function userSelf(uid) { return signedIn() && request.auth.uid == uid; }
-    function userProfileUpdateOnly() {
-      // Autoriser l'utilisateur à modifier uniquement son profil public
-      // (pas les scores/xp/etc.)
-      let changed = request.resource.data.diff(resource.data).changedKeys();
-      return changed.hasOnly(['username','avatar','avatarKey','photoURL'])
-        && (request.resource.data.username is string || !('username' in changed))
-        && (request.resource.data.avatar is string || !('avatar' in changed))
-        && (request.resource.data.avatarKey is string || !('avatarKey' in changed))
-        && (request.resource.data.photoURL is string || !('photoURL' in changed));
-    }
 
-    // USERS (classement + admin)
     match /users/{uid} {
-      // Création par l'utilisateur lui-même
+      allow read: if signedIn();
       allow create: if userSelf(uid);
-
-      // LECTURE: tout utilisateur connecté (classement/performances) OU admin
-      allow read: if signedIn() || isAdmin();
-
-      // ÉCRITURE:
-      // - Admin : total accès
-      // - Utilisateur: seulement ses champs profil (username/avatar/…)
-      allow update: if isAdmin() || (userSelf(uid) && userProfileUpdateOnly());
-
-      // Suppression: admin uniquement
-      allow delete: if isAdmin();
+      allow update: if signedIn();
+      allow delete: if false;
     }
 
-    // CHAT: rooms/{roomId}/messages/{messageId}
-    match /rooms/{roomId}/messages/{messageId} {
-      // Lecture: tout utilisateur connecté
-      allow read: if signedIn();
+    match /days/{date} {
+      allow read: if true;
+      match /meta/{doc}       { allow read: if true; allow write: if signedIn(); }
+      match /attendance/{doc} { allow read: if true; allow write: if signedIn(); }
+      match /metrics/{uid}    { allow read: if true; allow write: if signedIn(); }
+    }
 
+    match /rooms/{roomId}/messages/{messageId} {
+      allow read: if true;
       allow create: if signedIn()
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.username is string
@@ -48,13 +28,9 @@ service cloud.firestore {
         && request.resource.data.text.size() <= 400
         && request.resource.data.createdAt != null
         && request.resource.data.keys().hasOnly(['uid','username','text','createdAt']);
-
       allow update, delete: if false;
     }
 
-    // Verrou par défaut
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /{document=**} { allow read, write: if false; }
   }
 }
