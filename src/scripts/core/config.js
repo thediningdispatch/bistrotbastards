@@ -20,6 +20,7 @@ export const ROUTES = {
   WAITER_REVIEWS: resolvePath('../../pages/waiter/reviews.html'),
   WAITER_CRYPTO_TIPS: resolvePath('../../pages/waiter/crypto-tips.html'),
   WAITER_LEADERBOARD: resolvePath('../../pages/waiter/classement.html'),
+  WAITER_RULES: resolvePath('../../pages/waiter/regles.html'),
   WAITER_PERFORMANCES: resolvePath('../../pages/waiter/performances.html'),
   CHAT: resolvePath('../../pages/shared/chat.html'),
   ADMIN_DASHBOARD: resolvePath('../../pages/admin/dashboard.html')

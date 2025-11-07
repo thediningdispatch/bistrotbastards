@@ -137,7 +137,7 @@ async function renderNavigation() {
   const ADMIN_PASS = 'pranklord666';
   rulesBtn?.addEventListener('click', () => {
     closeMenu();
-    window.location.href = '/waiter/regles.html';
+    window.location.href = ROUTES.WAITER_RULES || '/waiter/regles.html';
   });
   adminBtn?.addEventListener('click', () => {
     closeMenu();
