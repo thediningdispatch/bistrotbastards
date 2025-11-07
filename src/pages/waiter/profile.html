@@ -60,16 +60,6 @@
 
   <script type="module" src="../../scripts/core/navigation.js"></script>
   <script type="module" src="../../scripts/core/auth-guard.js"></script>
-  <script type="module">
-    import { ROUTES } from '../../scripts/core/config.js';
-    const perfBtn = document.getElementById('btnPerformances');
-    if (perfBtn) {
-      perfBtn.setAttribute('href', ROUTES.WAITER_PERFORMANCES || '/waiter/performances.html');
-      perfBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        window.location.href = ROUTES.WAITER_PERFORMANCES || '/waiter/performances.html';
-      });
-    }
-  </script>
+  <script type="module" src="../../scripts/pages/profile-overview.js"></script>
 </body>
 </html>
