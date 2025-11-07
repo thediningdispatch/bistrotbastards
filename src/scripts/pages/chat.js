@@ -1,4 +1,4 @@
-import { db, auth, rtdb } from '../core/firebase.js';
+import { db, auth, rtdb, authPersistenceReady } from '../core/firebase.js';
 import {
   collection,
   addDoc,
@@ -596,7 +596,6 @@ function handleAuthChange(user) {
   }
 
   if (!chatInitialized) {
-    unsubscribeMessages = subscribeToMessages();
     presenceListenerUnsub = subscribeToPresence();
     chatInitialized = true;
   }
@@ -612,10 +611,6 @@ function handleAuthChange(user) {
 }
 
 function teardownRealtime() {
-  if (unsubscribeMessages) {
-    unsubscribeMessages();
-    unsubscribeMessages = null;
-  }
   if (presenceListenerUnsub) {
     presenceListenerUnsub();
     presenceListenerUnsub = null;
@@ -645,17 +640,29 @@ function attachLifecycleListeners() {
   });
   window.addEventListener('beforeunload', () => {
     updatePresence(false);
+    unsubscribeMessages?.();
   });
 }
 
-function initChat() {
+async function initChat() {
+  if (authUnsubscribe) return;
+  try {
+    await authPersistenceReady;
+  } catch (_) {
+    // Persistence might fail (private browsing); continue.
+  }
   if (authUnsubscribe) return;
   authUnsubscribe = onAuthStateChanged(auth, handleAuthChange);
 }
 
 function bootstrap() {
   if (!initDOM()) return;
-  initChat();
+  if (!unsubscribeMessages) {
+    unsubscribeMessages = subscribeToMessages();
+  }
+  initChat().catch((error) => {
+    console.error('[Chat] init auth listener failed', error);
+  });
 }
 
 if (document.readyState === 'loading') {
