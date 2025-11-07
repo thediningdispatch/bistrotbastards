@@ -29,12 +29,12 @@
           <p class="admin-subtitle">Sélectionne les serveurs présents puis saisis leurs métriques.</p>
         </header>
 
-        <section class="admin-toolbar">
-          <label class="date-picker">
-            <span>Date :</span>
-            <input type="date" id="dayPicker" />
-          </label>
-        </section>
+        <div class="admin-daybar">
+          <button id="dayPrev" class="btn" aria-label="Jour précédent">◀</button>
+          <input type="date" id="dayPicker" />
+          <button id="dayNext" class="btn" aria-label="Jour suivant">▶</button>
+          <button id="reloadDay" class="btn">Recharger</button>
+        </div>
 
         <div id="adminLoading" class="admin-loading">
           ⏳ Chargement des serveurs...

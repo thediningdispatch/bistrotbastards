@@ -5,17 +5,16 @@ service cloud.firestore {
     function userSelf(uid) { return signedIn() && request.auth.uid == uid; }
 
     match /users/{uid} {
-      allow read: if signedIn();
+      allow read: if true;
       allow create: if userSelf(uid);
-      allow update: if signedIn();
-      allow delete: if false;
+      allow update, delete: if false;
     }
 
     match /days/{date} {
       allow read: if true;
-      match /meta/{doc}       { allow read: if true; allow write: if signedIn(); }
-      match /attendance/{doc} { allow read: if true; allow write: if signedIn(); }
-      match /metrics/{uid}    { allow read: if true; allow write: if signedIn(); }
+      match /{document=**} {
+        allow write: if false;
+      }
     }
 
     match /rooms/{roomId}/messages/{messageId} {

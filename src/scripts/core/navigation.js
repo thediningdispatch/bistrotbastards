@@ -1,7 +1,5 @@
 import { NAV_ITEMS, ROUTES } from './config.js';
 import { getStoredUser, setStoredUser } from './utils.js';
-import { auth } from './firebase.js';
-import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const defaultUser = {
   username: 'Serveur Bistrot',
@@ -134,25 +132,15 @@ async function renderNavigation() {
     window.location.href = fallback;
   };
 
-  adminBtn?.addEventListener('click', async () => {
+  const ADMIN_PASS = 'pranklord666';
+  adminBtn?.addEventListener('click', () => {
     closeMenu();
-    const ADMIN_PASS = 'pranklord666';
     const input = window.prompt('Mot de passe admin :');
-    if (input === null) return;
-    if (input !== ADMIN_PASS) {
-      window.alert('Mot de passe incorrect');
-      return;
-    }
-    try {
+    if (input === ADMIN_PASS) {
       sessionStorage.setItem('bb_admin_ok', '1');
-      if (!auth.currentUser) {
-        await signInAnonymously(auth);
-      }
-      console.debug('[admin] Anonymous session ready:', auth.currentUser?.uid);
       window.location.href = ROUTES.ADMIN_DASHBOARD;
-    } catch (error) {
-      console.error('[nav] Anonymous admin session failed:', error);
-      alert('Impossible d’établir la session anonyme: ' + (error?.message || error));
+    } else if (input != null) {
+      alert('Mot de passe incorrect');
     }
   });
   logoutBtn?.addEventListener('click', async () => {

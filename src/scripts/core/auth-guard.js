@@ -3,6 +3,13 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { ROUTES } from './config.js';
 
+if (window.location.pathname.endsWith('/admin/dashboard.html')
+  && sessionStorage.getItem('bb_admin_ok') === '1') {
+  document.body.style.visibility = 'visible';
+  document.body.classList.add('auth-bypass');
+  return;
+}
+
 const tAuthStart = performance.now();
 let authLogEmitted = false;
 let authReadyLogged = false;
