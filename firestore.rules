@@ -1,35 +1,39 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
-    function userSelf(uid) { return signedIn() && request.auth.uid == uid; }
 
+    // users : lecture/écriture (hors delete) pour simplifier le MVP
     match /users/{uid} {
       allow read: if true;
-      allow create: if userSelf(uid);
-      allow update, delete: if false;
+      allow create, update: if true;
+      allow delete: if false;
     }
 
+    // days/* : lecture/écriture ouvertes pour les dashboards
     match /days/{date} {
-      allow read: if true;
-      match /{document=**} {
-        allow write: if false;
-      }
+      allow read, write: if true;
+      match /meta/{doc}       { allow read, write: if true; }
+      match /attendance/{doc} { allow read, write: if true; }
+      match /metrics/{uid}    { allow read, write: if true; }
     }
 
+    // rooms/*/messages/* : chat en temps réel
     match /rooms/{roomId}/messages/{messageId} {
       allow read: if true;
-      allow create: if signedIn()
-        && request.resource.data.uid == request.auth.uid
+
+      allow create: if
+        request.resource.data.uid is string
         && request.resource.data.username is string
         && request.resource.data.text is string
         && request.resource.data.text.size() > 0
         && request.resource.data.text.size() <= 400
-        && request.resource.data.createdAt != null
+        && request.resource.data.createdAt == request.time
         && request.resource.data.keys().hasOnly(['uid','username','text','createdAt']);
+
       allow update, delete: if false;
     }
 
+    // Par défaut : rien d'autre autorisé
     match /{document=**} { allow read, write: if false; }
   }
 }
